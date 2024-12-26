@@ -1,0 +1,65 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>you tube music finally getting lyrick</title>
+</head>
+<style>
+    body{
+        padding:0;
+        margin:0;
+    }
+    .main-body{
+        display:flex;
+        width:100vw;
+        justify-content: space-evenly;
+        height:100vh;
+        align-items: center;
+        overflow:hidden;
+        background-color: rgba(0, 0, 0, 0.15);
+        backdrop-filter: blur(50px);
+    }
+
+    .info-body{
+        text-align: center;
+        flex:1;
+        color:white;
+    }
+
+    img{
+        border-radius:15px;
+        margin:10px;
+        width:500px;
+    }
+
+    #lyric-holder{
+        width:50vw;
+        height:60vh; 
+        overflow:scroll;
+        color:white;
+
+    }
+    #lyric-holder::-webkit-scrollbar {
+        display: none;
+        }
+</style>
+<body>
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-1;"></canvas>
+    <div class="main-body">
+        <div class="info-body">
+            <img id="image">
+            <h1 id="title"></h1>
+            <h2 id="artist"></h2>
+            <h3 id="album"></h3>
+        </div>
+        
+        <div id="lyric-holder">
+    
+        </div>
+    </div>
+    
+</body>
+<script src="parser.js"></script>
+<script src="reciever.js"></script>
+<script src="displayer.js"></script>
+</html>

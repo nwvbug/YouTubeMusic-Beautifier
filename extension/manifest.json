@@ -1,0 +1,24 @@
+{
+    "name": "ytm lyrics",
+    "version": "1.0.0",
+    "description": "makes ytm have actual time synced lyrics",
+    "manifest_version": 3,
+    "author": "natesh vemuri",
+    "action":{
+        "default_popup": "popup.html",
+        "default_title": "lyrics configuration"
+    },
+    "permissions": ["activeTab", "storage"],
+    "content_scripts": [
+        {
+            "js": ["ytm-info.js"],
+            "matches": [
+                "https://music.youtube.com/*"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "background":{
+        "service_worker":"sender.js"
+    }
+}
