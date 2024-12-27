@@ -49,6 +49,15 @@ function getNowPlaying() {
   } catch{
     console.log("Image not grabbable")
   }
+  var playPause = "paused"
+  try {
+    play = document.querySelector('[title="Play"]')
+    if (play == undefined){
+      playPause = "playing"
+    }
+  } catch {
+    console.log("unable to determine status of playpause")
+  }
 
   let url;
 
@@ -73,7 +82,8 @@ function getNowPlaying() {
     elapsed: timestampToSeconds(elapsed),
     total: timestampToSeconds(total),
     url,
-    large_image
+    large_image,
+    playPause
   };
 }
 
@@ -86,7 +96,7 @@ observer.observe(playerBar, {
   attributes: true,
 });
 
-console.log("[Discord Rich Presence] [YouTube Music] Started Observer!");
+console.log("[YouTube Music] Started Observer!");
 
 
 function collectCurrentSongData(){
@@ -99,3 +109,48 @@ function collectCurrentSongData(){
     console.error('Error sending message:', error); 
   });
 }
+
+function triggerPause(){
+  try {
+    document.getElementById("play-pause-button").click();
+  } catch{
+    console.log("Pause failed")
+  }
+}
+
+function triggerBack(){
+  try{
+    document.querySelector('[title="Previous"]').click()
+
+  } catch{
+    console.log("Back failed")
+  }
+}
+
+function triggerNext(){
+  try{
+    document.querySelector('[title="Next"]').click()
+
+  } catch{
+    console.log("Next failed")
+  }
+}
+
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("MESSAGE HEARD")
+  if (request.action === 'pause-from-middleman-ytm') {
+    console.log("PAUSE IDENTIFIED")
+      sendResponse("pausing")
+      triggerPause()
+  }
+  else if (request.action === 'back-from-middleman-ytm') {
+    console.log("BACK IDENTIFIED")
+      sendResponse("going prev")
+      triggerBack()
+  }
+  else if (request.action === 'next-from-middleman-ytm') {
+    console.log("next IDENTIFIED")
+      sendResponse("going next")
+      triggerNext()
+  }
+});

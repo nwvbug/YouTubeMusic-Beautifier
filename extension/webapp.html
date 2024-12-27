@@ -21,9 +21,13 @@
     }
 
     .info-body{
-        text-align: center;
+        width:45vw;
+        text-align: right;
         flex:1;
         color:white;
+        display:flex;
+        flex-direction: column;
+        align-items: flex-end;
     }
 
     img{
@@ -33,33 +37,117 @@
     }
 
     #lyric-holder{
-        width:50vw;
+        width:45vw;
         height:60vh; 
         overflow:scroll;
         color:white;
+        background-color:rgba(0, 0, 0, 0);
+        /* Create the fade effect */
+        -webkit-mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 10%,   /* Transparent at the top */
+        rgba(0, 0, 0, 1) 20%,   /* Fully opaque in the middle */
+        rgba(0, 0, 0, 1) 80%,   /* Fully opaque continues */
+        rgba(0, 0, 0, 0) 90%    /* Transparent at the bottom */
+        );
+        mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 10%, 
+            rgba(0, 0, 0, 1) 20%, 
+            rgba(0, 0, 0, 1) 80%, 
+            rgba(0, 0, 0, 0) 90%
+        );
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
 
+        /* Ensure the div blends well with the background */
+        background-blend-mode: normal;
     }
+    
     #lyric-holder::-webkit-scrollbar {
         display: none;
         }
+
+    #middle-space{
+        width:10vw;
+    }
+
+    .words-div{
+        text-align: center;
+        width:500px;
+        align-self: self-end;
+        margin:10px;
+        margin-top:0px;
+    }
+
+    h2{
+        height:20px;
+    }
+
+    #controls-holder{
+        display:flex;
+        justify-content: space-evenly;
+    }
+
+    #controls-holder > img{
+        margin-top:20px;
+        height:20px;
+        width:20px;
+        border-radius:0;
+        cursor: pointer;
+    }
+
+    #progressbarholder{
+        height:7px;
+        border-radius:10px;
+        width:500px;
+        background-color: rgba(255, 255, 255, 0.4);
+        margin-left:10px;
+        margin-right:10px;
+        align-self:flex-end;
+    }
+    #progressbar{
+        height:7px;
+        border-radius:10px;
+        width:0%;
+        background-color: white;
+        
+    }
 </style>
 <body>
     <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-1;"></canvas>
-    <div class="main-body">
+    <div class="main-body" id="main-body">
         <div class="info-body">
             <img id="image">
-            <h1 id="title"></h1>
-            <h2 id="artist"></h2>
-            <h3 id="album"></h3>
+            <div id="progressbarholder">
+                <div id="progressbar">
+
+                </div>
+            </div>
+            <div class="words-div">
+                <h1 id="title"></h1>
+                <h2 id="artist-album"></h2>
+                <div id="controls-holder">
+                    <img src="assets/left skip.png" id="backbutton">
+                    <img src="assets/pause.png" data-paused="false" id="pauseplaybutton">
+                    <img src="assets/right skip.png" id="nextbutton">
+                </div>
+            </div>  
+        </div>
+        <div id="middle-space">
+
+        </div>
+        <div>
+            <div id="lyric-holder">
+    
+            </div>
         </div>
         
-        <div id="lyric-holder">
-    
-        </div>
     </div>
     
 </body>
 <script src="parser.js"></script>
 <script src="reciever.js"></script>
 <script src="displayer.js"></script>
+<script src="webapp-controller.js"></script>
 </html>

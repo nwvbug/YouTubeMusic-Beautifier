@@ -27,7 +27,7 @@ function next(){
     }  
     for (i=0; i<lyrics.length; i++){
         if (lyrics[i] == " "){
-            lyrics[i] = "🎵"
+            lyrics[i] = "♪♪"
         }
     }
     console.log(lyrics)

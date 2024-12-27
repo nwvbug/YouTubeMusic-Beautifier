@@ -8,10 +8,10 @@
         "default_popup": "popup.html",
         "default_title": "lyrics configuration"
     },
-    "permissions": ["activeTab", "storage"],
+    "permissions": ["activeTab", "storage", "scripting"],
     "content_scripts": [
         {
-            "js": ["ytm-info.js"],
+            "js": ["ytm-controller.js"],
             "matches": [
                 "https://music.youtube.com/*"
             ],
@@ -19,6 +19,11 @@
         }
     ],
     "background":{
-        "service_worker":"sender.js"
+        "service_worker":"middleman.js"
+    },
+    "icons": {
+        "16": "assets/16x16.png",
+        "48": "assets/48x48.png",
+        "128": "assets/128x128.png"
     }
 }

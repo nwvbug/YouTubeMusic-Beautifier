@@ -1,18 +1,17 @@
 var current_song;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === 'displayData') {
+    if (request.action === 'displayData-ytmlyrics') {
       // Use the received data
       //console.log(request.data); 
-
+      updateTimestamp(request.data.elapsed, request.data.total)
       let temp_current_song = request.data.title+request.data.artist+request.data.album
       console.log(temp_current_song)
       if (temp_current_song != current_song){
         console.log("New song!")
         current_song = temp_current_song;
         document.getElementById("title").innerText = request.data.title;
-        document.getElementById("artist").innerText = request.data.artist;
-        document.getElementById("album").innerText = request.data.album;
+        document.getElementById("artist-album").innerText = request.data.artist+" • "+request.data.album;
         if (request.data.large_image!= null){
           document.getElementById("image").src=request.data.large_image
           colorize(request.data.large_image)
@@ -26,12 +25,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         displayLyricOneAtATime(request.data.elapsed)
       }
 
+      if (request.data.playPause != null){
+        if (request.data.playPause == "playing"){
+          
+        }
+      }
 
     }
   });
 
 function getSongLyrics(title, artist, album){
-  let url_addon = title+" "+album+" "+artist
+  let url_addon = title+" "+artist
   fetch("http://127.0.0.1:7070/request-lyrics/"+url_addon).then(response => response.text()) // Get the text content
   .then(data => {
       // Handle the received text data
