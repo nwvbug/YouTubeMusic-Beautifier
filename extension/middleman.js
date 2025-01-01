@@ -26,7 +26,17 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse("going next")
         chrome.tabs.sendMessage(contentId, { action: 'next-from-middleman-ytm', data: null }, (response) => {
             console.log("Response heard.")
+            console.log(response)
         }); 
+    }
+    else if (request.action === 'sendQueue'){
+        sendResponse("passing queue through")
+        contentId = sender.tab.id
+        chrome.runtime.sendMessage({ action: 'sendQueue-ytmlyrics', data: request.data }); 
+
+    } else if (request.action === 'ytm-request-queue-update'){
+        sendResponse("requesting update")
+        chrome.tabs.sendMessage(contentId, {action:'ytm-request-queue-update', data:null})
     }
   });
 

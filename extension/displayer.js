@@ -3,51 +3,60 @@ current_index = 0
 
 function initializeLyrics(){
     document.getElementById("lyric-holder").innerHTML = ""
-    document.getElementById("lyric-holder").scrollTo(0,0)
+    
     let totalhtml = ""
-    for (let i = 0; i<4; i++){ //invis elements to push down first lines to center
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s;'> <h2>`
+    for (let i = 0; i<7; i++){ //invis elements to push down first lines to center
+        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<lyrics.length; i++){
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s;' id=${i}>${lyrics[i]}<h2>`
+        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s;'> <h2>`
+        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     document.getElementById("lyric-holder").innerHTML=totalhtml
     current_index = 0;
     current_time = -1;
+    document.getElementById("lyric-holder").scrollTo(0,0)
 }
 
-function displayLyricOneAtATime(seconds){
+function displayLyricOneAtATime(seconds, identifier){
     if (seconds < current_time){
         console.log("Went backwards")
-        
-        document.getElementById(current_index).style.opacity = 0.4;
-        document.getElementById(current_index).style.fontSize = "20px"
-        document.getElementById(current_index).style.height = "20px"
+        document.getElementById("lyric-holder").scrollTo(0,0)
+        let lyric_list = document.getElementById("lyric-holder").children
+        for (let item of lyric_list){
+            console.log(item.id)
+            if (item.id != null && item.id != undefined){
+                try {
+                    resetLyric(item.id)
+                } catch {
+                    console.log("Goofyscript")
+                }
+                
+            }
+            
+        }
+        current_index = 0;
         for (let i = 0; i<tim.length; i++){
             if (seconds >= tim[i]){
                 current_index = i;
+                highlightLyric(current_index)
                 break;
             }
         }
+        console.log("finished backwards reset")
     }
     current_time = seconds;
     
     if (seconds >= tim[current_index]){
         console.log("UPDATING LYRICS AT "+seconds)
-        document.getElementById(current_index).style.height = "27px"
-        document.getElementById(current_index).style.fontSize = "27px"
-        document.getElementById(current_index).style.opacity = 1
-        document.getElementById(current_index).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+        highlightLyric(current_index)
         if (current_index-1 >= 0){
-            document.getElementById(current_index-1).style.opacity = 0.4;
-            document.getElementById(current_index-1).style.fontSize = "20px"
-            document.getElementById(current_index-1).style.height = "20px"
+            resetLyric(current_index-1)
         }
         current_index++;
 
@@ -55,16 +64,11 @@ function displayLyricOneAtATime(seconds){
             console.log("RUNNING CATCH UP")
             while(seconds >= tim[current_index]){
                 if (current_index > 0){
-                    document.getElementById(current_index-1).style.opacity = 0.4;
-                    document.getElementById(current_index-1).style.fontSize = "20px"
-                    document.getElementById(current_index-1).style.height = "20px"
+                    resetLyric(current_index-1)
                 } 
                 current_index++;
             }
-            document.getElementById(current_index-1).style.fontSize = "27px"
-            document.getElementById(current_index-1).style.height = "27px"
-            document.getElementById(current_index-1).style.opacity = 1
-            document.getElementById(current_index-1).scrollIntoView(scrollIntoViewOptions={"block":"center"})
+            highlightLyric(current_index-1)
             
         }
     } else {
@@ -179,4 +183,23 @@ function animate(){
 
 function updateTimestamp(elapsed, total){
     document.getElementById("progressbar").style.width = ((elapsed / total)  *100)+"%";
+}
+
+function highlightLyric(lyric_id){
+    document.getElementById(lyric_id).style.height = "27px"
+    document.getElementById(lyric_id).style.fontSize = "27px"
+    document.getElementById(lyric_id).style.opacity = 1
+    document.getElementById(lyric_id).style.fontWeight = 800;
+    document.getElementById(lyric_id).style.width = "100%";
+    document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+
+}
+
+function resetLyric(lyric_id){
+    document.getElementById(lyric_id).style.opacity = 0.4;
+    document.getElementById(lyric_id).style.fontSize = "20px"
+    document.getElementById(lyric_id).style.height = "20px"
+    document.getElementById(lyric_id).style.width = "74%";
+    document.getElementById(lyric_id).style.fontWeight = 500;
+
 }

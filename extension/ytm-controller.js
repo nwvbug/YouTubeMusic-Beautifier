@@ -1,5 +1,8 @@
 
 const playerBar = document.querySelector("ytmusic-player-bar");
+const queue_element = document.getElementById("queue").querySelector("#contents")
+var currently_playing_song;
+
 function activate(){
   playerBar = document.querySelector("ytmusic-player-bar");
   console.log(playerBar)
@@ -73,6 +76,13 @@ function getNowPlaying() {
     }
   }
 
+  if (currently_playing_song == title+artist+album){
+    // nothing extra to do, song is playing still
+  } else {
+    currently_playing_song = title+artist+album
+    getQueue()
+  }
+
   return {
     thumbnail,
     title,
@@ -88,15 +98,23 @@ function getNowPlaying() {
 }
 
 
-const observer = new MutationObserver(collectCurrentSongData);
+const playBarObserver = new MutationObserver(collectCurrentSongData);
 
-observer.observe(playerBar, {
+playBarObserver.observe(playerBar, {
   childList: true,
   subtree: true,
   attributes: true,
 });
 
-console.log("[YouTube Music] Started Observer!");
+const queueObserver = new MutationObserver(getQueue);
+
+queueObserver.observe(queue_element, {
+  childList: true,
+  subtree: true,
+  attributes: true,
+});
+
+console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
 
 function collectCurrentSongData(){
@@ -108,6 +126,10 @@ function collectCurrentSongData(){
   .catch(error => {
     console.error('Error sending message:', error); 
   });
+  //getQueue(); disabled for performance reasons
+  if (document.hasFocus()){
+    getQueue();
+  }
 }
 
 function triggerPause(){
@@ -130,9 +152,8 @@ function triggerBack(){
 function triggerNext(){
   try{
     document.querySelector('[title="Next"]').click()
-
   } catch{
-    console.log("Next failed")
+    console.error("Next failed")
   }
 }
 
@@ -152,5 +173,96 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     console.log("next IDENTIFIED")
       sendResponse("going next")
       triggerNext()
-  }
+  } else if (request.action === 'ytm-request-queue-update'){
+    sendResponse("sending queue update")
+    getQueue();
+}
 });
+
+function pressShiftN(pressedKey) {
+  // Create a ShiftDown event
+  const shiftDownEvent = new KeyboardEvent('keydown', {
+    key: 'Shift',
+    code: 'ShiftLeft', 
+    shiftKey: true 
+  });
+
+  // Dispatch the ShiftDown event
+  document.dispatchEvent(shiftDownEvent);
+
+  // Create and dispatch the 'e' keypress event
+  const nKeyPressEvent = new KeyboardEvent('keypress', {
+    key: 'N', 
+    code: 'KeyN', 
+    shiftKey: true 
+  });
+  document.dispatchEvent(nKeyPressEvent);
+
+  // Create and dispatch the ShiftUp event
+  const shiftUpEvent = new KeyboardEvent('keyup', {
+    key: 'Shift',
+    code: 'ShiftLeft', 
+    shiftKey: false 
+  });
+  document.dispatchEvent(shiftUpEvent);
+}
+
+function getQueue(){
+  //document.getElementById("queue").querySelector("#contents").children[5].querySelector("#primary-renderer").querySelector("ytmusic-player-queue-item").children[1].querySelector("ytmusic-item-thumbnail-overlay-renderer").getAttribute("play-button-state")
+  let currently_playing_index = 0;
+  let queue_items = queue_element.children;
+  let queue_data = []
+  for (let i = 0; i<queue_items.length; i++){
+    let queue_entry = queue_items[i];
+    let ytmusic_queue_item = queue_entry;
+    if (ytmusic_queue_item.nodeName != "YTMUSIC-PLAYER-QUEUE-ITEM"){
+      ytmusic_queue_item = queue_entry.querySelector("ytmusic-player-queue-item")
+    }
+    if (ytmusic_queue_item == null){
+      console.log("javer script")
+    } else {
+      let state = ytmusic_queue_item.children[1].querySelector("ytmusic-item-thumbnail-overlay-renderer").getAttribute("play-button-state")
+    
+      if (state != "default"){
+        console.log("state was not default: "+state)
+        currently_playing_index = i;
+      }
+      let rfr = ytmusic_queue_item
+      if (rfr.nodeName != "YTMUSIC-PLAYER-QUEUE-ITEM"){
+        rfr = rfr.querySelector("ytmusic-player-queue-item")
+      }
+      let queue_entry = {"name":rfr.children[2].children[0].innerText, "artist":rfr.children[2].children[1].innerText, "image":rfr.children[1].children[0].children[0].src}
+      queue_data.push(queue_entry)
+    }
+    
+  }
+  let previous = null;
+  let next = null;
+  if (currently_playing_index > 0){
+    let rfr = queue_element.children[currently_playing_index-1]
+    if (rfr.nodeName != "YTMUSIC-PLAYER-QUEUE-ITEM"){
+      rfr = rfr.querySelector("ytmusic-player-queue-item")
+    }
+    previous = {"name":rfr.children[2].children[0].innerText, "artist":rfr.children[2].children[1].innerText, "image":rfr.children[1].children[0].children[0].src}
+  }
+  if (currently_playing_index < queue_items.length-1){
+    let rfr = queue_element.children[currently_playing_index+1]
+    if (rfr.nodeName != "YTMUSIC-PLAYER-QUEUE-ITEM"){
+      rfr = rfr.querySelector("ytmusic-player-queue-item")
+    }
+    next = {"name":rfr.children[2].children[0].innerText, "artist":rfr.children[2].children[1].innerText, "image":rfr.children[1].children[0].children[0].src}
+  }
+  console.log(previous, next)
+  let queue = {
+    "position_in_queue":currently_playing_index,
+    "next":next,
+    "previous":previous,
+    "queue_data":queue_data
+  }
+  chrome.runtime.sendMessage({ action: 'sendQueue', data: queue }).then(response => {
+    console.log('Response from background:', response); 
+  })
+  .catch(error => {
+    console.error('Error sending message:', error); 
+  });
+}

@@ -2,10 +2,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>you tube music finally getting lyrick</title>
+    <title>BetterYTM</title>
 </head>
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
     body{
+        font-family:"Host Grotesk", serif;
+        padding:0;
+        margin:0;
+    }
+    h1{
+        font-weight:500;
+    }
+    h2{
+        font-weight:400;
         padding:0;
         margin:0;
     }
@@ -21,24 +31,26 @@
     }
 
     .info-body{
+        margin-left:20px;
         width:45vw;
         text-align: right;
         flex:1;
         color:white;
         display:flex;
         flex-direction: column;
-        align-items: flex-end;
+        align-items: center;
     }
 
-    img{
+    /* img{
         border-radius:15px;
         margin:10px;
         width:500px;
-    }
+    } */
 
     #lyric-holder{
+        padding-right:20px;
         width:45vw;
-        height:60vh; 
+        height:90vh; 
         overflow:scroll;
         color:white;
         background-color:rgba(0, 0, 0, 0);
@@ -74,9 +86,8 @@
 
     .words-div{
         text-align: center;
-        width:500px;
+        width:100%;
         align-self: self-end;
-        margin:10px;
         margin-top:0px;
     }
 
@@ -85,8 +96,11 @@
     }
 
     #controls-holder{
+
+        margin-bottom:50px;
         display:flex;
         justify-content: space-evenly;
+        width:30vw;
     }
 
     #controls-holder > img{
@@ -100,49 +114,186 @@
     #progressbarholder{
         height:7px;
         border-radius:10px;
-        width:500px;
+        width:70%;
         background-color: rgba(255, 255, 255, 0.4);
         margin-left:10px;
-        margin-right:10px;
-        align-self:flex-end;
+        align-self:center;
     }
     #progressbar{
         height:7px;
         border-radius:10px;
         width:0%;
         background-color: white;
+        transition:0.2s;
         
+    }
+    .previous-in-queue{
+        width:300px;
+        left:0;
+        bottom:0;
+        margin:20px;
+        height:100px;
+        position: absolute;
+        display:flex;   
+        align-items: center;
+    }
+    .queue-image{
+        height:75px;
+        width:75px;
+        border-radius:3px;
+    }   
+    .queue-info{
+        width:100%;
+        text-align: left;
+        color:white;
+        margin-left:10px;
+        margin-right:10px;
+    }
+    .next-in-queue{
+        width:300px;
+        right:0;
+        bottom:0;
+        margin:20px;
+        height:100px;
+        position: absolute;
+        display:flex;   
+        align-items: center;
+    }
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      height: 400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .album {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      transition: all 0.5s ease;
+      opacity: 1;
+      transform: translateX(0%) scale(0.8);
+      z-index:20;
+    }
+
+    .album img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .album.active {
+      opacity: 1;
+      transform: translateX(0%) scale(1);
+
+    }
+
+    .album.prev,
+    .album.next,
+    .album.prev2,
+    .album.next2 {
+      opacity: 0.8;
+      z-index: 10;
+      width: 250px;
+      height:250px;
+      filter:blur(3px)
+    }
+
+    .album.prev {
+      transform: translateX(-65%) scale(0.8);
+    }
+
+    .album.prev2 {
+      transform: translateX(-130%) scale(0.4);
+    }
+
+    .album.next2 {
+        transform: translateX(130%) scale(0.4);
+    }
+
+    .album.next {
+      transform: translateX(65%) scale(0.8);
+    }
+    .carousel-container-container{
+        position:relative;
+        width:43vw;
     }
 </style>
 <body>
     <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-1;"></canvas>
     <div class="main-body" id="main-body">
         <div class="info-body">
-            <img id="image">
+            <div class="carousel-container-container">
+                <div class="carousel-container">
+                    <div class="carousel">
+                        <div class="album prev">
+                            <img id="i0" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+                        </div>
+                        <div class="album main">
+                            <img id="i1" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+                        </div>
+                        <div class="album next">
+                            <img id="i2" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
             <div id="progressbarholder">
                 <div id="progressbar">
 
                 </div>
             </div>
             <div class="words-div">
-                <h1 id="title"></h1>
-                <h2 id="artist-album"></h2>
-                <div id="controls-holder">
-                    <img src="assets/left skip.png" id="backbutton">
-                    <img src="assets/pause.png" data-paused="false" id="pauseplaybutton">
-                    <img src="assets/right skip.png" id="nextbutton">
-                </div>
+                <h1 id="title">Title</h1>
+                <h2 id="artist-album" style="margin-bottom:15px;">Artist • Album</h2>
+                
             </div>  
+            <div id="controls-holder">
+                <img src="assets/left skip.png" id="backbutton">
+                <img src="assets/pause.png" data-paused="false" id="pauseplaybutton">
+                <img src="assets/right skip.png" id="nextbutton">
+            </div>
         </div>
         <div id="middle-space">
 
         </div>
-        <div>
+        <div id="lyrics-flex">
             <div id="lyric-holder">
     
             </div>
         </div>
         
+        <!-- <div class="previous-in-queue" id="prev">
+            <img class="queue-image" id="previous-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+            <div class="queue-info">
+                <div id="previous-title">Title</div>
+                <div id="previous-artist">Artist • Album</div>
+            </div>
+        </div>
+        <div class="next-in-queue" id="next">
+            <div class="queue-info" style="text-align: right;">
+                <div id="next-title">Title</div>
+                <div id="next-artist">Artist • Album</div>
+            </div>
+            <img class="queue-image" id="next-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+        </div> -->
     </div>
     
 </body>

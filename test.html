@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      max-width: 1200px;
+      height: 400px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .carousel {
+      position: relative;
+      width: 100%;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .album {
+      position: absolute;
+      width: 250px;
+      height: 250px;
+      transition: all 0.5s ease;
+      opacity: 0;
+      transform: translateX(-50%) scale(0.8);
+    }
+
+    .album img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .album.active {
+      opacity: 1;
+      transform: translateX(-50%) scale(1);
+      z-index: 20;
+    }
+
+    .album.prev,
+    .album.next {
+      opacity: 0.8;
+      z-index: 10;
+    }
+
+    .album.prev {
+      transform: translateX(-150%) scale(0.8);
+    }
+
+    .album.next {
+      transform: translateX(50%) scale(0.8);
+    }
+
+    .album.prev-2,
+    .album.next-2 {
+      opacity: 0.6;
+      z-index: 5;
+    }
+
+    .album.prev-2 {
+      transform: translateX(-250%) scale(0.8);
+    }
+
+    .album.next-2 {
+      transform: translateX(150%) scale(0.8);
+    }
+
+    .nav-button {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: white;
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      z-index: 30;
+    }
+
+    .nav-button:hover {
+      background: #f0f0f0;
+    }
+
+    .prev-button {
+      left: 20px;
+    }
+
+    .next-button {
+      right: 20px;
+    }
+
+    .album-title {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px;
+      text-align: center;
+      border-radius: 0 0 8px 8px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .album.active .album-title {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="carousel-container">
+    <button class="nav-button prev-button">←</button>
+    <div class="carousel">
+      <div class="album">
+        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 1">
+        <div class="album-title">Album 1</div>
+      </div>
+      <div class="album">
+        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 2">
+        <div class="album-title">Album 2</div>
+      </div>
+      <div class="album">
+        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 3">
+        <div class="album-title">Album 3</div>
+      </div>
+      <div class="album">
+        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 4">
+        <div class="album-title">Album 4</div>
+      </div>
+      <div class="album">
+        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 5">
+        <div class="album-title">Album 5</div>
+      </div>
+    </div>
+    <button class="nav-button next-button">→</button>
+  </div>
+
+  <script>
+    const carousel = document.querySelector('.carousel');
+    const albums = Array.from(document.querySelectorAll('.album'));
+    const prevButton = document.querySelector('.prev-button');
+    const nextButton = document.querySelector('.next-button');
+
+    let currentIndex = 2; // Start with middle album active
+
+    function updateCarousel() {
+      albums.forEach((album, index) => {
+        album.className = 'album';
+        
+        if (index === currentIndex) {
+          album.classList.add('active');
+        } else if (index === currentIndex - 1) {
+          album.classList.add('prev');
+        } else if (index === currentIndex + 1) {
+          album.classList.add('next');
+        } else if (index === currentIndex - 2) {
+          album.classList.add('prev-2');
+        } else if (index === currentIndex + 2) {
+          album.classList.add('next-2');
+        }
+      });
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % albums.length;
+      updateCarousel();
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + albums.length) % albums.length;
+      updateCarousel();
+    }
+
+    // Add event listeners
+    nextButton.addEventListener('click', nextSlide);
+    prevButton.addEventListener('click', prevSlide);
+
+    // Initialize carousel
+    updateCarousel();
+  </script>
+</body>
+</html>
