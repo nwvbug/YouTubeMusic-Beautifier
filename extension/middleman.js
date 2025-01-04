@@ -37,6 +37,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     } else if (request.action === 'ytm-request-queue-update'){
         sendResponse("requesting update")
         chrome.tabs.sendMessage(contentId, {action:'ytm-request-queue-update', data:null})
+    } else if (request.action === 'ytm-request-song-data-update'){
+        sendResponse("requesting update")
+        chrome.tabs.sendMessage(contentId, {action:'ytm-request-song-data-update', data:null})
     }
   });
 

@@ -74,4 +74,8 @@ function hideLyrics(){
 function requestQueueUpdate(){
     chrome.runtime.sendMessage({ action: 'ytm-request-queue-update', data: null })
 }
+function requestSongDataUpdate(){
+    chrome.runtime.sendMessage({ action: 'ytm-request-song-data-update', data: null })
+}
 requestQueueUpdate();
+requestSongDataUpdate();

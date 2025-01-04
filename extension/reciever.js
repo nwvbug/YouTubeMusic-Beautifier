@@ -13,6 +13,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let previous = request.data.previous
       console.log("QUEUE ALERT")
       console.log(request.data)
+      current_queue_index = request.data.position_in_queue
+      updateQueue(request.data.queue_data)
+
       if (next != null && current_next != next.name+next.artist+next.image){
         current_next = next.name+next.artist+next.image
         document.getElementById(currentNextImage).style.opacity = "1";
@@ -21,7 +24,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         next.artist = next.artist.replaceAll("amp;", "");
         //document.getElementById("next-title").innerText = next.name;
         //document.getElementById("next-artist").innerText = next.artist;
-        document.getElementById(currentNextImage).src = next.image;
+        document.getElementById(currentNextImage).src = queue_cache[current_queue_index+1].image;
       }
       if (next == null){
         document.getElementById(currentNextImage).style.opacity = "0";
@@ -36,15 +39,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         previous.artist = previous.artist.replaceAll("amp;", "");
         //document.getElementById("previous-title").innerText = previous.name;
         //document.getElementById("previous-artist").innerText = previous.artist;
-        document.getElementById(currentPrevImage).src = previous.image;
+        document.getElementById(currentPrevImage).src = queue_cache[current_queue_index-1].image;
       }
       if (previous == null){
         document.getElementById(currentPrevImage).style.opacity = "0";
         document.getElementById(currentPrevImage).style.pointerEvents = "none";
       }  
       
-      updateQueue()
-      current_queue_index = request.data.position_in_queue
       
     }
     else if (request.action === 'displayData-ytmlyrics') {
@@ -109,16 +110,20 @@ async function createSHA256Hash(inputString) {
 }
 
 function updateQueue(incomingQueue){
-
+  console.log("Comparing Queues")
   let incomingQueueString = ""
   for (let item of incomingQueue){
     incomingQueueString+=item.name+item.artist
+  }
+  if (queue_cache == undefined || queue_cache == null){
+    console.log("QC is empty, pushing IQ")
+    queue_cache = incomingQueue
+    return;
   }
   if (queue_hash == createSHA256Hash(incomingQueueString)){
     console.log("Identical, returning")
     return;
   }
-
   for (let i = 0; i<incomingQueue.length; i++){
     if (incomingQueue[i].image.includes(compareAgainst)){ //BROKEN IMAGE LINK
       if (queue_cache[i].name + queue_cache[i].album == incomingQueue[i].name + incomingQueue[i].album){
@@ -145,7 +150,7 @@ function updateQueue(incomingQueue){
   }
   queue_hash = createSHA256Hash(parsedIQstring)
   queue_cache = incomingQueue
-
+  console.warn("Queue Updated")
 
 
 }

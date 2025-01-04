@@ -142,7 +142,7 @@ function triggerPause(){
 
 function triggerBack(){
   try{
-    document.querySelector('[title="Previous"]').click()
+    document.querySelector(".previous-button.style-scope.ytmusic-player-bar").click()
 
   } catch{
     console.log("Back failed")
@@ -151,7 +151,7 @@ function triggerBack(){
 
 function triggerNext(){
   try{
-    document.querySelector('[title="Next"]').click()
+    document.querySelector(".next-button.style-scope.ytmusic-player-bar").click()
   } catch{
     console.error("Next failed")
   }
@@ -176,7 +176,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === 'ytm-request-queue-update'){
     sendResponse("sending queue update")
     getQueue();
-}
+  } else if (request.action === 'ytm-request-song-data-update'){
+    sendResponse("sending song update")
+    collectCurrentSongData();
+  }
 });
 
 function pressShiftN(pressedKey) {
