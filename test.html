@@ -2,193 +2,136 @@
 <html>
 <head>
   <style>
-    .carousel-container {
-      position: relative;
-      width: 100%;
-      max-width: 1200px;
-      height: 400px;
-      margin: 0 auto;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-    }
-
-    .carousel {
-      position: relative;
-      width: 100%;
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .album {
-      position: absolute;
-      width: 250px;
-      height: 250px;
-      transition: all 0.5s ease;
-      opacity: 0;
-      transform: translateX(-50%) scale(0.8);
-    }
-
-    .album img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .album.active {
-      opacity: 1;
-      transform: translateX(-50%) scale(1);
-      z-index: 20;
-    }
-
-    .album.prev,
-    .album.next {
-      opacity: 0.8;
-      z-index: 10;
-    }
-
-    .album.prev {
-      transform: translateX(-150%) scale(0.8);
-    }
-
-    .album.next {
-      transform: translateX(50%) scale(0.8);
-    }
-
-    .album.prev-2,
-    .album.next-2 {
-      opacity: 0.6;
-      z-index: 5;
-    }
-
-    .album.prev-2 {
-      transform: translateX(-250%) scale(0.8);
-    }
-
-    .album.next-2 {
-      transform: translateX(150%) scale(0.8);
-    }
-
-    .nav-button {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: white;
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      cursor: pointer;
-      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      z-index: 30;
-    }
-
-    .nav-button:hover {
-      background: #f0f0f0;
-    }
-
-    .prev-button {
-      left: 20px;
-    }
-
-    .next-button {
-      right: 20px;
-    }
-
-    .album-title {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: rgba(0, 0, 0, 0.7);
-      color: white;
-      padding: 10px;
-      text-align: center;
-      border-radius: 0 0 8px 8px;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .album.active .album-title {
-      opacity: 1;
-    }
+    
   </style>
 </head>
 <body>
-  <div class="carousel-container">
-    <button class="nav-button prev-button">←</button>
-    <div class="carousel">
-      <div class="album">
-        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 1">
-        <div class="album-title">Album 1</div>
-      </div>
-      <div class="album">
-        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 2">
-        <div class="album-title">Album 2</div>
-      </div>
-      <div class="album">
-        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 3">
-        <div class="album-title">Album 3</div>
-      </div>
-      <div class="album">
-        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 4">
-        <div class="album-title">Album 4</div>
-      </div>
-      <div class="album">
-        <img src="https://lh3.googleusercontent.com/R-yqivSHsR8ZWpKMy2vplo6LEK-c0XVA7SzRRHR0eUYa-Gazo1VnbVnmN1ifymUOuCmW5yxjFlNv-rBv=w544-h544-l90-rj" alt="Album 5">
-        <div class="album-title">Album 5</div>
-      </div>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="thingdiv" style="width:400px; height:500px; border: 1px solid black;">
+
     </div>
-    <button class="nav-button next-button">→</button>
-  </div>
+  
 
   <script>
-    const carousel = document.querySelector('.carousel');
-    const albums = Array.from(document.querySelectorAll('.album'));
-    const prevButton = document.querySelector('.prev-button');
-    const nextButton = document.querySelector('.next-button');
+function findDarkestColor(imageData, mostCommon) {
 
-    let currentIndex = 2; // Start with middle album active
+  const data = imageData.data;
 
-    function updateCarousel() {
-      albums.forEach((album, index) => {
-        album.className = 'album';
-        
-        if (index === currentIndex) {
-          album.classList.add('active');
-        } else if (index === currentIndex - 1) {
-          album.classList.add('prev');
-        } else if (index === currentIndex + 1) {
-          album.classList.add('next');
-        } else if (index === currentIndex - 2) {
-          album.classList.add('prev-2');
-        } else if (index === currentIndex + 2) {
-          album.classList.add('next-2');
-        }
-      });
+  let darkestColor = { r: 255, g: 255, b: 255 }; // Initialize with white
+
+  for (let i = 0; i < data.length; i += 4) {
+    const r = data[i];
+    const g = data[i + 1];
+    const b = data[i + 2];
+    const a = data[i + 3]; // Alpha channel
+
+    // Skip fully transparent pixels
+    if (a === 0) {
+      continue;
     }
 
-    function nextSlide() {
-      currentIndex = (currentIndex + 1) % albums.length;
-      updateCarousel();
+    // Skip black pixels
+    if (r < 40 && g < 40 && b < 40) {
+      continue;
     }
 
-    function prevSlide() {
-      currentIndex = (currentIndex - 1 + albums.length) % albums.length;
-      updateCarousel();
+    if (mostCommon == "r" && r < 80){
+      continue;
     }
 
-    // Add event listeners
-    nextButton.addEventListener('click', nextSlide);
-    prevButton.addEventListener('click', prevSlide);
+    if (mostCommon == "g" && g < 80){
+      continue;
+    }
 
-    // Initialize carousel
-    updateCarousel();
+    if (mostCommon == "b" && b < 80){
+      continue;
+    }
+
+
+    const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+
+    if (luminance < 0.2126 * darkestColor.r + 0.7152 * darkestColor.g + 0.0722 * darkestColor.b) {
+      darkestColor.r = r;
+      darkestColor.g = g;
+      darkestColor.b = b;
+    }
+  }
+
+  return `rgb(${darkestColor.r}, ${darkestColor.g}, ${darkestColor.b})`;
+}
+
+
+function getMostCommonColorValue(imageData) {
+  const data = imageData.data;
+  const rValues = [];
+  const gValues = [];
+  const bValues = [];
+  var rTotal = 0;
+  var gTotal = 0;
+  var bTotal = 0
+  // Separate R, G, and B values
+  for (let i = 0; i < data.length; i += 4) {
+    rValues.push(data[i]);
+    rTotal+=data[i]
+    gValues.push(data[i + 1]);
+    gTotal+=data[i+1]
+    bValues.push(data[i + 2]);
+    bTotal+=data[i+2]
+  }
+  const numbers = [rTotal, gTotal, bTotal];
+
+  // Sort the array in descending order
+  numbers.sort((a, b) => b - a); 
+
+  // Return the first two elements (the highest two)
+  numbers.slice(0, 2)
+  let mc;
+  let sc;
+  if (numbers[0] == rTotal){
+    mc = "r"
+  } else if (numbers[0] == gTotal){
+    mc = "g"
+  } else if (numbers[0] == bTotal){
+   mc = "b"
+  }
+
+  if (numbers[1] == rTotal){
+    sc = "r"
+  } else if (numbers[1] == gTotal){
+    sc = "g"
+  } else if (numbers[1] == bTotal){
+    sc = "b"
+  }
+
+  // Find the most frequent value for each channel
+  return [mc, sc]
+
+}
+
+
+// Usage example:
+const image = new Image();
+image.src = 'https://lh3.googleusercontent.com/e7OC_zggEiHhcZ__-waG8J3iQ2HXDMQVQMr5v-owTzGoB1w_JGBS3g4MN-4S9tpIKsE7QdSSyZ7XfAA0=w544-h544-l90-rj'; 
+image.crossOrigin = "Anonymous"
+image.onload = () => {
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  canvas.width = image.width;
+  canvas.height = image.height;
+
+  ctx.drawImage(image, 0, 0);
+
+  const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+  let commons = getMostCommonColorValue(imageData)
+
+  const darkestColor = findDarkestColor(imageData, commons[0]);
+  const darkestColor2 = findDarkestColor(imageData, commons[1]);
+  console.log("Darkest color:", darkestColor); 
+  console.log("Darkest color:", darkestColor2); 
+
+};
+  
   </script>
 </body>
 </html>

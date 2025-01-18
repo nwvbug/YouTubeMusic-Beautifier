@@ -6,15 +6,15 @@ function initializeLyrics(){
     
     let totalhtml = ""
     for (let i = 0; i<7; i++){ //invis elements to push down first lines to center
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;'> <h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<lyrics.length; i++){
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
-        let html = `<h2 style='font-size:20px; opacity:0.4; transition:0.25s; font-weight:500; width:74%; min-height:fit-content;'> <h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     document.getElementById("lyric-holder").innerHTML=totalhtml
@@ -77,117 +77,66 @@ function displayLyricOneAtATime(seconds, identifier){
     }
 }
 
-var numCopies;
+
+const canvas = document.getElementById("backgroundCanvas")
+console.log("Initial canvas dimensions:", canvas.width, canvas.height);
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+// Also log the viewport size to compare
+console.log("Viewport dimensions:", window.innerWidth, window.innerHeight);
+const ctx = canvas.getContext("2d")
 var images = []
-const canvas = document.getElementById('backgroundCanvas');
-const ctx = canvas.getContext('2d');
-const speeds = [0.01, 0.05, 0.09, 0.1, 0.15, 0.2, 0.23, 0.12, 0.13]
+const speeds = [-0.25, -0.2, -0.3, -0.3, -0.2, 0.15, 0.17, 0.1, 0.2, 0.12]
 
-
-function colorize(img_src){
-    console.log("COLORIZING")
-    ctx.clearRect(0, 0, canvas.width, canvas.height); 
-    images = []
-    // Load the album art image
-    const img = new Image();
-    img.crossOrigin = "anonymous"
-    img.src = img_src; 
-
+function createStaticBackground(imageUrl){
     
-    img.onload = () => {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        numCopies = Math.floor(Math.random() * 10) + 10; // Random number of copies
-        
-        // Create an offscreen canvas for the blurred background
-        const offscreenCanvas = document.createElement('canvas');
-        const offscreenCtx = offscreenCanvas.getContext('2d');
-        offscreenCanvas.width = canvas.width;
-        offscreenCanvas.height = canvas.height;
-        offscreenCtx.drawImage(img, 0, 0, canvas.width, canvas.height)
-        for (let i = 0; i < numCopies; i++) {
-            // Random scale and rotation
-            const scaleX = Math.random() + 0.5; // Increased scale for more distortion
-            const scaleY = Math.random() + 0.5;
-            const rotation = Math.random() / 2; 
-        
-            // Random position
-            const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            
-            const dist1 = Math.random() + 0.25
-            const dist2 = Math.random() + 0.25
-            
-            offscreenCtx.setTransform(1, dist1, dist2, 1, x, y);
-        
-            // Draw the image on the offscreen canvas
-            offscreenCtx.drawImage(img, -img.width / 2, -img.height / 2);
-        
-            offscreenCtx.restore();
-            images.push({"img":img,"negateX":Math.random() < 0.5, "negateY":Math.random() < 0.5, "x":x, "d1":dist1, "d2":dist2, "y":y, "vy":(Math.floor(Math.random() * (8 + 1))), "vx":(Math.floor(Math.random() * (8 + 1))), "rotation":rotation})
-        }
-      
-        // Apply a very strong blur
-        //offscreenCtx.filter = 'blur(50px)'; // Increased blur radius
-      
-        // Draw the blurred background onto the main canvas
-        ctx.drawImage(offscreenCanvas, 0, 0); 
-      
-        // Clear the offscreen canvas (optional)
-        //offscreenCtx.clearRect(0, 0, offscreenCanvas.width, offscreenCanvas.height); 
-        animate();
+    const image = new Image();
+    image.src = imageUrl
+    image.crossOrigin = "Anonymous"
+    image.onload = () => {
+        let offscreenCanvas = new OffscreenCanvas(image.width, image.height);
+        let ctx = offscreenCanvas.getContext('2d');
+
+        ctx.drawImage(image, 0, 0);
+
+        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        let commons = getMostCommonColorValue(imageData)
+
+        let color1 = findBackgroundColor(imageData, commons[0]);
+        let color2 = findBackgroundColor(imageData, commons[1]);
+        console.log(color1, color2)
+        document.body.style.backgroundImage = `linear-gradient(${Math.floor(Math.random() * 361)}deg, ${color1},  ${color2}`
     };
-    
+}
+
+function createAnimatedBackground(imageUrl){
+    createStaticBackground(imageUrl)
+    images = []
+    console.log("CREATING ANIMATED BACKGROUND", imageUrl)
+    for (let i = 0; i<20; i++){
+        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * 301) + 700, Math.floor(Math.random() * 301) + 700, defaultWarp))
+    }
 }
 
 function animate(){
-    const offscreenCanvas = document.createElement('canvas');
-    const offscreenCtx = offscreenCanvas.getContext('2d');
-    offscreenCanvas.width = canvas.width;
-    offscreenCanvas.height = canvas.height;
+    //console.log("Canvas dimensions during animation:", canvas.width, canvas.height);
+
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    images.forEach(image => {
+        image.updatePosition()
+        image.draw()
+    })
     requestAnimationFrame(animate)
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    offscreenCtx.drawImage(images[0].img, 0, 0, canvas.width, canvas.height)
-    for (let i = 0; i<numCopies; i++){
-        let imageObj = images[i]
-        let toAddX = speeds[imageObj.vx];
-        let toAddY = speeds[imageObj.vy];
-        if (imageObj.negateX){
-            toAddX = toAddX * -1;
-        }
-        if (imageObj.negateY){
-            toAddY = toAddY * -1;
-        }
-        imageObj.x += toAddX;
-        imageObj.y += toAddY;
-
-        // Keep images within canvas bounds
-        if (imageObj.x < 0 || imageObj.x > canvas.width) {
-            imageObj.negateX = !imageObj.negateX; // Reverse horizontal direction
-        }
-        if (imageObj.y < 0 || imageObj.y > canvas.height) {
-            imageObj.negateY = !imageObj.negateY; // Reverse vertical direction
-        }
-
-        // Update rotation
-        offscreenCtx.save();
-        offscreenCtx.rotate(imageObj.rotation);
-        //offscreenCtx.translate(imageObj.x, imageObj.y)
-        offscreenCtx.transform(1, imageObj.d1, imageObj.d2, 1, imageObj.x, imageObj.y)
-        offscreenCtx.drawImage(imageObj.img, -imageObj.img.width / 2, -imageObj.img.height / 2);
-        offscreenCtx.restore();
-    }
-    ctx.drawImage(offscreenCanvas, 0, 0); 
 }
+animate()
 
 function updateTimestamp(elapsed, total){
     document.getElementById("progressbar").style.width = ((elapsed / total)  *100)+"%";
 }
 
 function highlightLyric(lyric_id){
-    document.getElementById(lyric_id).style.height = "27px"
-    document.getElementById(lyric_id).style.fontSize = "27px"
+    document.getElementById(lyric_id).style.height = "37px"
+    document.getElementById(lyric_id).style.fontSize = "37px"
     document.getElementById(lyric_id).style.opacity = 1
     document.getElementById(lyric_id).style.fontWeight = 800;
     document.getElementById(lyric_id).style.width = "100%";
@@ -199,7 +148,7 @@ function resetLyric(lyric_id){
     document.getElementById(lyric_id).style.opacity = 0.4;
     document.getElementById(lyric_id).style.fontSize = "20px"
     document.getElementById(lyric_id).style.height = "20px"
-    document.getElementById(lyric_id).style.width = "74%";
+    document.getElementById(lyric_id).style.width = "77%";
     document.getElementById(lyric_id).style.fontWeight = 500;
 
 }

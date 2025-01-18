@@ -65,7 +65,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         document.getElementById("artist-album").innerText = request.data.artist+" • "+request.data.album;
         if (request.data.large_image!= null){
           document.getElementById(currentMainImage).src=request.data.large_image
-          colorize(request.data.large_image)
+          createAnimatedBackground(request.data.large_image)
         }
         document.title = request.data.title + " | BYTM"
         console.log(request.data.elapsed, " | ", request.data.total, " | ", request.data.elapsed/request.data.total*100)
