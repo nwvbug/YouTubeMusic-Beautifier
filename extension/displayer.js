@@ -6,15 +6,15 @@ function initializeLyrics(){
     
     let totalhtml = ""
     for (let i = 0; i<7; i++){ //invis elements to push down first lines to center
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;'> <h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<lyrics.length; i++){
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
         totalhtml+=(html)
     }
     for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:77%; min-height:fit-content;'> <h2>`
+        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;'> <h2>`
         totalhtml+=(html)
     }
     document.getElementById("lyric-holder").innerHTML=totalhtml
@@ -86,7 +86,8 @@ canvas.height = window.innerHeight;
 console.log("Viewport dimensions:", window.innerWidth, window.innerHeight);
 const ctx = canvas.getContext("2d")
 var images = []
-const speeds = [-0.25, -0.2, -0.3, -0.3, -0.2, 0.15, 0.17, 0.1, 0.2, 0.12]
+const speedsX = [-0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
+const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2]
 
 function createStaticBackground(imageUrl){
     
@@ -113,8 +114,8 @@ function createAnimatedBackground(imageUrl){
     createStaticBackground(imageUrl)
     images = []
     console.log("CREATING ANIMATED BACKGROUND", imageUrl)
-    for (let i = 0; i<20; i++){
-        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * 301) + 700, Math.floor(Math.random() * 301) + 700, defaultWarp))
+    for (let i = 0; i<10; i++){
+        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width - (canvas.width/2)) + canvas.width/2, Math.floor(Math.random() * canvas.height - (canvas.height/2)) + canvas.height/2, defaultWarp, speedsX[i], speedsY[i]))
     }
 }
 
@@ -139,16 +140,24 @@ function highlightLyric(lyric_id){
     document.getElementById(lyric_id).style.fontSize = "37px"
     document.getElementById(lyric_id).style.opacity = 1
     document.getElementById(lyric_id).style.fontWeight = 800;
-    document.getElementById(lyric_id).style.width = "100%";
+    document.getElementById(lyric_id).style.width = "90%";
     document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
 
 }
 
 function resetLyric(lyric_id){
     document.getElementById(lyric_id).style.opacity = 0.4;
-    document.getElementById(lyric_id).style.fontSize = "20px"
+    document.getElementById(lyric_id).style.fontSize = "27px"
     document.getElementById(lyric_id).style.height = "20px"
-    document.getElementById(lyric_id).style.width = "77%";
+    document.getElementById(lyric_id).style.width = "69.43%";
     document.getElementById(lyric_id).style.fontWeight = 500;
 
+}
+
+function hideLyricsView(){
+    document.getElementById("lyrics-flex").style.display = "none"
+}
+
+function showLyricsView(){
+    document.getElementById("lyrics-flex").style.display = "flex"
 }

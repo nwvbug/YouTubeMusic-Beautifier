@@ -88,13 +88,20 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   });
 
 function getSongLyrics(title, artist, album){
+  hideLyricsView()
   let url_addon = title+" "+artist
   fetch("http://127.0.0.1:7070/request-lyrics/"+url_addon).then(response => response.text()) // Get the text content
   .then(data => {
       // Handle the received text data
       console.log(data); 
-      processData(data)
-      initializeLyrics()
+      if (data == "no_lyrics_found"){
+        console.log("no lyrics")
+      } else {
+        processData(data)
+        initializeLyrics()
+        showLyricsView()
+      }
+      
   })
   .catch(error => {
       console.error('Error:', error);

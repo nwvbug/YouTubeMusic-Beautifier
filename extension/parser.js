@@ -10,6 +10,7 @@ var line = " ";
 
 // parsing the Lyrics 
 function processData(allText) { // This will only divide with respect to new lines 
+    
     allTextLines = allText.split(/\r\n|\n/);
     lyrics = []
     tim = []

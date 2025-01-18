@@ -1,11 +1,11 @@
 class BackgroundMovingImage {
-    constructor(imageUrl, width, height, distortionFunction){
+    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY){
         this.height = height;
         this.width = width;
         this.x = Math.floor(Math.random() * canvas.width)
         this.y = Math.floor(Math.random() * canvas.height)
-        this.velocityX = speeds[(Math.floor(Math.random() * (8 + 1)))]
-        this.velocityY = speeds[(Math.floor(Math.random() * (8 + 1)))]
+        this.velocityX = velocityX
+        this.velocityY = velocityY
         // console.log("Initial position:", this.x, this.y);
         // console.log("Initial velocities:", this.velocityX, this.velocityY);
         this.distortedCanvas = null;
