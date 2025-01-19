@@ -24,6 +24,7 @@ function previous(){
 function skip(){
     document.getElementById("lyric-holder").scrollTo(0, 0)
     document.getElementById("lyric-holder").innerHtml = ""
+    hideLyricsView()
     // lyrics = []
     // if (currentMainImage == "i2"){
     //     currentMainImage = "i0"
@@ -36,7 +37,7 @@ function skip(){
     // } else if (currentMainImage == "i0"){
     //     currentMainImage = "i1"
     //     currentNextImage = "i2"
-    //     currentPrevImage = "i0"
+    //     currentPrevImage = "i0" 
     // }
     // document.getElementsByClassName("album main")[0].className = "album prev"
     // document.getElementsByClassName("album next")[0].className = "album main"
@@ -54,22 +55,11 @@ function skip(){
 
     //     },500)
     // }, 1000)    
-    document.getElementById("i0").src = document.getElementById("i1").src
-    document.getElementById("i1").src = document.getElementById("i2").src //NEED LOADING ICON TO GO ON TOP OF THIS UNTIL THE HIGH RES ALBUM ART GETS HERE
-    try {
-        document.getElementById("i2").src = queue_cache[current_queue_index+1].image
-
-    } catch {
-        console.log("need queue update i suppose")
-    }
 
     chrome.runtime.sendMessage({ action: 'ytm-next', data: null })
 }
 
-function hideLyrics(){
-    document.getElementById("lyrics-flex").style.display = "none"
-    
-}
+
 
 function requestQueueUpdate(){
     chrome.runtime.sendMessage({ action: 'ytm-request-queue-update', data: null })
