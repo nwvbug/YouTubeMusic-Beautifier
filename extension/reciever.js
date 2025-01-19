@@ -9,42 +9,42 @@ var compareAgainst = "data:image/gif;base64"
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sendQueue-ytmlyrics'){
-      let next = request.data.next
-      let previous = request.data.previous
-      console.log("QUEUE ALERT")
-      console.log(request.data)
-      current_queue_index = request.data.position_in_queue
-      updateQueue(request.data.queue_data)
+      // let next = request.data.next
+      // let previous = request.data.previous
+      // console.log("QUEUE ALERT")
+      // console.log(request.data)
+      // current_queue_index = request.data.position_in_queue
+      // updateQueue(request.data.queue_data)
 
-      if (next != null && current_next != next.name+next.artist+next.image){
-        current_next = next.name+next.artist+next.image
-        document.getElementById(currentNextImage).style.opacity = "1";
-        document.getElementById(currentNextImage).style.pointerEvents = "all";
-        next.name = next.name.replaceAll("amp;", "");
-        next.artist = next.artist.replaceAll("amp;", "");
-        //document.getElementById("next-title").innerText = next.name;
-        //document.getElementById("next-artist").innerText = next.artist;
-        document.getElementById(currentNextImage).src = queue_cache[current_queue_index+1].image;
-      }
-      if (next == null){
-        document.getElementById(currentNextImage).style.opacity = "0";
-        document.getElementById(currentNextImage).style.pointerEvents = "none";
-      }
+      // if (next != null && current_next != next.name+next.artist+next.image){
+      //   current_next = next.name+next.artist+next.image
+      //   document.getElementById(currentNextImage).style.opacity = "1";
+      //   document.getElementById(currentNextImage).style.pointerEvents = "all";
+      //   next.name = next.name.replaceAll("amp;", "");
+      //   next.artist = next.artist.replaceAll("amp;", "");
+      //   //document.getElementById("next-title").innerText = next.name;
+      //   //document.getElementById("next-artist").innerText = next.artist;
+      //   document.getElementById(currentNextImage).src = queue_cache[current_queue_index+1].image;
+      // }
+      // if (next == null){
+      //   document.getElementById(currentNextImage).style.opacity = "0";
+      //   document.getElementById(currentNextImage).style.pointerEvents = "none";
+      // }
 
-      if (previous != null && current_prev != previous.name+previous.artist+previous.image){
-        current_prev = previous.name+previous.artist+previous.image
-        document.getElementById(currentPrevImage).style.opacity = "1";
-        document.getElementById(currentPrevImage).style.pointerEvents = "all";
-        previous.name = previous.name.replaceAll("amp;", "");
-        previous.artist = previous.artist.replaceAll("amp;", "");
-        //document.getElementById("previous-title").innerText = previous.name;
-        //document.getElementById("previous-artist").innerText = previous.artist;
-        document.getElementById(currentPrevImage).src = queue_cache[current_queue_index-1].image;
-      }
-      if (previous == null){
-        document.getElementById(currentPrevImage).style.opacity = "0";
-        document.getElementById(currentPrevImage).style.pointerEvents = "none";
-      }  
+      // if (previous != null && current_prev != previous.name+previous.artist+previous.image){
+      //   current_prev = previous.name+previous.artist+previous.image
+      //   document.getElementById(currentPrevImage).style.opacity = "1";
+      //   document.getElementById(currentPrevImage).style.pointerEvents = "all";
+      //   previous.name = previous.name.replaceAll("amp;", "");
+      //   previous.artist = previous.artist.replaceAll("amp;", "");
+      //   //document.getElementById("previous-title").innerText = previous.name;
+      //   //document.getElementById("previous-artist").innerText = previous.artist;
+      //   document.getElementById(currentPrevImage).src = queue_cache[current_queue_index-1].image;
+      // }
+      // if (previous == null){
+      //   document.getElementById(currentPrevImage).style.opacity = "0";
+      //   document.getElementById(currentPrevImage).style.pointerEvents = "none";
+      // }  
       
       
     }
@@ -64,7 +64,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         document.getElementById("title").innerText = request.data.title;
         document.getElementById("artist-album").innerText = request.data.artist+" • "+request.data.album;
         if (request.data.large_image!= null){
-          document.getElementById(currentMainImage).src=request.data.large_image
+          document.getElementById("album-image").src=request.data.large_image
           createAnimatedBackground(request.data.large_image)
         }
         document.title = request.data.title + " | BYTM"
@@ -98,8 +98,8 @@ function getSongLyrics(title, artist, album){
         console.log("no lyrics")
       } else {
         processData(data)
-        initializeLyrics()
         showLyricsView()
+        initializeLyrics()
       }
       
   })

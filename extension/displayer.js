@@ -2,22 +2,24 @@ current_time = -1;
 current_index = 0
 
 function initializeLyrics(){
+    document.getElementById("lyric-holder").style.maxWidth = ""
     document.getElementById("lyric-holder").innerHTML = ""
     
     let totalhtml = ""
     for (let i = 0; i<7; i++){ //invis elements to push down first lines to center
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;'> <h2>`
+        let html = `<div></div>`
         totalhtml+=(html)
     }
     for (let i = 0; i<lyrics.length; i++){
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;' id=${i}>${lyrics[i]}<h2>`
+        let html = `<div id=${i}>${lyrics[i]}</div>`
         totalhtml+=(html)
     }
     for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
-        let html = `<h2 style='font-size:27px; opacity:0.4; transition:0.25s; font-weight:500; width:69.43%; min-height:fit-content;'> <h2>`
+        let html = `<div></div>`
         totalhtml+=(html)
     }
     document.getElementById("lyric-holder").innerHTML=totalhtml
+    //document.getElementById("lyric-holder").style.maxWidth = document.getElementById("lyric-holder").offsetWidth
     current_index = 0;
     current_time = -1;
     document.getElementById("lyric-holder").scrollTo(0,0)
@@ -115,7 +117,7 @@ function createAnimatedBackground(imageUrl){
     images = []
     console.log("CREATING ANIMATED BACKGROUND", imageUrl)
     for (let i = 0; i<10; i++){
-        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width - (canvas.width/2)) + canvas.width/2, Math.floor(Math.random() * canvas.height - (canvas.height/2)) + canvas.height/2, defaultWarp, speedsX[i], speedsY[i]))
+        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width - (canvas.width/1.5)) + canvas.width/1.5, Math.floor(Math.random() * canvas.height - (canvas.height/1.5)) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i]))
     }
 }
 
@@ -136,28 +138,30 @@ function updateTimestamp(elapsed, total){
 }
 
 function highlightLyric(lyric_id){
-    document.getElementById(lyric_id).style.height = "37px"
-    document.getElementById(lyric_id).style.fontSize = "37px"
+    document.getElementById(lyric_id).style.fontSize = "40px"
+    document.getElementById(lyric_id).style.width = "100%"
     document.getElementById(lyric_id).style.opacity = 1
     document.getElementById(lyric_id).style.fontWeight = 800;
-    document.getElementById(lyric_id).style.width = "90%";
     document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
 
 }
 
 function resetLyric(lyric_id){
     document.getElementById(lyric_id).style.opacity = 0.4;
-    document.getElementById(lyric_id).style.fontSize = "27px"
-    document.getElementById(lyric_id).style.height = "20px"
-    document.getElementById(lyric_id).style.width = "69.43%";
+    document.getElementById(lyric_id).style.width = "80%"
+    document.getElementById(lyric_id).style.fontSize = "32px"
     document.getElementById(lyric_id).style.fontWeight = 500;
 
 }
 
 function hideLyricsView(){
-    document.getElementById("lyrics-flex").style.display = "none"
+    document.getElementById("lyrics-flex").style.maxWidth = "0vw"
+    document.getElementById("lyrics-flex").style.opacity = "0"
+    document.getElementById("main-body").style.gap = "0"
 }
 
 function showLyricsView(){
-    document.getElementById("lyrics-flex").style.display = "flex"
+    document.getElementById("lyrics-flex").style.maxWidth = "50vw"
+    document.getElementById("lyrics-flex").style.opacity = "1"
+    document.getElementById("main-body").style.gap = "100px"
 }

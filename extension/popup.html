@@ -4,9 +4,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ytm lyrics</title>
 </head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
+    body{
+        font-family:"Host Grotesk", serif;
+        color: white;
+        background-color: black;
+    }
+    button::before{
+        display:flex;
+        flex-direction: column;
+        content: 'Open Pretty Fullscreen';
+        text-align: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(90deg, rgba(209,13,102,1) 0%, rgba(10,10,168,1) 35%, rgba(5,113,212,1) 68%, rgba(0,255,8,1) 100%);
+        opacity: 0;
+        transition: opacity 0.5s;
+        border-radius: 5px;
+    }
+    button{
+        background-color: black;
 
-<body>
-    <h1>YTM Beautifier</h1>
+        position:relative;
+        cursor:pointer;
+        font-family:"Host Grotesk", serif;
+        font-weight:800;
+        border: solid 4px white;
+        border-radius: 10px;
+        color:white;
+        height:50px;
+        width:200px;
+        
+    }
+    button:hover::before{
+       opacity:1;
+    }
+</style>
+<body style="height:300px; width:275px; display:flex; flex-direction: column; align-items: center; justify-content: center;">
+    <img src="assets/128x128.png">
+    <h1>Better YTM</h1>
     <button id="openWebApp">Open Pretty Fullscreen</button>
 </body>
 <script src="popup-scripts.js"></script>
