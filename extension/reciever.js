@@ -59,6 +59,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       let temp_current_song = request.data.title+request.data.artist+request.data.album
       console.log("Request #: "+(++debug_incr))
       if (temp_current_song != current_song){
+        hideLyricsView()
         console.log("New song!")
         current_song = temp_current_song;
         document.getElementById("title").innerText = request.data.title;
