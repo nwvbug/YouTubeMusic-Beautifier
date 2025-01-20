@@ -3,7 +3,7 @@
 
 - Accurate Time-Synced Lyrics using the same YTM data from the mobile app's time-synced lyrics
   - Backup sources like MusixMatch and NetEase (using [syncedlyrics](https://github.com/moehmeni/syncedlyrics)) when YTM does not have time-synced lyrics
-- Beautiful fullscreen view including animated backgrounds to match album art
+- Beautiful fullscreen view including **animated** backgrounds to match album art (akin to Apple Music's)
 - Control YouTube music without leaving the fullscreen view
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-1.png?raw=true)
 
