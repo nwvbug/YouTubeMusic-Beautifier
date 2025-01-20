@@ -6,6 +6,7 @@ var queue_cache;
 var queue_hash;
 var current_queue_index;
 var compareAgainst = "data:image/gif;base64"
+var incomingSecondOffset = 0;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sendQueue-ytmlyrics'){
@@ -52,6 +53,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       request.data.title = request.data.title.replaceAll("amp;", "");
       request.data.artist = request.data.artist.replaceAll("amp;", "");
       request.data.album = request.data.album.replaceAll("amp;", "");
+      console.log(request.data.playPauseState)
 
       // Use the received data
       //console.log(request.data); 
@@ -60,8 +62,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       console.log("Request #: "+(++debug_incr))
       if (temp_current_song != current_song){
         hideLyricsView()
+        loadLyricOption()
         console.log("New song!")
+        hideBackground()
+        setTimeout(() => {
+          console.warn("SHOWING BACKGROUND")
+          showBackground()
+        }, 1000);
+        document.getElementById("canvas-hider").style.opacity = "1"
+
+        
         current_song = temp_current_song;
+        resetOffset()
         document.getElementById("title").innerText = request.data.title;
         document.getElementById("artist-album").innerText = request.data.artist+" • "+request.data.album;
         if (request.data.large_image!= null){
@@ -72,16 +84,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log(request.data.elapsed, " | ", request.data.total, " | ", request.data.elapsed/request.data.total*100)
         getSongLyrics(request.data.title, request.data.artist, request.data.album)
         displayLyricOneAtATime(request.data.elapsed, debug_incr)
-       
+        
       } else {
         console.log(request.data.elapsed, " | ", request.data.total, " | ", request.data.elapsed/request.data.total*100)
         console.log("Still playing current song")
-        displayLyricOneAtATime(request.data.elapsed, debug_incr)
+        displayLyricOneAtATime(request.data.elapsed-incomingSecondOffset, debug_incr)
       }
 
-      if (request.data.playPause != null){
-        if (request.data.playPause == "playing"){
-          
+      if (request.data.playPauseState != null){
+        if (request.data.playPauseState == "Pause" && document.getElementById("pauseplaybutton").src != "assets/pause.png"){
+          document.getElementById("pauseplaybutton").src = "assets/pause.png"
+        } else if (request.data.playPauseState == "Play" && document.getElementById("pauseplaybutton").src != "assets/play.png"){
+          document.getElementById("pauseplaybutton").src = "assets/play.png"
         }
       }
 
@@ -90,7 +104,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function getSongLyrics(title, artist, album){
   hideLyricsView()
-  let url_addon = title+" "+artist
+  let url_addon = title+" [By] "+artist
   fetch("http://127.0.0.1:7070/request-lyrics/"+url_addon).then(response => response.text()) // Get the text content
   .then(data => {
       // Handle the received text data
@@ -99,8 +113,15 @@ function getSongLyrics(title, artist, album){
         console.log("no lyrics")
       } else {
         processData(data)
-        showLyricsView()
         initializeLyrics()
+        if (currentlyShowingLyrics && lyrics.length == tim.length && lyrics.length > 0){
+          showLyricsView()
+          showLyricOption()
+        } else if (!currentlyShowingLyrics){
+          showLyricOption()
+        } else {
+          hideLyricOption()
+        }
       }
       
   })

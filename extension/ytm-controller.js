@@ -52,15 +52,7 @@ function getNowPlaying() {
   } catch{
     console.log("Image not grabbable")
   }
-  var playPause = "paused"
-  try {
-    play = document.querySelector('[title="Play"]')
-    if (play == undefined){
-      playPause = "playing"
-    }
-  } catch {
-    console.log("unable to determine status of playpause")
-  }
+  var playPauseState = document.getElementById("play-pause-button").getAttribute("aria-label")
 
   let url;
 
@@ -93,9 +85,11 @@ function getNowPlaying() {
     total: timestampToSeconds(total),
     url,
     large_image,
-    playPause
+    playPauseState
   };
 }
+
+
 
 
 const playBarObserver = new MutationObserver(collectCurrentSongData);

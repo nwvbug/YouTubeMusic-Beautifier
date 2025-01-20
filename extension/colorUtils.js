@@ -63,15 +63,15 @@ function findBackgroundColor(imageData, mostCommon) {
         continue;
       }
   
-      if (mostCommon == "r" && r < 150){
+      if (mostCommon == "r" && r < 100){
         continue;
       }
   
-      if (mostCommon == "g" && g < 150){
+      if (mostCommon == "g" && g < 100){
         continue;
       }
   
-      if (mostCommon == "b" && b < 150){
+      if (mostCommon == "b" && b < 100){
         continue;
       }
   

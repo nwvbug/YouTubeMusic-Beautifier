@@ -27,7 +27,7 @@ function next(){
         }
     }  
     for (i=0; i<lyrics.length; i++){
-        if (lyrics[i] == " "){
+        if (lyrics[i] == " " || lyrics[i] == '' || lyrics[i].substring(1,3) == "作曲" || lyrics[i].substring(1,3) == "作词"){
             lyrics[i] = "♪♪"
         }
     }

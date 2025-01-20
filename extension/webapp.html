@@ -32,7 +32,7 @@
         align-items: center;
         /* overflow:hidden; */
         background-color: rgba(0, 0, 0, 0.15);
-        backdrop-filter: blur(50px); 
+        backdrop-filter: blur(80px); 
         transition: gap 0.5s;
     }
 
@@ -127,7 +127,6 @@
         justify-content: center;
         gap:70px;
         align-items: center;
-        width:30vw;
     }
 
     #controls-holder > img{
@@ -135,6 +134,11 @@
         width:20px;
         border-radius:0;
         cursor: pointer;
+        transition:0.25s;
+    }
+
+    #controls-holder > img:hover{
+        transform:scale(1.15);
     }
 
     #progressbarholder{
@@ -158,23 +162,132 @@
 
     .album-image{
         border-radius: 10px;
+        transition:0.25s;
+    }
+    .album-image:hover{
+        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.25);
+        transform: scale(1.01);
     }
 
     #pauseplaybutton{
         height:30px;
         width:30px;
     }
+    .controls-outer{
+        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap:40%;
+    }
+    .mic{
+        height:25px;
+        width:25px;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+    .mic:hover{
+        transform: scale(1.25);
+    }
+
+    .clock { 
+        height:25px;
+        width:25px;
+        transition: 0.25s;
+        cursor: pointer;
+    }
+    .clock:hover{
+        transform: scale(1.25);
+
+    }
+    .time-container{
+        position:relative;
+    }
+    .time-popup-holder{
+        position: absolute;
+        width:350px;
+        height:150px;
+        top: -150px; /* Adjust the top value to position the popup above the button */
+        left: 50%; /* Center the popup horizontally */
+        transform: translateX(-50%); /* Center the popup horizontally */
+        display:none;
+        justify-content: center;
+    }
+    .time-adjustment{
+        width:300px;
+        height:100px;
+        background-color: rgba(255,255,255,0.75); 
+        backdrop-filter: blur(50px);
+        padding:10px;
+        border-radius: 10px;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        box-shadow: 0px 0px 12px 5px rgba(100, 100, 100, 0.85);
+    }
+    .time-adjustment-details{
+        padding:20px;
+        font-weight:800;
+        font-size:20px;
+        color:black;
+    }
+
+    .time-container:hover .time-popup-holder{
+        display:flex;
+    }
+    .time-adjustment-controls{
+        width:100%;
+        display:flex;
+        align-items: center;
+        justify-content: center;
+        gap:20px;
+        margin-bottom:10px;
+    }
+    .time-adjustment-button{
+        background-color: white;
+        padding:5px;
+        font-size:15px;
+        color:black;
+        font-weight:800;
+        border:none;
+        border-radius: 5px;
+        width:30px;
+        cursor: pointer;
+        transition: 0.25s;
+    }
+    .time-adjustment-button:hover{
+        transform: scale(1.15);
+    }
+    .offset{
+        font-size: 35;
+        color:black;
+        font-weight:800;
+    }
     
+    @keyframes loadingMic {
+        0% {
+            opacity:0.25;
+        }
+        50% {
+            opacity:0.75;
+        }
+        100%{
+            opacity:0.25;
+        }
+    }
+   
 </style>
 <body>
-    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-1;"></canvas>
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
+    <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
     <div class="main-body" id="main-body">
         <div class="info-body">
             <img id="album-image" class="album-image">
             
             <div id="progressbarholder">
                 <div id="progressbar">
-
+                    
                 </div>
             </div>
             <div class="words-div">
@@ -182,11 +295,30 @@
                 <h2 id="artist-album" style="">Artist • Album</h2>
                 
             </div>  
-            <div id="controls-holder">
-                <img src="assets/left skip.png" id="backbutton">
-                <img src="assets/pause.png" data-paused="false" id="pauseplaybutton" style="width:30px; height:30px;">
-                <img src="assets/right skip.png" id="nextbutton">
+            <div class="controls-outer">
+                <img src="assets/mic.svg" class="mic" id="mic">
+
+                <div id="controls-holder">
+                    <img src="assets/left skip.png" id="backbutton">
+                    <img src="assets/pause.png" data-paused="false" id="pauseplaybutton" style="width:30px; height:30px;">
+                    <img src="assets/right skip.png" id="nextbutton">
+                </div>                
+                <div class="time-container">
+                    <div class="time-popup-holder">
+                        <div class="time-adjustment">
+                            <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
+                            <div class="time-adjustment-controls">
+                                <button class="time-adjustment-button" id="subtractOffset">-</button>
+                                <div class="offset" id="offset">0</div>
+                                <button class="time-adjustment-button" id="addOffset">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <img src="assets/clock.svg" class="clock" id="clock">
+                </div>
             </div>
+            
         </div>
         
         <div id="lyrics-flex">

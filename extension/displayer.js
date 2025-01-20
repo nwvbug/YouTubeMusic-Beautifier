@@ -88,8 +88,10 @@ canvas.height = window.innerHeight;
 console.log("Viewport dimensions:", window.innerWidth, window.innerHeight);
 const ctx = canvas.getContext("2d")
 var images = []
-const speedsX = [-0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
-const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2]
+const speedsX = [-0.15, 0.17, -0.1, 0.12, -0.15, -0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
+const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2, -0.15, 0.17, -0.1, 0.12, -0.15,]
+
+const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.0002, -0.0003, 0.0004, -0.0005, -0.0003, 0.0004, -0.0005, 0.0003, -0.0004]
 
 function createStaticBackground(imageUrl){
     
@@ -116,8 +118,8 @@ function createAnimatedBackground(imageUrl){
     createStaticBackground(imageUrl)
     images = []
     console.log("CREATING ANIMATED BACKGROUND", imageUrl)
-    for (let i = 0; i<10; i++){
-        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width - (canvas.width/1.5)) + canvas.width/1.5, Math.floor(Math.random() * canvas.height - (canvas.height/1.5)) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i]))
+    for (let i = 0; i<15; i++){
+        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i], rotationSpeeds[i]))
     }
 }
 
@@ -157,6 +159,8 @@ function resetLyric(lyric_id){
 function hideLyricsView(){
     document.getElementById("lyrics-flex").style.maxWidth = "0vw"
     document.getElementById("lyrics-flex").style.opacity = "0"
+    document.getElementById("clock").style.opacity = "0"
+    document.getElementById("clock").style.pointerEvents = "none"
     document.getElementById("main-body").style.gap = "0"
 }
 
@@ -164,4 +168,14 @@ function showLyricsView(){
     document.getElementById("lyrics-flex").style.maxWidth = "50vw"
     document.getElementById("lyrics-flex").style.opacity = "1"
     document.getElementById("main-body").style.gap = "100px"
+    document.getElementById("clock").style.opacity = "1"
+    document.getElementById("clock").style.pointerEvents = "all"
+}
+
+function hideBackground(){
+    document.getElementById("canvas-hider").style.opacity = "1"
+}
+
+function showBackground(){
+    document.getElementById("canvas-hider").style.opacity = "0"
 }

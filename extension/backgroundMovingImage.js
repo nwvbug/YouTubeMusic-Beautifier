@@ -1,5 +1,5 @@
 class BackgroundMovingImage {
-    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY){
+    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY, rotationSpeed){
         this.height = height;
         this.width = width;
         this.x = Math.floor(Math.random() * canvas.width) - width/2
@@ -10,6 +10,8 @@ class BackgroundMovingImage {
         // console.log("Initial velocities:", this.velocityX, this.velocityY);
         this.distortedCanvas = null;
         this.initialize(imageUrl, distortionFunction)
+        this.angle = 0;
+        this.rotationSpeed = rotationSpeed
     }
 
     initialize(imageUrl, distortionFunction) {
@@ -40,34 +42,44 @@ class BackgroundMovingImage {
     updatePosition(){
         let oldX = this.x;
         let oldY = this.y;
-        //console.log("Before movement - Y:", this.y, "velocityY:", this.velocityY);
 
         this.x += this.velocityX;
         this.y += this.velocityY;
-        //console.log("after movement - Y:", this.y, "velocityY:", this.velocityY);
-
-        // console.log(`Position changed from (${oldX}, ${oldY}) to (${this.x}, ${this.y})`);
-        // console.log(`Current velocities: (${this.velocityX}, ${this.velocityY})`);
-
-        // Check X bounds
-        if (this.x < 0 && this.velocityX < 0) {
+        
+        if (this.x < 0-this.width/2 && this.velocityX < 0) {
             this.velocityX = -this.velocityX;
-        } else if (this.x > canvas.width-this.width/2 && this.velocityX > 0) {
+            console.log("GOING TO THE RIGHT NOW", this.velocityX);
+        } else if (this.x > (canvas.width-this.width/2) && this.velocityX > 0) {
             this.velocityX = -this.velocityX;
+            console.log("GOING TO THE LEFT NOW ", this.velocityX);
         }
 
-        // Check Y bounds
-        if (this.y < 0 && this.velocityY < 0) {
+        if (this.y < 0 + ((canvas.height + this.height/2) + (canvas.height/3)) && this.velocityY < 0) {
             this.velocityY = -this.velocityY;
-        } else if (this.y > canvas.height-this.height/2 && this.velocityY > 0) {
+        } else if (this.y > (canvas.height-this.height/2) - (canvas.height/3) && this.velocityY > 0) {
             this.velocityY = -this.velocityY;
         }
+
+        this.angle += this.rotationSpeed;
     }
 
     draw(){
         if (this.distortedCanvas) {
             //console.log("Drawing image.. (this is printed)")
-            ctx.drawImage(this.distortedCanvas, this.x, this.y)
+            ctx.save(); // Save the current context state
+            
+            // Translate to image center, rotate, then translate back
+            ctx.translate(this.x + this.width/2, this.y + this.height/2);
+            ctx.rotate(this.angle);
+            ctx.drawImage(
+                this.distortedCanvas, 
+                -this.width/2, // Adjust x position for centered rotation
+                -this.height/2, // Adjust y position for centered rotation
+                this.width,
+                this.height
+            );
+            
+            ctx.restore(); 
         }
     }
 }
