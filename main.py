@@ -3,7 +3,6 @@ from flask_cors import CORS
 import os
 import lyrics
 
-LYRICS_PATH = "/temp_lyric_files"
 app = Flask(__name__)
 CORS(app)
 
