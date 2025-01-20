@@ -12,8 +12,9 @@
 - Content script of the extension watches for mutations on the web app, and sends them to the extension's page.
 - The extension then displays the information and requests lyrics from the [unofficial youtube music api](https://github.com/sigma67/ytmusicapi)
 - Extension page can send information back to YTM which allows for play/pause back/skip
+- Backgrounds done with JS Canvas
 
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-2.png?raw=true)
 
-- If there are no lyrics found, the app simply displays a nice fullscreen view.
+#### If there are no lyrics found, the app simply displays a nice fullscreen view.
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
