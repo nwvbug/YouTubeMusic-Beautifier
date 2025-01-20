@@ -2,7 +2,7 @@
 ## Extension for YouTube Music's Web Client
 
 - Accurate Time-Synced Lyrics using the same YTM data from the mobile app's time-synced lyrics
-  - Backup sources like MusixMatch when YTM does not have time-synced lyrics
+  - Backup sources like MusixMatch and NetEase (using [syncedlyrics](https://github.com/moehmeni/syncedlyrics)) when YTM does not have time-synced lyrics
 - Beautiful fullscreen view including animated backgrounds to match album art
 - Control YouTube music without leaving the fullscreen view
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-1.png?raw=true)
@@ -16,5 +16,5 @@
 
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-2.png?raw=true)
 
-#### If there are no lyrics found, the app simply displays a nice fullscreen view.
+If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app simply displays a nice fullscreen view.
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
