@@ -14,4 +14,6 @@
 - Extension page can send information back to YTM which allows for play/pause back/skip
 
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-2.png?raw=true)
+
+- If there are no lyrics found, the app simply displays a nice fullscreen view.
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
