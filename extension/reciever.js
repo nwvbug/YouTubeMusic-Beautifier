@@ -112,6 +112,7 @@ function getSongLyrics(title, artist, album){
       if (result == "no_lyrics_found"){
         console.log("no lyrics")
         lyric_source = "none"
+        hideLyricOption()
       } else {
         result = JSON.parse(result)
         data = result["lrc"]
