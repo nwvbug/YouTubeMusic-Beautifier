@@ -106,14 +106,23 @@ function getSongLyrics(title, artist, album){
   hideLyricsView()
   let url_addon = title+" [By] "+artist
   fetch("http://127.0.0.1:7070/request-lyrics/"+url_addon).then(response => response.text()) // Get the text content
-  .then(data => {
+  .then(result => {
       // Handle the received text data
-      console.log(data); 
-      if (data == "no_lyrics_found"){
+      console.log(result); 
+      if (result == "no_lyrics_found"){
         console.log("no lyrics")
+        lyric_source = "none"
       } else {
-        processData(data)
-        initializeLyrics()
+        result = JSON.parse(result)
+        data = result["lrc"]
+        console.log(data)
+        if (result["source"] == "unofficial"){
+          parseUnofficialLyrics(data)
+        } else if (result["source"] == "ytm"){
+          parseYTMLyrics(data)
+          
+        }
+        
         if (currentlyShowingLyrics && lyrics.length == tim.length && lyrics.length > 0){
           showLyricsView()
           showLyricOption()

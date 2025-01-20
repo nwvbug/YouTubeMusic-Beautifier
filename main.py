@@ -11,10 +11,13 @@ CORS(app)
 
 @app.route("/request-lyrics/<song_details>")
 def request_lyrics(song_details):
-    lyrics_text = lyrics.get_timed_lyrics(song_details)
+    lyrics_text = lyrics.get_ytm_lyrics(song_details)
     if lyrics_text is None:
         return "no_lyrics_found"
     return lyrics_text
+
+
+
 
 
 if __name__ == "__main__":

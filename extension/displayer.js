@@ -159,8 +159,8 @@ function resetLyric(lyric_id){
 function hideLyricsView(){
     document.getElementById("lyrics-flex").style.maxWidth = "0vw"
     document.getElementById("lyrics-flex").style.opacity = "0"
-    document.getElementById("clock").style.opacity = "0"
-    document.getElementById("clock").style.pointerEvents = "none"
+    document.getElementById("time").style.opacity = "0"
+    document.getElementById("time").style.pointerEvents = "none"
     document.getElementById("main-body").style.gap = "0"
 }
 
@@ -168,8 +168,10 @@ function showLyricsView(){
     document.getElementById("lyrics-flex").style.maxWidth = "50vw"
     document.getElementById("lyrics-flex").style.opacity = "1"
     document.getElementById("main-body").style.gap = "100px"
-    document.getElementById("clock").style.opacity = "1"
-    document.getElementById("clock").style.pointerEvents = "all"
+    if (lyric_source == "unofficial"){
+        document.getElementById("time").style.opacity = "1"
+        document.getElementById("time").style.pointerEvents = "all"
+    }
 }
 
 function hideBackground(){
