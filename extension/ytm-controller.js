@@ -28,8 +28,18 @@ function getNowPlaying() {
   const items = outer.querySelectorAll(
     "a.yt-simple-endpoint.yt-formatted-string",
   );
-  const artist = items.item(0).innerHTML;
-  const album = items.item(1).innerHTML;
+  console.log("ITEMS ")
+  let artist = ""
+  let album;
+  for (let i = 0; i<items.length-1; i++){
+    console.log(i, items[i])
+    if (items[i].innerText != undefined){
+      artist+=items[i].innerText+", "
+    }
+  }
+  artist = artist.substring(0, artist.length-2)
+  album = items[items.length-1].innerText
+  
 
   const leftControls = playerBar.querySelector(
     ".left-controls",
