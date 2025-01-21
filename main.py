@@ -16,7 +16,9 @@ def request_lyrics(song_details):
     return lyrics_text
 
 
-
+@app.route("/privacy")
+def privacy():
+    return open("privacypolicy.html")
 
 
 if __name__ == "__main__":

@@ -1,14 +1,14 @@
 {
-    "name": "YTM Beautifier",
+    "name": "YouTube Music Beautifier",
     "version": "1.0.0",
     "description": "Gives YouTube Music's web app a proper full screen view complete with time-synced lyrics and animations.",
     "manifest_version": 3,
-    "author": "natesh vemuri",
+    "author": "Natesh Vemuri",
     "action":{
         "default_popup": "popup.html",
         "default_title": "lyrics configuration"
     },
-    "permissions": ["activeTab", "storage", "scripting"],
+    "permissions": ["storage"],
     "content_scripts": [
         {
             "js": ["ytm-controller.js"],

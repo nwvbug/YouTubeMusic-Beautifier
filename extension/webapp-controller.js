@@ -106,10 +106,8 @@ function addOffset(){
 }   
 
 function resetOffset(){
-    console.warn("GETTING OFFSET FOR "+current_song)
     chrome.storage.sync.get(current_song, (result) => {
         if (result != undefined && result[current_song] != undefined){
-            console.warn("OFFSET FOUND: "+result[current_song])
             incomingSecondOffset = result[current_song]
             document.getElementById("offset").innerText = -1 * result[current_song]
         } else {

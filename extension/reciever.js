@@ -25,7 +25,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         loadLyricOption()
         hideBackground()
         setTimeout(() => {
-          console.warn("SHOWING BACKGROUND")
           showBackground()
         }, 1000);
         document.getElementById("canvas-hider").style.opacity = "1"

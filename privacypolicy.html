@@ -1,0 +1,56 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTM Beautifier Privacy Policy</title>
+    <link rel="icon" src="static/128x128.png">
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
+    body{
+        font-family:"Host Grotesk", serif;
+        display:Flex;
+        align-items: center;
+        justify-content: center;
+        background-color:#5e7779;
+    }
+    .maindiv{
+        background-color: white;
+        width:90vw;
+        height:90vh;
+        border-radius: 10px;
+        color:black;
+        display:flex;
+        justify-content: center;
+    }
+    .innerdiv{
+        width:40vw;
+        height:100%;
+        overflow: scroll;
+    }
+</style>
+<body>
+    <div class="maindiv">
+        <div class="innerdiv">
+            <h1 style="color:#5e7779; font-weight: 800;">Hey!</h1><h2 style="font-weight: 500;">Thanks for checking out the extension. Let's talk about privacy.</h2>
+            <h3>By and large, this extension doesn't collect much data. Essentially everything stays on <strong>your computer</strong>, and only 3 things ever leave.</h3>
+            <h2>What is transmitted: </h2>
+            <li>The current song's title</li>
+            <li>The current song's album</li>
+            <li>The current song's artist</li>
+            <h2>Why it's transmitted: </h2>
+            <p>We need these three things to find the lyrics for your song. They are processed and sent to one of a few places.</p>
+            <li><a href="https://youtube.com">YouTube</a>. This one shouldn't be surprising- we try to get the lyrics from here first.</li>
+            <li><a href="https://musixmatch.com">MusixMatch</a>. This is one of the "backup databases". We query Musixmatch for lyrics if YouTube does not have them.</li>
+            <li><a href="https://music.163.com">NetEase</a>. This is another one of the "backup databases", and like above, it is only asked if YouTube returns nothing.</li>
+            <li><a href="https://lrclib.net">Lrclib</a> & <a href="https://www.megalobiz.com/">Megalobiz</a>. These 2 are also "backup databases", but they are used less often.</li>
+            <h2>Is my data stored anywhere?</h2>
+            <p>No. We do not keep logs of your data, but we cannot speak for the lyric providers listed above.</p>
+            <p>If you are concerned about this, I encourage you to read their privacy policies or look into self-hosting the lyric server (info on our <a href="https://github.com/nwvbug/YouTubeMusic-Beautifier">GitHub</a>)</p>
+            <h3>Thanks for taking a look!</h3>
+            <h4>- nwvbug</h4>
+        </div>
+        
+    </div>
+</body>
+</html>
