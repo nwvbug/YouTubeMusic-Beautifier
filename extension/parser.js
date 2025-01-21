@@ -9,17 +9,14 @@ var line = " ";
 
 function parseUnofficialLyrics(data){
     lyric_source = "unofficial"
-    console.log("PASRSING UNOFFICIAL DATA")
     processData(data)
     initializeLyrics()
 }
 
 function parseYTMLyrics(data){
     lyric_source = "ytm"
-    console.log("PASRSING OFFICIAL DATA")
     lyrics = []
     tim = []
-    console.log(data)
     for (let i = 0; i<data.length; i++){
         lyrics[i] = data[i].text
         tim[i] = Math.floor(data[i].time)

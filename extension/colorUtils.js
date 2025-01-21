@@ -23,7 +23,6 @@ function defaultWarp(imageData){
     const tempData = new Uint8ClampedArray(data);
     let value1 = Math.floor(Math.random()*60)+20
     let value2 = Math.floor(Math.random()*100)+150
-    console.log("Warping")
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
           const idx = (y * width + x) * 4;

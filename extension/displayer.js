@@ -27,16 +27,14 @@ function initializeLyrics(){
 
 function displayLyricOneAtATime(seconds, identifier){
     if (seconds < current_time){
-        console.log("Went backwards")
         document.getElementById("lyric-holder").scrollTo(0,0)
         let lyric_list = document.getElementById("lyric-holder").children
         for (let item of lyric_list){
-            console.log(item.id)
             if (item.id != null && item.id != undefined){
                 try {
                     resetLyric(item.id)
                 } catch {
-                    console.log("Goofyscript")
+
                 }
                 
             }
@@ -50,12 +48,10 @@ function displayLyricOneAtATime(seconds, identifier){
                 break;
             }
         }
-        console.log("finished backwards reset")
     }
     current_time = seconds;
     
     if (seconds >= tim[current_index]){
-        console.log("UPDATING LYRICS AT "+seconds)
         highlightLyric(current_index)
         if (current_index-1 >= 0){
             resetLyric(current_index-1)
@@ -63,7 +59,6 @@ function displayLyricOneAtATime(seconds, identifier){
         current_index++;
 
         if (seconds >= tim[current_index]){
-            console.log("RUNNING CATCH UP")
             while(seconds >= tim[current_index]){
                 if (current_index > 0){
                     resetLyric(current_index-1)
@@ -74,18 +69,15 @@ function displayLyricOneAtATime(seconds, identifier){
             
         }
     } else {
-        console.log("NOT UPDATING LYRICS AT "+seconds)
 
     }
 }
 
 
 const canvas = document.getElementById("backgroundCanvas")
-console.log("Initial canvas dimensions:", canvas.width, canvas.height);
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 // Also log the viewport size to compare
-console.log("Viewport dimensions:", window.innerWidth, window.innerHeight);
 const ctx = canvas.getContext("2d")
 var images = []
 const speedsX = [-0.15, 0.17, -0.1, 0.12, -0.15, -0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
@@ -109,7 +101,6 @@ function createStaticBackground(imageUrl){
 
         let color1 = findBackgroundColor(imageData, commons[0]);
         let color2 = findBackgroundColor(imageData, commons[1]);
-        console.log(color1, color2)
         document.body.style.backgroundImage = `linear-gradient(${Math.floor(Math.random() * 361)}deg, ${color1},  ${color2}`
     };
 }
@@ -117,14 +108,12 @@ function createStaticBackground(imageUrl){
 function createAnimatedBackground(imageUrl){
     createStaticBackground(imageUrl)
     images = []
-    console.log("CREATING ANIMATED BACKGROUND", imageUrl)
     for (let i = 0; i<15; i++){
         images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i], rotationSpeeds[i]))
     }
 }
 
 function animate(){
-    //console.log("Canvas dimensions during animation:", canvas.width, canvas.height);
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     images.forEach(image => {

@@ -6,8 +6,7 @@ class BackgroundMovingImage {
         this.y = Math.floor(Math.random() * canvas.height) - height/2
         this.velocityX = velocityX
         this.velocityY = velocityY
-        // console.log("Initial position:", this.x, this.y);
-        // console.log("Initial velocities:", this.velocityX, this.velocityY);
+        
         this.distortedCanvas = null;
         this.initialize(imageUrl, distortionFunction)
         this.angle = 0;
@@ -15,7 +14,6 @@ class BackgroundMovingImage {
     }
 
     initialize(imageUrl, distortionFunction) {
-        console.log("Init image")
         const img = new Image();
         img.crossOrigin = "Anonymous";
         img.src= imageUrl
@@ -48,10 +46,8 @@ class BackgroundMovingImage {
         
         if (this.x < 0-this.width/2 && this.velocityX < 0) {
             this.velocityX = -this.velocityX;
-            console.log("GOING TO THE RIGHT NOW", this.velocityX);
         } else if (this.x > (canvas.width-this.width/2) && this.velocityX > 0) {
             this.velocityX = -this.velocityX;
-            console.log("GOING TO THE LEFT NOW ", this.velocityX);
         }
 
         if (this.y < 0 + ((canvas.height + this.height/2) + (canvas.height/3)) && this.velocityY < 0) {
@@ -65,7 +61,6 @@ class BackgroundMovingImage {
 
     draw(){
         if (this.distortedCanvas) {
-            //console.log("Drawing image.. (this is printed)")
             ctx.save(); // Save the current context state
             
             // Translate to image center, rotate, then translate back
