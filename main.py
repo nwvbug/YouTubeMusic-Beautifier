@@ -6,7 +6,7 @@ import lyrics
 app = Flask(__name__)
 CORS(app)
 
-
+wsgi_app = app.wsgi_app
 
 @app.route("/request-lyrics/<song_details>")
 def request_lyrics(song_details):
