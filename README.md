@@ -19,3 +19,11 @@ _Currently undergoing verification for Chrome Web Store release. Will be updatin
 
 If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app simply displays a nice fullscreen view.
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
+
+## Future Features
+- Background optimization
+  - Upgrade from Canvas to WebGL
+- Community-based offset timings for unofficial sources
+  - Sometimes, the unoffical times can be incorrect. You can adjust the timings for these lyrics, but in the future, these edits can be collected and used when someone else in the community listens to the same song.
+- Queue management
+  - Manage your upcoming and past songs through YTM Beautifier instead of having to return to the YTM webapp.
