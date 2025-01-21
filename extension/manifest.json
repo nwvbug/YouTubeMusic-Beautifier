@@ -1,7 +1,7 @@
 {
-    "name": "Better YTM",
+    "name": "YTM Beautifier",
     "version": "1.0.0",
-    "description": "makes ytm have actual time synced lyrics",
+    "description": "Gives YouTube Music's web app a proper full screen view complete with time-synced lyrics and animations.",
     "manifest_version": 3,
     "author": "natesh vemuri",
     "action":{

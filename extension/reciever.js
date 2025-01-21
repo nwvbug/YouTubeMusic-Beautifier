@@ -121,9 +121,8 @@ function updateQueue(incomingQueue){
   for (let i = 0; i<incomingQueue.length; i++){
     if (incomingQueue[i].image.includes(compareAgainst)){ //BROKEN IMAGE LINK
       if (queue_cache[i].name + queue_cache[i].album == incomingQueue[i].name + incomingQueue[i].album){
-        //trying to resolve in o(1) if possible
         incomingQueue[i].image = queue_cache[i].image;
-      } else { //fine we will loop
+      } else { 
         incomingQueue[i].image = "https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE="
         for (let j = 0; j<queue_cache.length; j++){
           if (queue_cache[j].name + queue_cache[j].album == incomingQueue[i].name + incomingQueue[i].album){
@@ -133,7 +132,6 @@ function updateQueue(incomingQueue){
         }
       }
     }
-    //somehow merge the 2 queues keeping the ordering of the new one but the data of the old one if better
   }
 
   let parsedIQstring = ""
