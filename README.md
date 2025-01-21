@@ -1,4 +1,4 @@
-# Better YTM
+# YTM Beautifier
 ## Extension for YouTube Music's Web Client
 
 - Accurate Time-Synced Lyrics using the same YTM data from the mobile app's time-synced lyrics
