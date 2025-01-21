@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, send_file, Blueprint, request,abort
+from flask import Flask, jsonify, send_file, Blueprint, request,abort,redirect
 from flask_cors import CORS
 import os
 import lyrics
@@ -15,6 +15,9 @@ def request_lyrics(song_details):
         return "no_lyrics_found"
     return lyrics_text
 
+@app.route("/")
+def home():
+    return redirect("https://github.com/nwvbug/YouTubeMusic-Beautifier")
 
 @app.route("/privacy")
 def privacy():
