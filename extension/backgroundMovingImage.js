@@ -1,5 +1,5 @@
 class BackgroundMovingImage {
-    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY, rotationSpeed){
+    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY, rotationSpeed, cors=true){
         this.height = height;
         this.width = width;
         this.x = Math.floor(Math.random() * canvas.width) - width/2
@@ -8,14 +8,16 @@ class BackgroundMovingImage {
         this.velocityY = velocityY
         
         this.distortedCanvas = null;
-        this.initialize(imageUrl, distortionFunction)
+        this.initialize(imageUrl, distortionFunction, cors)
         this.angle = 0;
         this.rotationSpeed = rotationSpeed
     }
 
-    initialize(imageUrl, distortionFunction) {
+    initialize(imageUrl, distortionFunction, cors) {
         const img = new Image();
-        img.crossOrigin = "Anonymous";
+        if (cors){
+            img.crossOrigin = "Anonymous";
+        }
         img.src= imageUrl
     
         img.onload = () =>{

@@ -20,6 +20,10 @@ def request_lyrics(song_details):
 def privacy():
     return open("privacypolicy.html")
 
+@app.route("/assets/logo")
+def logo():
+    return send_file("static/128x128.png", mimetype="image/gif")
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=7070)

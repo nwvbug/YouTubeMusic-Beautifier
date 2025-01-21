@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YTM Beautifier Privacy Policy</title>
-    <link rel="icon" src="static/128x128.png">
+    <link rel="icon" src="https://127.0.0.1:7070/assets/logo">
 </head>
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
@@ -12,26 +12,66 @@
         display:Flex;
         align-items: center;
         justify-content: center;
-        background-color:#5e7779;
+        margin:0;
     }
     .maindiv{
-        background-color: white;
-        width:90vw;
-        height:90vh;
+        margin-top:20px;
+        margin-bottom:20px;
+        background-color: rgba(255,255,255,0.75);
+        padding:50px;
+        width:40vw;
         border-radius: 10px;
         color:black;
         display:flex;
         justify-content: center;
     }
     .innerdiv{
-        width:40vw;
         height:100%;
-        overflow: scroll;
+    }
+    @media (max-width: 1250px) {
+        .maindiv{
+            padding:0;
+            width:70vw;
+            margin-top:20px;
+            margin-bottom:20px;
+            background-color: rgba(255,255,255,0.75);
+            padding:50px;
+            border-radius: 10px;
+            color:black;
+            display:flex;
+            justify-content: center;
+        }
+    }
+    @media (max-width: 700px) {
+        .maindiv{
+            padding:0;
+            width:100%;
+            margin-top:20px;
+            margin-bottom:20px;
+            background-color: rgba(255,255,255,0.75);
+            padding:50px;
+            border-radius: 10px;
+            color:black;
+            display:flex;
+            justify-content: center;
+        }
+    }
+    canvas{
+        position: absolute;
+        z-index: -1;
+        width: 100%;
+        height: 100vh;
     }
 </style>
 <body>
+    <canvas id="backgroundCanvas">
+
+    </canvas>
     <div class="maindiv">
         <div class="innerdiv">
+            <div style="width:100%; align-items: center; display: flex; justify-content: center;">
+                <img src="static/128x128.png" style="height:100px;">
+            </div>
             <h1 style="color:#5e7779; font-weight: 800;">Hey!</h1><h2 style="font-weight: 500;">Thanks for checking out the extension. Let's talk about privacy.</h2>
             <h3>By and large, this extension doesn't collect much data. Essentially everything stays on <strong>your computer</strong>, and only 3 things ever leave.</h3>
             <h2>What is transmitted: </h2>
