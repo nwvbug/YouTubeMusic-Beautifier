@@ -1,5 +1,5 @@
 # YTM Beautifier
-_Currently undergoing verification for Chrome Web Store release. Will be updating this readme with link once approved._
+## [Get it from the Chrome Web Store!](https://chromewebstore.google.com/detail/youtube-music-beautifier/mfgecbliilfimjghneojngcbificbdpa?hl=en)
 ## Extension for YouTube Music's Web Client
 
 - Accurate Time-Synced Lyrics using the same YTM data from the mobile app's time-synced lyrics
