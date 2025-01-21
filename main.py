@@ -21,11 +21,13 @@ def home():
 
 @app.route("/privacy")
 def privacy():
-    return open("privacypolicy.html")
+    with open('privacypolicy.html', 'r', encoding='utf-8') as f:
+        content = f.read()
+    return content
 
 @app.route("/assets/logo")
 def logo():
-    return send_file("static/128x128.png", mimetype="image/gif")
+    return send_file("icon.png", mimetype="image/gif")
 
 
 if __name__ == "__main__":
