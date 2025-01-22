@@ -53,7 +53,7 @@ If you wish to:
 - contribute
 - self-host the lyrics server
 
-then this next section is probably for you. Otherwise, feel free to [install normally](https://github.com/nwvbug/YouTubeMusic-Beautifier/edit/main/README.md#how-to-use).
+then this next section is probably for you. Otherwise, feel free to install normally.
 The lyrics server runs on flask. You can run it in debug mode by simply running the python file ```main.py``` in the terminal.
 What packages do I need?
 - ```Flask```
