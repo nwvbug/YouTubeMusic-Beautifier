@@ -16,9 +16,9 @@ When in YouTube Music, activate the extension by going to the top right of your 
 ## Details & customization
 
 There are a few more things that are good to know:
-- The microphone icon at the bottom left of the album art can toggle whether the extension shows lyrics or not
-  - If the microphone is pulsing between grey and white, it is searching for a lyrics match.
-  - If the microphone is solidly greyed out, it failed to find lyrics for your song.
+- Click on the microphone icon at the bottom left of the album art to toggle whether the extension shows lyrics or not
+  - Also, if the microphone is pulsing between grey and white, it is searching for a lyrics match.
+  - and if the microphone is solidly greyed out, it failed to find lyrics for your song.
 - You can know whether the extension is using official lyrics (gotten from YouTube) or unofficial lyrics based on the presence of the clock icon at the bottom right of the album art.
   - If it is not there, you are using official lyrics that should be accurate.
   - If it is there, that means you are using one of the backup lyric databases. You can click on the clock to set a lyric offset in case the lyric timing is not accurate. Your offsets are saved to your Chrome's storage.
