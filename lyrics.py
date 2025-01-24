@@ -8,7 +8,7 @@ iterator = 0
 def get_lyrics_unofficial(query):
     lrc = syncedlyrics.search(query)
     if lrc is None:
-        return None;
+        return None
     return {"source":"unofficial", "lrc":lrc}
     
 
