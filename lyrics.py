@@ -21,17 +21,14 @@ def get_ytm_lyrics(incomingQuery):
         if (watchPlaylist["lyrics"] is not None):
             lyrics = ytm.get_lyrics(watchPlaylist["lyrics"], timestamps=True)
             #print(type(lyrics["lyrics"]))
-            if (type(lyrics["lyrics"]) is not None and type(lyrics["lyrics"]) == list):
+            if (lyrics is not None and type(lyrics["lyrics"]) is not None and type(lyrics["lyrics"]) == list):
                 #print(lyrics["lyrics"])
                 lrc = []
                 for lyric in lyrics["lyrics"]:
                     lrc.append({"time":lyric.start_time/1000, "text":lyric.text})
                 #print(lrc)
                 return {"source":"ytm", "lrc":lrc}
-            else:
-                return get_lyrics_unofficial(incomingQuery)
-        else:
-            return get_lyrics_unofficial(incomingQuery)
-    else:
-        return get_lyrics_unofficial(incomingQuery)
+            
+    
+    return get_lyrics_unofficial(incomingQuery)
     
