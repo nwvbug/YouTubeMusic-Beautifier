@@ -37,6 +37,9 @@ If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app 
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
 
 ## Future Features
+- Connectivity!
+  - Use your phone or other device to control your YouTube Music! Similar to how Spotify lets you control media playback between devices.
+  - Watch lyrics & see song info on a different device than the one playing it.
 - Background optimization
   - Upgrade from Canvas to WebGL
 - Community-based offset timings for unofficial sources
