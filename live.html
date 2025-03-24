@@ -1,0 +1,122 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YTM Beautifier Live</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="shortcut icon" type="image/x-icon" href="/assets/logo">
+
+</head>
+<style>
+    .settings-panel{
+        height:fit-content;
+        overflow: auto;
+        padding:50px;
+        text-align: center;
+    }
+    .buttons-holder{
+        width: 100%;
+    }
+    .buttons-holder > button{
+        width:40%;
+        height:60px;
+        font-family:"Host Grotesk", serif;
+        font-size:15px;
+        font-weight:800;
+        background-color: white;
+        border-radius: 10px;
+        border: none;
+        transition: 0.25s;
+        cursor:pointer;
+    }
+    .buttons-holder > button:hover{
+        background-color: rgba(0, 0, 0, 0.25);
+        color:white;
+    }
+</style>
+<body>
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
+    <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
+    <div class="main-body" id="main-body">
+        <div class="info-body">
+            <img id="album-image" class="album-image">
+            
+            <div id="progressbarholder">
+                <div id="progressbar">
+                    
+                </div>
+            </div>
+            <div class="words-div">
+                <h1 id="title" style="">Title</h1>
+                <h2 id="artist-album" style="">Artist • Album</h2>
+                
+            </div>  
+            <div class="controls-outer">
+                <img src="assets/mic.svg" class="mic" id="mic">
+
+                <div id="controls-holder">
+                    <img src="assets/left skip.png" id="backbutton" onclick="previous()">
+                    <img src="assets/pause.png" data-paused="false" onclick="pauseplay()" id="pauseplaybutton" style="width:30px; height:30px;">
+                    <img src="assets/right skip.png" onclick="next()" id="nextbutton">
+                </div>                
+                <div class="time-container" id="time">
+                    <div class="time-popup-holder">
+                        <div class="time-adjustment" style="text-align: center;">
+                            <div class="time-adjustment-details" style="font-weight:500;">Connected to<br><strong id="nameofdevice"></strong></div>
+                        </div>
+                    </div>
+                    
+                    <img src="/static/device.svg" class="clock">
+                </div>
+            </div>
+            
+        </div>
+        
+        <div id="lyrics-flex">
+            <div id="lyric-holder">
+    
+            </div>
+        </div>
+        
+        <!-- <div class="previous-in-queue" id="prev">
+            <img class="queue-image" id="previous-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+            <div class="queue-info">
+                <div id="previous-title">Title</div>
+                <div id="previous-artist">Artist • Album</div>
+            </div>
+        </div>
+        <div class="next-in-queue" id="next">
+            <div class="queue-info" style="text-align: right;">
+                <div id="next-title">Title</div>
+                <div id="next-artist">Artist • Album</div>
+            </div>
+            <img class="queue-image" id="next-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
+        </div> -->
+    </div>
+    <div class="settings-holder" style="opacity:1; pointer-events:all;" id="waiting-for-host">
+        <div class="settings-panel">
+            <img src="assets/128x128.png" style="height:100px; width:100px;">
+            <h1>Waiting for host device...</h1>
+            <p>You are signed in here. Make sure you are also signed in on the extension.</p>
+        </div>
+    </div>
+    <div class="settings-holder" style="opacity:0; pointer-events:none;" id="sign-in">
+        <div class="settings-panel">
+            <img src="assets/128x128.png" style="height:100px; width:100px;">
+            <h1>Sign in or Create an account</h1>
+            <p>YTM Beautifier Live requires an account to use.</p>
+            <div class="buttons-holder">
+                <button onclick="window.location.href='https://lye.software/signin?forward=ytm.nwvbug.com-live'">Sign In</button>
+                <button onclick="window.location.href='https://lye.software/signup?forward=ytm.nwvbug.com-live'">Create Account</button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.socket.io/4.8.1/socket.io.min.js" integrity="sha384-mkQ3/7FUtcGyoppY6bz/PORYoGqOl7/aSUMn2ymDOJcapfS6PHqxhRTMh1RR0Q6+" crossorigin="anonymous"></script>
+<script src="/js/config.js"></script>
+<script src="/js/backgroundMovingImage.js"></script>
+<script src="/js/colorUtils.js"></script>
+<script src="/js/parser.js"></script>
+<script src="/js/displayer.js"></script>
+<script src="/static/live.js"></script>
+</html>

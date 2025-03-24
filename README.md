@@ -24,6 +24,14 @@ There are a few more things that are good to know:
   - If it is there, that means you are using one of the backup lyric databases. You can click on the clock to set a lyric offset in case the lyric timing is not accurate. Your offsets are saved to your Chrome's storage.
 - There is no settings menu in v1.0.0. However, that is coming soon (with the release of a performance mode)
 
+## What to expect from v1.1.0 (Next Version)
+- Settings Menu
+  - Customize background tint and animations
+- Device Connectivity
+  - Connect your phone or other device to control your PC's music playback!
+- Skip-to Lyrics
+  - Select a lyric and skip to that portion of the song
+
 ## How it works
 
 - Content script of the extension watches for mutations on the web app, and sends them to the extension's page.
@@ -63,8 +71,15 @@ What packages do I need?
 - ```flask-cors```
 - ```syncedlyrics```
 - ```ytmusicapi```
+- ```flask_socketio```*
+  - Not used in the server as of yet, but will be soon
+- ```redis```*
+  - Not used in the server as of yet, but will be soon
 
 All of these can be found on pip.
 
-With the server running, change the url on line ```65``` in ```reciever.js``` to match the url your Flask server is running on.
+With the server running, change the REST API url in ```config.js``` to match the url your Flask server is running on.
 Done! You can load the unpacked extension into your Chrome and it will work.
+
+## Support
+I make this primarily as a passion project and something that I wanted to exist. As such, do not feel like you have to pay anything to use the extension. All the features are free for a reason! However, if you wish to support the project, I have a buymeacoffee page here: https://buymeacoffee.com/nvemuri 
