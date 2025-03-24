@@ -25,20 +25,14 @@ function getNowPlaying() {
   const title = playerBar.querySelector(
     "yt-formatted-string.title.ytmusic-player-bar",
   ).innerHTML;
-  const items = outer.querySelectorAll(
-    "a.yt-simple-endpoint.yt-formatted-string",
-  );
-  console.log("ITEMS ")
-  let artist = ""
-  let album;
-  for (let i = 0; i<items.length-1; i++){
-    console.log(i, items[i])
-    if (items[i].innerText != undefined){
-      artist+=items[i].innerText+", "
-    }
-  }
-  artist = artist.substring(0, artist.length-2)
-  album = items[items.length-1].innerText
+
+  let str = ""
+  const items = document.querySelector('.byline.style-scope.ytmusic-player-bar.complex-string').children
+  for (let elem of items){str+=elem.innerText}
+  str = str.split("•")
+  artist = str[0]
+  album = str[1]
+  date = str[2]
   
 
   const leftControls = playerBar.querySelector(
@@ -171,47 +165,83 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   else if (request.action === 'back-from-middleman-ytm') {
     console.log("BACK IDENTIFIED")
       sendResponse("going prev")
-      triggerBack()
+      pressShiftP()
   }
   else if (request.action === 'next-from-middleman-ytm') {
     console.log("next IDENTIFIED")
       sendResponse("going next")
-      triggerNext()
+      pressShiftN()
   } else if (request.action === 'ytm-request-queue-update'){
     sendResponse("sending queue update")
     getQueue();
   } else if (request.action === 'ytm-request-song-data-update'){
     sendResponse("sending song update")
     collectCurrentSongData();
+  } else if (request.action === 'ytm-scan-to'){
+    sendResponse("scanning to "+request.data.time)
+    scan(request.data.time);
   }
 });
 
-function pressShiftN(pressedKey) {
-  // Create a ShiftDown event
-  const shiftDownEvent = new KeyboardEvent('keydown', {
-    key: 'Shift',
-    code: 'ShiftLeft', 
-    shiftKey: true 
+
+function pressShiftP() {
+  const eventKeyDown = new KeyboardEvent('keydown', {
+    key: 'P',
+    code: 'KeyP',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
   });
 
-  // Dispatch the ShiftDown event
-  document.dispatchEvent(shiftDownEvent);
+  document.dispatchEvent(eventKeyDown);
 
-  // Create and dispatch the 'e' keypress event
-  const nKeyPressEvent = new KeyboardEvent('keypress', {
-    key: 'N', 
-    code: 'KeyN', 
-    shiftKey: true 
+  const eventKeyUp = new KeyboardEvent('keyup', {
+    key: 'P',
+    code: 'KeyP',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
   });
-  document.dispatchEvent(nKeyPressEvent);
 
-  // Create and dispatch the ShiftUp event
-  const shiftUpEvent = new KeyboardEvent('keyup', {
-    key: 'Shift',
-    code: 'ShiftLeft', 
-    shiftKey: false 
+  document.dispatchEvent(eventKeyUp);
+}
+
+function pressShiftN() {
+  const eventKeyDown = new KeyboardEvent('keydown', {
+    key: 'N',
+    code: 'KeyN',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
   });
-  document.dispatchEvent(shiftUpEvent);
+
+  document.dispatchEvent(eventKeyDown);
+
+  const eventKeyUp = new KeyboardEvent('keyup', {
+    key: 'N',
+    code: 'KeyN',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
+  });
+
+  document.dispatchEvent(eventKeyUp);
 }
 
 function getQueue(){
@@ -272,4 +302,78 @@ function getQueue(){
   .catch(error => {
     console.error('Error sending message:', error); 
   });
+}
+
+function scan(seconds){
+  if (seconds < 0){
+    seconds = -seconds;
+    for (let i = 0; i<seconds; i++){
+      triggerBack()
+    }
+  } else {
+    for (let i = 0; i<seconds; i++){
+      triggerNext()
+    }
+  }
+}
+
+function triggerNext() {
+  const event = new KeyboardEvent('keydown', {
+    key: 'L',
+    code: 'KeyL',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false, // For Mac Command key
+    bubbles: true,
+    cancelable: true,
+    view: window,
+  });
+
+  document.dispatchEvent(event);
+
+  const eventUp = new KeyboardEvent('keyup', {
+    key: 'L',
+    code: 'KeyL',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
+  });
+
+  document.dispatchEvent(eventUp);
+
+}
+function triggerBack() {
+  const event = new KeyboardEvent('keydown', {
+    key: 'H',
+    code: 'KeyH',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false, // For Mac Command key
+    bubbles: true,
+    cancelable: true,
+    view: window,
+  });
+
+  document.dispatchEvent(event);
+
+  const eventUp = new KeyboardEvent('keyup', {
+    key: 'H',
+    code: 'KeyH',
+    shiftKey: true,
+    ctrlKey: false,
+    altKey: false,
+    metaKey: false,
+    bubbles: true,
+    cancelable: true,
+    view: window,
+  });
+
+  document.dispatchEvent(eventUp);
+
 }

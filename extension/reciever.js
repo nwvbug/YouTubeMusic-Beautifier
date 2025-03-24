@@ -7,6 +7,7 @@ var queue_hash;
 var current_queue_index;
 var compareAgainst = "data:image/gif;base64"
 var incomingSecondOffset = 0;
+var totalDuration
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sendQueue-ytmlyrics'){
@@ -16,9 +17,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       request.data.title = request.data.title.replaceAll("amp;", "");
       request.data.artist = request.data.artist.replaceAll("amp;", "");
       request.data.album = request.data.album.replaceAll("amp;", "");
-
+      send_packet(request.data)
       // Use the received data
       updateTimestamp(request.data.elapsed, request.data.total)
+      totalDuration = request.data.total;
       let temp_current_song = request.data.title+request.data.artist+request.data.album
       if (temp_current_song != current_song){
         hideLyricsView()
@@ -38,7 +40,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           document.getElementById("album-image").src=request.data.large_image
           createAnimatedBackground(request.data.large_image)
         }
-        document.title = request.data.title + " | BYTM"
+        document.title = request.data.title + " | YTM-B"
         console.log(request.data.elapsed, " | ", request.data.total, " | ", request.data.elapsed/request.data.total*100)
         getSongLyrics(request.data.title, request.data.artist, request.data.album)
         displayLyricOneAtATime(request.data.elapsed, debug_incr)
@@ -61,8 +63,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 function getSongLyrics(title, artist, album){
   hideLyricsView()
+  
   let url_addon = title+" [By] "+artist
-  fetch("https://ytm.nwvbug.com/request-lyrics/"+url_addon).then(response => response.text()) // Requests from nwvbug hosted server, feel free to replace with your own if you wish to run locally
+  url_addon = url_addon.replaceAll("/", "-")
+  fetch(REST_URL+"/request-lyrics/"+url_addon).then(response => response.text()) // Change server in config.js
   .then(result => {
       // Handle the received text data
       console.log(result); 

@@ -41,5 +41,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse("requesting update")
         chrome.tabs.sendMessage(contentId, {action:'ytm-request-song-data-update', data:null})
     }
+    else if (request.action === 'ytm-scan-to'){
+        chrome.tabs.sendMessage(contentId, { action: 'ytm-scan-to', data: request.data }, (response) => {
+            console.log("Response heard.")
+        }); 
+    }
   });
 

@@ -2,282 +2,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BetterYTM</title>
+    <title>YTM Beautifier</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
-    body{
-        font-family:"Host Grotesk", serif;
-        padding:0;
-        margin:0;
-    }
-    h1{
-        font-weight:800;
-        font-size:30px;
-        margin:0;
-    }
-    h2{
-        font-weight:400;
-        padding:0;
-        margin:0;
-    }
-    .main-body{
-        box-sizing: border-box;
-        padding:50px 150px;
-        display:flex;
-        gap:100px;
-        width:100vw;
-        justify-content: space-evenly;
-        height:100vh;
-        align-items: center;
-        /* overflow:hidden; */
-        background-color: rgba(0, 0, 0, 0.15);
-        backdrop-filter: blur(80px); 
-        transition: gap 0.5s;
-    }
-
-    .info-body{
-        flex:1;
-        text-align: right;
-        color:white;
-        display:flex;
-        flex-direction: column;
-        align-items: center;
-        gap:20px;
-    }
-
-    /* img{
-        border-radius:15px;
-        margin:10px;
-        width:500px;
-    } */
-
-    #lyrics-flex{
-        transition: max-width 0.5s, opacity 0.25s;
-        max-width: 50vw;
-        flex:1;
-        /* overflow:visible; */
-    }
-
-    #lyric-holder{
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-
-        /* width:30vw; */
-        width: 100%;
-        height:100%; 
-        overflow-y:scroll; /*
-        overflow-x:visible; */
-        color:white;
-        background-color:rgba(0, 0, 0, 0);
-        /* Create the fade effect */
-        -webkit-mask-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 10%,   /* Transparent at the top */
-        rgba(0, 0, 0, 1) 20%,   /* Fully opaque in the middle */
-        rgba(0, 0, 0, 1) 80%,   /* Fully opaque continues */
-        rgba(0, 0, 0, 0) 90%    /* Transparent at the bottom */
-        );
-        mask-image: linear-gradient(
-            to bottom,
-            rgba(0, 0, 0, 0) 10%, 
-            rgba(0, 0, 0, 1) 20%, 
-            rgba(0, 0, 0, 1) 80%, 
-            rgba(0, 0, 0, 0) 90%
-        );
-        -webkit-mask-size: 100% 100%;
-        mask-size: 100% 100%;
-
-        /* Ensure the div blends well with the background */
-        background-blend-mode: normal;
-    }
-
-    #lyric-holder > div {
-        font-size: 32px;
-        opacity: 0.4;
-        transition: 0.25s;
-        font-weight: 500;
-        width:80%;
-    }
-    
-    #lyric-holder::-webkit-scrollbar {
-        display: none;
-        }
-
-    #middle-space{
-        width:10vw;
-    }
-
-    .words-div{
-        text-align: center;
-        width:100%;
-        align-self: self-end;
-        
-    }
-
-    h2{
-        height:20px;
-    }
-
-    #controls-holder{
-        padding:10px;
-
-        display:flex;
-        justify-content: center;
-        gap:70px;
-        align-items: center;
-    }
-
-    #controls-holder > img{
-        height:20px;
-        width:20px;
-        border-radius:0;
-        cursor: pointer;
-        transition:0.25s;
-    }
-
-    #controls-holder > img:hover{
-        transform:scale(1.15);
-    }
-
-    #progressbarholder{
-        height:7px;
-        border-radius:10px;
-        width:30vw;
-        background-color: rgba(255, 255, 255, 0.4);
-        margin-left:10px;
-        align-self:center;
-    }
-    #progressbar{
-        height:7px;
-        border-radius:10px;
-        width:0%;
-        background-color: white;
-        transition:0.2s;
-        
-    }
-    
-    
-
-    .album-image{
-        border-radius: 10px;
-        transition:0.25s;
-    }
-    .album-image:hover{
-        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.25);
-        transform: scale(1.01);
-    }
-
-    #pauseplaybutton{
-        height:30px;
-        width:30px;
-    }
-    .controls-outer{
-        
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap:40%;
-    }
-    .mic{
-        height:25px;
-        width:25px;
-        transition: 0.25s;
-        cursor: pointer;
-    }
-    .mic:hover{
-        transform: scale(1.25);
-    }
-
-    .clock { 
-        height:25px;
-        width:25px;
-        transition: 0.25s;
-        cursor: pointer;
-    }
-    .clock:hover{
-        transform: scale(1.25);
-
-    }
-    .time-container{
-        position:relative;
-    }
-    .time-popup-holder{
-        position: absolute;
-        width:350px;
-        height:150px;
-        top: -150px; /* Adjust the top value to position the popup above the button */
-        left: 50%; /* Center the popup horizontally */
-        transform: translateX(-50%); /* Center the popup horizontally */
-        display:none;
-        justify-content: center;
-    }
-    .time-adjustment{
-        width:300px;
-        height:100px;
-        background-color: rgba(255,255,255,0.75); 
-        backdrop-filter: blur(50px);
-        padding:10px;
-        border-radius: 10px;
-        display:flex;
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        box-shadow: 0px 0px 12px 5px rgba(100, 100, 100, 0.85);
-    }
-    .time-adjustment-details{
-        padding:20px;
-        font-weight:800;
-        font-size:20px;
-        color:black;
-    }
-
-    .time-container:hover .time-popup-holder{
-        display:flex;
-    }
-    .time-adjustment-controls{
-        width:100%;
-        display:flex;
-        align-items: center;
-        justify-content: center;
-        gap:20px;
-        margin-bottom:10px;
-    }
-    .time-adjustment-button{
-        background-color: white;
-        padding:5px;
-        font-size:15px;
-        color:black;
-        font-weight:800;
-        border:none;
-        border-radius: 5px;
-        width:30px;
-        cursor: pointer;
-        transition: 0.25s;
-    }
-    .time-adjustment-button:hover{
-        transform: scale(1.15);
-    }
-    .offset{
-        font-size: 35;
-        color:black;
-        font-weight:800;
-    }
-    
-    @keyframes loadingMic {
-        0% {
-            opacity:0.25;
-        }
-        50% {
-            opacity:0.75;
-        }
-        100%{
-            opacity:0.25;
-        }
-    }
-   
-</style>
 <body>
     <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
     <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
@@ -342,12 +69,87 @@
             <img class="queue-image" id="next-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
         </div> -->
     </div>
-    
+    <div class="settings-button-holder" id="settings-button-holder">
+        <svg width="30" height="30" viewBox="0 0 91 91" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M85.6 35H81.2C80.4 32 79.2 29.1 77.7 26.4L80.8 23.3C82.5 21.6 82.5 18.8 80.8 17.1L72.8 9.1C71.1 7.4 68.3 7.4 66.6 9.1L63.5 12.2C60.8 10.7 58 9.5 54.9 8.7V4.4C55 2 53 0 50.6 0H39.4C36.9 0 35 2 35 4.4V8.8C32 9.6 29.1 10.8 26.4 12.3L23.3 9.2C21.6 7.5 18.8 7.5 17.1 9.2L9.1 17.2C7.4 18.9 7.4 21.7 9.1 23.4L12.2 26.5C10.7 29.2 9.5 32 8.7 35.1H4.4C1.9 35 0 37 0 39.4V50.7C0 53 1.9 55 4.4 55H8.8C9.6 58 10.8 60.9 12.3 63.6L9.2 66.7C7.5 68.4 7.5 71.2 9.2 72.9L17.2 80.9C18.9 82.6 21.7 82.6 23.4 80.9L26.5 77.8C29.2 79.3 32 80.5 35.1 81.3V85.7C35.1 88.1 37.1 90.1 39.5 90.1H50.8C53.2 90.1 55.2 88.1 55.2 85.7V81.3C58.2 80.5 61.1 79.3 63.8 77.8L66.9 80.9C68.6 82.6 71.4 82.6 73.1 80.9L81.1 72.9C82.8 71.2 82.8 68.4 81.1 66.7L78 63.6C79.5 60.9 80.7 58.1 81.5 55H85.9C88.3 55 90.3 53 90.3 50.6V39.4C90 37 88 35 85.6 35ZM45 65C34 65 25 56 25 45C25 34 34 25 45 25C56 25 65 34 65 45C65 56 56 65 45 65Z" fill="white"/>
+            </svg>            
+    </div>
+    <div class="settings-holder" id="settings-overall">
+        <div class="settings-panel" id="settings-panel">
+            <img src="assets/128x128.png" style="height:100px; width:100px; margin-top:20px;">
+            <h1>Settings</h1>
+            <div class="settings-entry">
+                <h2>Display & Performance</h2>
+                <div class="source-entry">
+                    <div class="source-name">
+                        <p>Animated Background</p>  
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                      </label>
+                </div>
+                <div class="source-entry">
+                    <div class="source-name">
+                        <p>YouTube Music "Keep Awake"</p>  
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                      </label>
+                </div>
+                <div class="source-entry">
+                    <div class="source-name">
+                        <p>Background Tint</p>  
+                    </div>
+                    <div style="display:flex; align-items: center; gap:5px;">
+                        <div id="reset-tint" style="opacity:0; pointer-events:none; cursor:pointer;">
+                            <svg width="17.5" height="20.3" viewBox="0 0 175 203" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M21 95.5C21 82.3475 24.9001 69.4904 32.2073 58.5546C39.5144 47.6187 49.9003 39.0952 62.0515 34.062C74.2028 29.0288 87.5738 27.7119 100.474 30.2778C113.373 32.8437 125.222 39.1772 134.523 48.4774C143.823 57.7776 150.156 69.6268 152.722 82.5265C155.288 95.4262 153.971 108.797 148.938 120.948C143.905 133.1 135.381 143.486 124.445 150.793C113.51 158.1 100.652 162 87.5 162" stroke="white" stroke-width="29" stroke-linecap="round"/>
+                                <path d="M39.0174 159.864C35.4043 157.842 35.6746 152.556 39.475 150.912L99.8824 124.789C103.285 123.318 107.05 125.931 106.86 129.634L103.882 187.903C103.692 191.606 99.681 193.822 96.446 192.011L39.0174 159.864Z" fill="white"/>
+                                </svg>
+                        </div>
+                        
+                            
+                        <input type="range" id="background-tint" min="0" max="1" step="0.01">
+                    </div>
+                </div>
+                
+            </div>
+            <div class="settings-entry">
+                <h2>Connectivity</h2>
+                <div class="source-entry">
+                    <div class="source-name">
+                        <p>Control playback from your other devices!</p>
+                    </div>
+                    <div style="background-color: #9ab291; color:white; font-weight:bold; border-radius:10px; padding:10px; cursor:pointer; font-size:15px;">
+                        Create Account
+                    </div>
+                </div>
+                
+            </div>
+            <div class="settings-entry">
+                <h2>Donate</h2>
+                <div class="source-entry">
+                    <div class="source-name">
+                        <p>Support the project!</p>
+                    </div>
+                    <div style="background-color: #f4dd4d; color:black; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;" id="buymeacoffee">
+                        Buy me a coffee!
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
 </body>
+<script src="libs/socket.io.min.js"></script>
+<script src="config.js"></script>
 <script src="backgroundMovingImage.js"></script>
 <script src="colorUtils.js"></script>
 <script src="parser.js"></script>
 <script src="reciever.js"></script>
 <script src="displayer.js"></script>
 <script src="webapp-controller.js"></script>
+<script src="sockets.js"></script>
 </html>

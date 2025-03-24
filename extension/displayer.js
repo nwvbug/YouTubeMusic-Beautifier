@@ -11,23 +11,40 @@ function initializeLyrics(){
         totalhtml+=(html)
     }
     for (let i = 0; i<lyrics.length; i++){
-        let html = `<div id=${i}>${lyrics[i]}</div>`
+        let html = `<div id=${i} style="cursor:pointer;">${lyrics[i]}</div>`
         totalhtml+=(html)
     }
     for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
         let html = `<div></div>`
         totalhtml+=(html)
     }
-    document.getElementById("lyric-holder").innerHTML=totalhtml
+    document.getElementById("lyric-holder").innerHTML=totalhtml;
+
+    for (let item of document.getElementById("lyric-holder").children){
+        if (item.id != null && item.id != undefined){
+            try {
+                item.onclick = function(){selectNewLyric(parseInt(item.id))}
+            } catch {
+
+            }
+            
+        }
+    }
+
     //document.getElementById("lyric-holder").style.maxWidth = document.getElementById("lyric-holder").offsetWidth
     current_index = 0;
     current_time = -1;
     document.getElementById("lyric-holder").scrollTo(0,0)
 }
 
-function displayLyricOneAtATime(seconds, identifier){
+function selectNewLyric(i){
+    console.log("attempting to select lyric "+i)
+    requestScanTo(tim[i])
+}
+
+function displayLyricOneAtATime(seconds, identifier=null){
     if (seconds < current_time){
-        document.getElementById("lyric-holder").scrollTo(0,0)
+        //document.getElementById("lyric-holder").scrollTo(0,0)
         let lyric_list = document.getElementById("lyric-holder").children
         for (let item of lyric_list){
             if (item.id != null && item.id != undefined){

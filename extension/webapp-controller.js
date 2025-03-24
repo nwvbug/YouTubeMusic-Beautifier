@@ -140,3 +140,73 @@ function loadLyricOption(){
     document.getElementById("mic").style.animation = "1.5s ease-in-out loadingMic infinite"
     document.getElementById("mic").style.pointerEvents = "none"
 }
+
+function showSettings(){
+    document.getElementById("settings-overall").style.opacity = "1"
+    document.getElementById("settings-overall").style.pointerEvents = "all"
+}
+
+function hideSettings(){
+    document.getElementById("settings-overall").style.opacity = "0"
+    document.getElementById("settings-overall").style.pointerEvents = "none"
+}
+
+function requestScanTo(timecode){
+    let timeToScan = timecode - current_time;
+    console.log("Requesting scan to timecode: ", timeToScan)
+    chrome.runtime.sendMessage({ action: 'ytm-scan-to', data: {time:timeToScan} }).then(response => {
+        console.log('Response from background:', response); 
+      })
+}
+
+var background_blur;
+let bgblur = window.localStorage.getItem("blur")
+if (bgblur == null || bgblur == undefined){
+    background_blur = 0.15;
+} else {
+    background_blur = parseFloat(bgblur)
+}
+
+
+document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
+document.getElementById("background-tint").value = background_blur
+document.getElementById("background-tint").oninput = function(){
+    background_blur = this.value
+    document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
+    window.localStorage.setItem("blur", background_blur)
+    document.getElementById("reset-tint").style.opacity = "1"
+    document.getElementById("reset-tint").style.pointerEvents = "all"
+}
+document.getElementById("reset-tint").onclick = function(){
+    background_blur = 0.15
+    document.getElementById("background-tint").value = background_blur
+    document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
+    this.style.opacity = "0"
+    this.style.pointerEvents = "none"
+    window.localStorage.setItem("blur", background_blur)
+}
+document.getElementById("settings-button-holder").onclick = showSettings;
+document.getElementById("settings-overall").onclick = hideSettings;
+document.getElementById("settings-panel").onclick = function(e){ e.stopPropagation(); } // prevent click from bubbling to hideSettings
+document.getElementById("buymeacoffee").onclick = function(){
+    window.open("https://buymeacoffee.com/nvemuri", "_blank").focus();
+}
+
+
+const progressBarContainer = document.getElementById('progressbarholder');
+
+function handleProgressBarClick(event) {
+    const rect = progressBarContainer.getBoundingClientRect();
+    const clickX = event.clientX - rect.left; 
+    const percentage = clickX / rect.width;
+
+    getScanned(percentage); 
+}
+
+progressBarContainer.addEventListener('click', handleProgressBarClick);
+
+function getScanned(percentage) {
+    console.log('Clicked at percentage:', percentage);
+    let timeToScan = Math.floor(percentage * totalDuration);
+    requestScanTo(timeToScan);
+}
