@@ -151,6 +151,21 @@ function hideSettings(){
     document.getElementById("settings-overall").style.pointerEvents = "none"
 }
 
+
+function showSharing(){
+    document.getElementById("sharing-overall").style.opacity = "1"
+    document.getElementById("sharing-overall").style.pointerEvents = "all"
+}
+
+function hideSharing(){
+    document.getElementById("sharing-overall").style.opacity = "0"
+    document.getElementById("sharing-overall").style.pointerEvents = "none"
+}
+
+document.getElementById("sharing-button-holder").onclick = showSharing;
+document.getElementById("sharing-overall").onclick = hideSharing;
+document.getElementById("sharing-panel").onclick = function(e){ e.stopPropagation(); } // prevent click from bubbling to hideSharing
+
 function requestScanTo(timecode){
     let timeToScan = timecode - current_time;
     console.log("Requesting scan to timecode: ", timeToScan)
@@ -211,7 +226,9 @@ document.getElementById("settings-panel").onclick = function(e){ e.stopPropagati
 document.getElementById("buymeacoffee").onclick = function(){
     window.open("https://buymeacoffee.com/nvemuri", "_blank").focus();
 }
-
+document.getElementById("feedback").onclick = function(){
+    window.open("https://github.com/nwvbug/YouTubeMusic-Beautifier", "_blank").focus();
+}
 
 const progressBarContainer = document.getElementById('progressbarholder');
 
@@ -268,3 +285,4 @@ function performDoubleEscapeAction() {
     document.getElementById("esc-notif").style.pointerEvents = "none"
 }, 3000) 
 }
+

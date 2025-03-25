@@ -414,6 +414,16 @@ border-radius: 50%;
     transform:scale(1.1);
 }
 
+.sharing-button-holder{
+    opacity:0.25;
+    transition:0.25s;
+    cursor:pointer;
+}
+.sharing-button-holder:hover{
+    opacity:1;
+    transform:scale(1.1);
+}
+
 .top-bar{
     top:15px;
     right:15px;
@@ -444,4 +454,20 @@ border-radius: 50%;
 
 .generic-button:hover{
     transform:scale(1.1);
+}
+
+#qrcode{
+
+}
+
+.qrcodeholder{
+    padding:20px;
+    background-color: white;
+    width:fit-content;
+    height: fit-content;
+    border-radius: 15px;
+    display:flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
