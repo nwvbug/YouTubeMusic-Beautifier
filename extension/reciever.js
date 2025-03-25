@@ -64,8 +64,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function getSongLyrics(title, artist, album){
   hideLyricsView()
   
-  let url_addon = title+" [By] "+artist
+  let url_addon = title+" "+artist
   url_addon = url_addon.replaceAll("/", "-")
+  url_addon = url_addon.replaceAll("%", "%25")
   fetch(REST_URL+"/request-lyrics/"+url_addon).then(response => response.text()) // Change server in config.js
   .then(result => {
       // Handle the received text data

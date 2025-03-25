@@ -167,6 +167,26 @@ if (bgblur == null || bgblur == undefined){
     background_blur = parseFloat(bgblur)
 }
 
+let animationSeetting = window.localStorage.getItem("animation")
+if (animationSeetting == null || animationSeetting == undefined || animationSeetting == "true"){
+    console.log("Animations enabled")
+    document.getElementById("settings-animation").checked = true
+} else {
+    console.log("Animations disabled")
+    doAnimation = false;
+    document.getElementById("settings-animation").checked = false
+}
+
+function toggleAnimation(){
+    if (document.getElementById("settings-animation").checked){
+        doAnimation = true;
+        window.localStorage.setItem("animation", "true")
+    } else {
+        doAnimation = false;
+        window.localStorage.setItem("animation", "false")
+    }
+}
+document.getElementById("settings-animation").onclick = toggleAnimation
 
 document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
 document.getElementById("background-tint").value = background_blur
@@ -209,4 +229,42 @@ function getScanned(percentage) {
     console.log('Clicked at percentage:', percentage);
     let timeToScan = Math.floor(percentage * totalDuration);
     requestScanTo(timeToScan);
+}
+
+function goFullScreen(){
+    if (document.fullscreenElement == null){
+        document.documentElement.requestFullscreen();
+    } else {
+        document.exitFullscreen();
+    }
+}
+document.getElementById("fullscreen-button-holder").onclick = goFullScreen;
+
+
+let escapePresses = 0;
+let timer;
+
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    escapePresses++;
+    if (escapePresses === 1) {
+      timer = setTimeout(function() {
+        escapePresses = 0;
+      }, 5000);
+    } else if (escapePresses === 2) {
+      console.log('Double Escape Pressed!');
+      performDoubleEscapeAction();
+      clearTimeout(timer);
+      escapePresses = 0;
+    }
+  }
+});
+
+function performDoubleEscapeAction() {
+  document.getElementById("esc-notif").style.opacity = "1"
+    document.getElementById("esc-notif").style.pointerEvents = "all"
+  setTimeout(()=>{
+    document.getElementById("esc-notif").style.opacity = "0"
+    document.getElementById("esc-notif").style.pointerEvents = "none"
+}, 3000) 
 }

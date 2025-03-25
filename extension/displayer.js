@@ -1,5 +1,6 @@
 current_time = -1;
 current_index = 0
+var doAnimation = true;
 
 function initializeLyrics(){
     document.getElementById("lyric-holder").style.maxWidth = ""
@@ -122,24 +123,40 @@ function createStaticBackground(imageUrl){
     };
 }
 
+
+
 function createAnimatedBackground(imageUrl){
     createStaticBackground(imageUrl)
     images = []
     for (let i = 0; i<15; i++){
         images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i], rotationSpeeds[i]))
     }
+    setTimeout(() => {    drawInitialFrame()
+    }, 1000);
 }
 
-function animate(){
-
+function drawInitialFrame(){
+    console.log("draw initiated")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     images.forEach(image => {
+        
         image.updatePosition()
         image.draw()
     })
+}
+
+function animate(){
+    if (doAnimation){
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        images.forEach(image => {
+            image.updatePosition()
+            image.draw()
+        })
+    }
     requestAnimationFrame(animate)
 }
 animate()
+
 
 function updateTimestamp(elapsed, total){
     document.getElementById("progressbar").style.width = ((elapsed / total)  *100)+"%";

@@ -14,13 +14,13 @@ class BackgroundMovingImage {
     }
 
     initialize(imageUrl, distortionFunction, cors) {
-        const img = new Image();
+        this.img = new Image();
         if (cors){
-            img.crossOrigin = "Anonymous";
+            this.img.crossOrigin = "Anonymous";
         }
-        img.src= imageUrl
+        this.img.src= imageUrl
     
-        img.onload = () =>{
+        this.img.onload = () =>{
             this.distortedCanvas = new OffscreenCanvas(this.width, this.height);
             // this.distortedCanvas.width = this.width;
             // this.distortedCanvas.height = this.height;
@@ -32,7 +32,7 @@ class BackgroundMovingImage {
             // Clip the canvas to the path
             distortedCtx.clip();
 
-            distortedCtx.drawImage(img, 0, 0, this.width, this.height);
+            distortedCtx.drawImage(this.img, 0, 0, this.width, this.height);
             const imageData = distortedCtx.getImageData(0, 0, this.width, this.height);
             distortionFunction(imageData)
             distortedCtx.putImageData(imageData, 0, 0)

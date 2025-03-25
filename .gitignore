@@ -1,1 +1,5 @@
 /temp_lyric_files
+/__pycache__
+/__pycache__
+__pycache__/lyrics.cpython-39.pyc
+*.pyc
