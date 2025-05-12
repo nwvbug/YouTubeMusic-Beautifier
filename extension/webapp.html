@@ -77,9 +77,16 @@
                 </svg>
         </div>
         <div class="fullscreen-button-holder" id="fullscreen-button-holder">
-            <svg width="29.71" height="29.71" viewBox="0 0 208 208" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg width="29.71" height="29.71" viewBox="0 0 208 208" fill="none" xmlns="http://www.w3.org/2000/svg" id="maximize">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M69 0H50C22.3858 0 0 22.3858 0 50V69H35V50C35 41.7157 41.7157 35 50 35H69V0ZM139 35H158C166.284 35 173 41.7157 173 50V69H208V50C208 22.3858 185.614 0 158 0H139V35ZM173 158V139H208V158C208 185.614 185.614 208 158 208H139V173H158C166.284 173 173 166.284 173 158ZM69 173H50C41.7157 173 35 166.284 35 158V139H0V158C0 185.614 22.3858 208 50 208H69V173Z" fill="white"/>
-                </svg>       
+                </svg>     
+            <svg width="29.71" height="29.71" viewBox="0 0 206 204" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;" id="minimize">
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M187 135H206V170H187C178.716 170 172 176.716 172 185V204H137V185C137 157.386 159.386 135 187 135Z" fill="white"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 170H19C27.2843 170 34 176.716 34 185V204H69V185C69 157.386 46.6142 135 19 135H0V170Z" fill="white"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M34 19V0H69V19C69 46.6142 46.6142 69 19 69H0V34H19C27.2843 34 34 27.2843 34 19Z" fill="white"/>
+                <path fill-rule="evenodd" clip-rule="evenodd" d="M206 34H187C178.716 34 172 27.2843 172 19V0H137V19C137 46.6142 159.386 69 187 69H206V34Z" fill="white"/>
+                </svg>
+                      
         </div>
         <div class="settings-button-holder" id="settings-button-holder">       
             <svg width="30" height="30" viewBox="0 0 244 243" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -123,15 +130,27 @@
             <h1>Settings</h1>
             <div class="settings-entry">
                 <h2>Display & Performance</h2>
-                <div class="source-entry">
+                <div class="source-entry" id="animated-bg">
                     <div class="source-name">
                         <div>
-                            <p style="font-size:18px; margin-bottom:0;">Animated Background</p>  
+                            <p style="font-size:18px; margin-bottom:0;">Animated Backgrounds</p>  
                             <p style="margin-top:0">Turning this off can improve performance.</p>
                         </div>
                     </div>
                     <label class="switch">
                         <input type="checkbox" id="settings-animation">
+                        <span class="slider round"></span>
+                      </label>
+                </div>
+                <div class="source-entry" id="optimize-perf">
+                    <div class="source-name">
+                        <div>
+                            <p style="font-size:18px; margin-bottom:0;">Optimize Performance</p>  
+                            <p style="margin-top:0">Pause animations when YouTube Music is focused.</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="settings-optimization">
                         <span class="slider round"></span>
                       </label>
                 </div>

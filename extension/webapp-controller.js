@@ -182,6 +182,16 @@ if (bgblur == null || bgblur == undefined){
     background_blur = parseFloat(bgblur)
 }
 
+let doOptimization;
+let optimizationSetting = window.localStorage.getItem("optimization")
+if (optimizationSetting == null|| optimizationSetting == undefined || optimizationSetting == "true"){
+        document.getElementById("settings-optimization").checked = true
+        doOptimization = true;
+} else {
+        document.getElementById("settings-optimization").checked = false
+        doOptimization = false;
+}
+
 let animationSeetting = window.localStorage.getItem("animation")
 if (animationSeetting == null || animationSeetting == undefined || animationSeetting == "true"){
     console.log("Animations enabled")
@@ -190,17 +200,42 @@ if (animationSeetting == null || animationSeetting == undefined || animationSeet
     console.log("Animations disabled")
     doAnimation = false;
     document.getElementById("settings-animation").checked = false
+    document.getElementById("optimize-perf").style.opacity = "0.5";
+    document.getElementById("optimize-perf").style.pointerEvents = "none";
+
 }
+
+
 
 function toggleAnimation(){
     if (document.getElementById("settings-animation").checked){
         doAnimation = true;
         window.localStorage.setItem("animation", "true")
+        document.getElementById("optimize-perf").style.opacity = "1";
+        document.getElementById("optimize-perf").style.pointerEvents = "all";
     } else {
         doAnimation = false;
         window.localStorage.setItem("animation", "false")
+        document.getElementById("optimize-perf").style.opacity = "0.5";
+        document.getElementById("optimize-perf").style.pointerEvents = "none";
     }
 }
+
+document.getElementById("settings-optimization").onclick = toggleOptimization;
+function toggleOptimization(){
+    if (document.getElementById("settings-optimization").checked){
+        doAnimation = true;
+        window.localStorage.setItem("optimization", "true")
+        document.getElementById("optimize-perf").style.opacity = "1";
+        document.getElementById("optimize-perf").style.pointerEvents = "all";
+    } else {
+        doAnimation = false;
+        window.localStorage.setItem("optimization", "false")
+        document.getElementById("optimize-perf").style.opacity = "0.5";
+        document.getElementById("optimize-perf").style.pointerEvents = "none";
+    }
+}
+
 document.getElementById("settings-animation").onclick = toggleAnimation
 
 document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
@@ -251,8 +286,12 @@ function getScanned(percentage) {
 function goFullScreen(){
     if (document.fullscreenElement == null){
         document.documentElement.requestFullscreen();
+        document.getElementById("maximize").style.display = "none"
+        document.getElementById("minimize").style.display = ""
     } else {
         document.exitFullscreen();
+        document.getElementById("maximize").style.display = ""
+        document.getElementById("minimize").style.display = "none"
     }
 }
 document.getElementById("fullscreen-button-holder").onclick = goFullScreen;

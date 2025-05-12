@@ -2,7 +2,6 @@
 const socket = io(WS_URL, {
     auth: {
         role:"host",
-        session:window.localStorage.getItem("session")
     }
 });
 
@@ -12,36 +11,22 @@ window.addEventListener("beforeunload", () =>{
 
 
 function send_packet(data){
-    data.hostidentifier = navigator.platform
-    socket.emit("update", {"intents":"update", "data":data, "session":window.localStorage.getItem("session")})
+    
 }
 
-socket.on("identification", function(data){
-    console.log("Server response", data)
-})
-
-socket.on("left", function(data){
-    console.log("device left. role ", data["role"])
-})
-
-socket.on("takeover", function(data){
-    console.log("Another device logged into your account has taken over hosting")
+socket.on("room_created", function(data){
+    let room_id = data["room_id"];
+    generateQrCode(room_id)
 })
 
 socket.on("update", function(data){
-    console.log("Listener requested ", data)
-    if (data.intents == "pauseplay"){
-        pausePlay()
-    }
+    
 })
 
 var qrcode;
 function setupSharing(){
-    //connect to sockets
-    //get the room code from init connection
-    let room_code = 983472
-
-    generateQrCode(room_code)
+    socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":navigator.platform}})
+   
 }
 document.getElementById("startsharing").onclick = setupSharing;
 

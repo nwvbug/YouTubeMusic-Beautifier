@@ -59,6 +59,21 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       }
 
     }
+    else if (request.action === 'TAB_FOCUSED'){
+      console.log("YTM tab is focused")
+      if (doOptimization){
+        doAnimation = false;
+        document.getElementById("animated-bg").style.opacity = "0.5";
+        document.getElementById("animated-bg").style.pointerEvents = "none";
+      }
+    } else if (request.action==='TAB_UNFOCUSED'){
+      console.log("YTM Tab is unfocused")
+      if (window.localStorage.getItem("animation") == "true"){
+        doAnimation = true;
+        document.getElementById("animated-bg").style.opacity = "1";
+        document.getElementById("animated-bg").style.pointerEvents = "all";
+      }
+    }
   });
 
 function getSongLyrics(title, artist, album){

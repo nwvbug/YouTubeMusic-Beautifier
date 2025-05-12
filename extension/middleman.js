@@ -45,6 +45,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.tabs.sendMessage(contentId, { action: 'ytm-scan-to', data: request.data }, (response) => {
             console.log("Response heard.")
         }); 
+    } else if (request.action === 'TAB_FOCUSED'){
+        chrome.runtime.sendMessage({ action: 'TAB_FOCUSED'}); 
+    } else if (request.action === 'TAB_UNFOCUSED'){
+        chrome.runtime.sendMessage({ action: 'TAB_UNFOCUSED'}); 
     }
   });
 

@@ -56,7 +56,7 @@ function getNowPlaying() {
   } catch{
     console.log("Image not grabbable")
   }
-  var playPauseState = document.getElementById("play-pause-button").getAttribute("aria-label")
+  var playPauseState = document.getElementById("play-pause-button").getAttribute("title")
 
   let url;
 
@@ -377,3 +377,15 @@ function triggerBack() {
   document.dispatchEvent(eventUp);
 
 }
+
+
+
+window.addEventListener('blur', () => {
+ console.log('YTM unfocused');
+    chrome.runtime.sendMessage({ action: 'TAB_UNFOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } });
+});
+
+window.addEventListener('focus', () => {
+ console.log('YTM focused');
+    chrome.runtime.sendMessage({ action: 'TAB_FOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } });
+});
