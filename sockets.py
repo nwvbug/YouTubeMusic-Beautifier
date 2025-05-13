@@ -8,11 +8,6 @@ redis_client = redis.Redis()
 redis_client.config_set("appendonly", "no")
 redis_client.config_set("save", "")
 
-# redis schema:
-# room_id, {host_details, current_playing, connected_devices}
-# - host_details: {host_sid, host_name, host_device_type}
-# - current_playing: {song_name, song_artist, song_album, total_time, elapsed_time, song_identifier}
-# request_sid, {device_type, device_room_id}
 
 def socket_events(socketio):
     @socketio.on("connect")
@@ -41,11 +36,16 @@ def socket_events(socketio):
 
         emit("room_created", {"room_id": room_id}, room=room_id)
 
-    @socketio.on("join_room")
-    def join_room(data):
+    @socketio.on("join_music_room")
+    def join_music_room(data):
         print("join_room")
         room_id = data["room_id"]
-        room_data = json.loads(redis_client.get(room_id))
+        raw = redis_client.get(room_id)
+        if not raw:
+            emit("room_not_found", {"message": "Room not found"})
+            return
+
+        room_data = json.loads(raw)
         if not room_data:
             emit("room_not_found", {"message": "Room not found"})
             return
@@ -55,18 +55,25 @@ def socket_events(socketio):
         device_details["device_room_id"] = room_id
         device_details["device_type"] = "client"
         redis_client.set(device_sid, json.dumps(device_details))
-
+        print(room_data)
+        if "connected_devices" not in room_data:
+            room_data["connected_devices"] = []
         room_data["connected_devices"].append(device_details)
         redis_client.set(room_id, json.dumps(room_data))
 
-        join_room(room_id)
+        join_room(room=room_id, sid=request.sid)
         emit("room_joined", {"room_data": room_data}, room=room_id)
+        emit("update", room_data["current_playing"], room=request.sid)
 
     @socketio.on("update")
     def update(data):
         # data sent on update: data["current_playing"] {"elapsed_time" "total_time", "song_identifier", "song_name", "song_artist", "song_album"}
         print("update")
-        device = json.loads(redis_client.get(request.sid))
+        raw = redis_client.get(request.sid)
+        if not raw:
+            emit("Unauthorized", {"message": "Device not registered"}, room=request.sid)
+            return
+        device = json.loads(raw)
 
         if not device:
             emit("Unauthorized", {"message": "Device not registered"}, room=request.sid)
@@ -87,6 +94,7 @@ def socket_events(socketio):
             emit("Invalid", {"message":"Invalid request body"}, room=request.sid)
 
         room_data["current_playing"] = data["current_playing"]
+        print("Playing "+room_data["current_playing"]["song_name"]+" By "+room_data["current_playing"]["song_artist"] + "on" + room_data["host_details"]["host_device_type"])
         emit("update", data["current_playing"], room=room_id)
         
 
@@ -99,4 +107,7 @@ def socket_events(socketio):
     @socketio.on("disconnect")
     def disconnect():
         print("Disconnected device")
+        # lookup if client or host
+        # if client, disconnect and inform group
+        # if host, inform group and close group
        

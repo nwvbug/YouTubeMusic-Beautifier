@@ -9,6 +9,13 @@ var compareAgainst = "data:image/gif;base64"
 var incomingSecondOffset = 0;
 var totalDuration
 
+var current_song_title
+var current_song_artist
+var current_song_album
+var current_song_album_art
+
+var live = false;
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sendQueue-ytmlyrics'){
       // queue stuff coming soon (wip)
@@ -17,11 +24,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       request.data.title = request.data.title.replaceAll("amp;", "");
       request.data.artist = request.data.artist.replaceAll("amp;", "");
       request.data.album = request.data.album.replaceAll("amp;", "");
-      send_packet(request.data)
+      
       // Use the received data
       updateTimestamp(request.data.elapsed, request.data.total)
       totalDuration = request.data.total;
       let temp_current_song = request.data.title+request.data.artist+request.data.album
+      current_song_album = request.data.album
+      current_song_artist = request.data.artist
+      current_song_title = request.data.title
+      current_song_album_art = request.data.large_image
       if (temp_current_song != current_song){
         hideLyricsView()
         loadLyricOption()
@@ -57,7 +68,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           document.getElementById("pauseplaybutton").src = "assets/play.png"
         }
       }
-
+      if(live){
+        send_packet()
+      }
     }
     else if (request.action === 'TAB_FOCUSED'){
       console.log("YTM tab is focused")

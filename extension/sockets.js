@@ -10,22 +10,49 @@ window.addEventListener("beforeunload", () =>{
 })
 
 
-function send_packet(data){
-    
+function send_packet(){
+    let data_to_send = {
+        "song_name":current_song_title,
+        "song_artist":current_song_artist,
+        "song_album":current_song_album,
+        "total_time":totalDuration,
+        "elapsed_time":current_time,
+        "song_identifier":current_song,
+        "pause_state":(document.getElementById("pauseplaybutton").src != "assets/pause.png"),
+        "incoming_second_offset":incomingSecondOffset,
+        "lyrics_bank":lyrics,
+        "times_bank":tim,
+        "album_art":current_song_album_art
+    }
+    socket.emit("update", {"current_playing":data_to_send})
 }
 
 socket.on("room_created", function(data){
     let room_id = data["room_id"];
     generateQrCode(room_id)
+    live = true;
 })
 
 socket.on("update", function(data){
-    
+    console.log("Own update heard.")
 })
 
 var qrcode;
 function setupSharing(){
-    socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":navigator.platform}})
+    let data_to_send = {
+        "song_name":current_song_title,
+        "song_artist":current_song_artist,
+        "song_album":current_song_album,
+        "total_time":totalDuration,
+        "elapsed_time":current_time,
+        "song_identifier":current_song,
+        "pause_state":(document.getElementById("pauseplaybutton").src != "assets/pause.png"),
+        "incoming_second_offset":incomingSecondOffset,
+        "lyrics_bank":lyrics,
+        "times_bank":tim,
+        "album_art":current_song_album_art
+    }
+    socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":navigator.platform}, "current_playing":data_to_send})
    
 }
 document.getElementById("startsharing").onclick = setupSharing;
