@@ -4,112 +4,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YTM Live</title>
     <link rel="shortcut icon" type="image/x-icon" href="/assets/logo">
-    <link rel="stylesheet" href="/styles/styles.css">
+    <link rel="stylesheet" href="/static/livestyles.css">
 </head>
-<style>
-    @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
 
-    :root{
-    font-family:"Host Grotesk", serif;
-
-    }
-    body{
-        padding:0;
-        margin:0;
-    }
-
-@keyframes gradient-animation {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-
-.login{
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height:100vh;
-    padding:0;
-    margin:0;
-    background: linear-gradient(300deg,#396d2a,#ae275b,#5f44bb,#c05a8b,#c0a65a,#5ac072);
-  background-size: 300% 300%;
-  animation: gradient-animation 30s ease infinite;
-}
-
-.codeholder{
-    background-color: rgba(255,255,255,0.5);
-    padding:20px;
-    border-radius:20px;
-    width:30vw;
-    min-width: 200px;
-    height:75px;
-}
-
-.code{
-    background-color: transparent;
-    border: none;
-    border-bottom: 2px solid white; 
-    outline: none;
-    width: 100%; 
-    height:100%;
-    padding: 8px 0; 
-    font-size: 30px; 
-    text-align: center;
-    box-sizing: border-box; 
-    font-family:"Host Grotesk", serif;
-    color:white;
-
-}
-.lg{
-    color:white;
-}
-
-.logo{
-    position: absolute;
-    top:15px;
-    left:15px;
-}
-.nwvbug{
-    position: absolute;
-    bottom:35px;
-    left:35px;
-}
-.incorrect{
-    animation: shake 0.55s ease-in-out;
-    color:red;
-}
-
-@keyframes shake {
-    0%, 100% {
-        transform: translateX(0); /* Start and end at the original position */
-    }
-    10%, 30%, 50%, 70%, 90% {
-        transform: translateX(-8px); /* Move left */
-    }
-    20%, 40%, 60%, 80% {
-        transform: translateX(8px); /* Move right */
-    }
-}
-.block{
-    background-color: rgba(0,0,0,0.5);
-    pointer-events:all;
-    z-index:1;
-    position: absolute;
-    height:100vh;
-    width:100vw;
-    display:none;
-}
-.none{
-    display:none;
-}
-</style>
 <body>
     <div class="block" id="block"></div>
     <div class="login" id="login">
@@ -118,72 +15,38 @@
             <input type="text" class="code" oninput="checkCode()" id="inpt">
         </div>
         <h3 class="lg">Control your music and sing along to the lyrics remotely!</h3>
-    </div>
-    <div class="logo">
+        <div class="logo">
         <img src="/assets/128x128.png" style="height:80px;">
+        </div>
+        <div class="nwvbug">
+            <img src="/assets/nwvbug.png" style="height:50px;">
+        </div>
     </div>
-    <div class="nwvbug">
-        <img src="/assets/nwvbug.png" style="height:50px;">
-    </div>
+    
 
 
     <div id="app-holder" class="none">
         <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
-    <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
-    <div class="main-body" id="main-body">
-        <div class="info-body">
-            <img id="album-image" class="album-image">
+        <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
+        <div class="content-body" id="main-body">
             
-            <div id="progressbarholder">
-                <div id="progressbar">
-                    
-                </div>
-            </div>
-            <div class="words-div">
-                <h1 id="title" style="">Title</h1>
-                <h2 id="artist-album" style="">Artist • Album</h2>
+            <div class="info-panel">
                 
-            </div>  
-            <div class="controls-outer">
-                <img src="assets/mic.svg" class="mic" id="mic">
-
-                <div id="controls-holder">
-                    <img src="assets/left skip.png" id="backbutton">
-                    <img src="assets/pause.png" data-paused="false" id="pauseplaybutton" style="width:30px; height:30px;">
-                    <img src="assets/right skip.png" id="nextbutton">
-                </div>                
-                <div class="time-container" id="time">
-                    <div class="time-popup-holder">
-                        <div class="time-adjustment">
-                            <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
-                            <div class="time-adjustment-controls">
-                                <button class="time-adjustment-button" id="subtractOffset">-</button>
-                                <div class="offset" id="offset">0</div>
-                                <button class="time-adjustment-button" id="addOffset">+</button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <img src="assets/clock.svg" class="clock" id="clock">
-                </div>
             </div>
             
-        </div>
-        
-        <div id="lyrics-flex">
-            <div id="lyric-holder">
-    
+            <div class="lyrics-panel">
+
             </div>
+
         </div>
-        
-        
-    </div>
     </div>
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js" integrity="sha512-q/dWJ3kcmjBLU4Qc47E4A9kTB4m3wuTY7vkFJDTZKjTs8jhyGQnaUrxa0Ytd0ssMZhbNua9hE+E7Qv1j+DyZwA==" crossorigin="anonymous"></script>
-<script src="/static/live.js"></script>
+<script src="/static/liveutils.js"></script>
 <script src="/static/livelyrics.js"></script>
 <script src="/js/backgroundMovingImage.js"></script>
 <script src="/js/colorUtils.js"></script>
+<script src="/js/displayer.js"></script>
+<script src="/static/live.js"></script>
 
 </html>

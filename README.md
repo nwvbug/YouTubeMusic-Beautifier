@@ -58,28 +58,6 @@ If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app 
 ## Info
 Privacy policy for the extension can be found at https://ytm.nwvbug.com/privacy
 
-## Running your own server
-If you wish to:
-- fork
-- contribute
-- self-host the lyrics server
-
-then this next section is probably for you. Otherwise, feel free to install normally.
-The lyrics server runs on flask. You can run it in debug mode by simply running the python file ```main.py``` in the terminal.
-What packages do I need?
-- ```Flask```
-- ```flask-cors```
-- ```syncedlyrics```
-- ```ytmusicapi```
-- ```flask_socketio```*
-  - Not used in the server as of yet, but will be soon
-- ```redis```*
-  - Not used in the server as of yet, but will be soon
-
-All of these can be found on pip.
-
-With the server running, change the REST API url in ```config.js``` to match the url your Flask server is running on.
-Done! You can load the unpacked extension into your Chrome and it will work.
 
 ## Support
 I make this primarily as a passion project and something that I wanted to exist. As such, do not feel like you have to pay anything to use the extension. All the features are free for a reason! However, if you wish to support the project, I have a buymeacoffee page here: https://buymeacoffee.com/nvemuri 
