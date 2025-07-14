@@ -22,7 +22,8 @@ function send_packet(){
         "incoming_second_offset":incomingSecondOffset,
         "lyrics_bank":lyrics,
         "times_bank":tim,
-        "album_art":current_song_album_art
+        "album_art":current_song_album_art,
+        "lyric_freshness":lyrics_fresh
     }
     socket.emit("update", {"current_playing":data_to_send})
 }

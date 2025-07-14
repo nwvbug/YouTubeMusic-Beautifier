@@ -15,6 +15,7 @@ var current_song_album
 var current_song_album_art
 
 var live = false;
+var lyrics_fresh = false;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === 'sendQueue-ytmlyrics'){
@@ -24,7 +25,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       request.data.title = request.data.title.replaceAll("amp;", "");
       request.data.artist = request.data.artist.replaceAll("amp;", "");
       request.data.album = request.data.album.replaceAll("amp;", "");
-      
       // Use the received data
       updateTimestamp(request.data.elapsed, request.data.total)
       totalDuration = request.data.total;
@@ -34,6 +34,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       current_song_title = request.data.title
       current_song_album_art = request.data.large_image
       if (temp_current_song != current_song){
+        lyrics_fresh = false;
         hideLyricsView()
         loadLyricOption()
         hideBackground()
@@ -102,8 +103,10 @@ function getSongLyrics(title, artist, album){
       if (result == "no_lyrics_found"){
         console.log("no lyrics")
         lyric_source = "none"
+        lyrics_fresh = false
         hideLyricOption()
       } else {
+        lyrics_fresh = true;
         result = JSON.parse(result)
         data = result["lrc"]
         console.log(data)
