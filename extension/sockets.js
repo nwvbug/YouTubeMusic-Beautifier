@@ -18,7 +18,7 @@ function send_packet(){
         "total_time":totalDuration,
         "elapsed_time":current_time,
         "song_identifier":current_song,
-        "pause_state":(document.getElementById("pauseplaybutton").src != "assets/pause.png"),
+        "pause_state":(document.getElementById("pauseplaybutton").getAttribute("data-paused")),
         "incoming_second_offset":incomingSecondOffset,
         "lyrics_bank":lyrics,
         "times_bank":tim,
@@ -47,11 +47,13 @@ function setupSharing(){
         "total_time":totalDuration,
         "elapsed_time":current_time,
         "song_identifier":current_song,
-        "pause_state":(document.getElementById("pauseplaybutton").src != "assets/pause.png"),
+        "pause_state":(document.getElementById("pauseplaybutton").getAttribute("data-paused")),
         "incoming_second_offset":incomingSecondOffset,
         "lyrics_bank":lyrics,
         "times_bank":tim,
-        "album_art":current_song_album_art
+        "album_art":current_song_album_art,
+        "lyric_freshness":lyrics_fresh
+
     }
     socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":navigator.platform}, "current_playing":data_to_send})
    

@@ -65,8 +65,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       if (request.data.playPauseState != null){
         if (request.data.playPauseState == "Pause" && document.getElementById("pauseplaybutton").src != "assets/pause.png"){
           document.getElementById("pauseplaybutton").src = "assets/pause.png"
+          document.getElementById("pauseplaybutton").setAttribute("data-paused", false)
         } else if (request.data.playPauseState == "Play" && document.getElementById("pauseplaybutton").src != "assets/play.png"){
           document.getElementById("pauseplaybutton").src = "assets/play.png"
+          document.getElementById("pauseplaybutton").setAttribute("data-paused", true)
+
         }
       }
       if(live){
