@@ -7,6 +7,8 @@ const socket = io(WS_URL, {
     }
 });
 
+document.getElementById("device-name-input").value = getOS()
+
 window.addEventListener("beforeunload", () =>{
     socket.emit("disconnect")
 })
@@ -32,6 +34,11 @@ function send_packet(){
     socket.emit("update", {"current_playing":data_to_send})
 }
 
+socket.on("request_update", function(data){
+    console.log("Update Requested")
+    send_packet()
+})
+
 socket.on("room_created", function(data){
     let room_id = data["room_id"];
     generateQrCode(room_id)
@@ -44,47 +51,43 @@ socket.on("update", function(data){
 
 socket.on("client_disconnected", function(data){
     console.log("A client has disconnected")
-    document.getElementById("device-")
+    console.log(data["client_internal_id"])
     client_count--;
     document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
-
+    document.getElementById("device-"+data["client_internal_id"]).remove()
 })
 
 socket.on("client_joined", function(data){
     console.log("a client has joined")
     console.log(data["client_os"])
+    console.log(data["client_internal_id"])
     client_count++;
     document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
     document.getElementById("connected_device_list").innerHTML += `
- <div class="source-entry" style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;" id="device-${client_count}">
-    <div class="source-name">
-        <p style="font-size:18px;">${data["client_os"]}</p>  
-    </div>
-    <div class="generic-button" style="background-color: red; color:white; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;">
-        Kick
-    </div>
-</div>`
+    <div class="source-entry" style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;" id="device-${data["client_internal_id"]}">
+        <div class="source-name">
+            <p style="font-size:18px;">${data["client_os"]}</p>  
+        </div>
+        <div class="generic-button" style="background-color: red; color:white; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;" id="kickbutton-${data["client_internal_id"]}">
+            Kick
+        </div>
+    </div>`
+    document.getElementById("kickbutton-"+data["client_internal_id"]).onclick = function(){
+        socket.emit("kick", {"client_internal_id":data["client_internal_id"]})
+    }
+})
+
+socket.on("control-authorized", function(data){
+    console.log("A control of type "+data["requested-action"]+" has been requested")
 })
 
 var qrcode;
 function setupSharing(){
     let data_to_send = {
-        "song_name":current_song_title,
-        "song_artist":current_song_artist,
-        "song_album":current_song_album,
-        "total_time":totalDuration,
-        "elapsed_time":current_time,
-        "song_identifier":current_song,
-        "pause_state":(document.getElementById("pauseplaybutton").getAttribute("data-paused")),
-        "incoming_second_offset":incomingSecondOffset,
-        "lyrics_bank":lyrics,
-        "times_bank":tim,
-        "album_art":current_song_album_art,
-        "lyric_freshness":lyrics_fresh,
         "allow_remote_control":document.getElementById("remote-control-check").checked
 
     }
-    socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":getOS()}, "current_playing":data_to_send})
+    socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":getOS()}, "allow_remote_control":document.getElementById("remote-control-check").checked})
    
 }
 document.getElementById("startsharing").onclick = setupSharing;

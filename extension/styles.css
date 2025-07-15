@@ -288,7 +288,7 @@ h2{
 .settings-panel{
     width:40vw;
     height:80vh;
-    background-color: rgba(0,0,0,0.75);
+    background-color: rgba(0,0,0,0.85);
     color:white;
     gap:20px;
     display:flex;
@@ -470,4 +470,13 @@ border-radius: 50%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.settings-input{
+    height: 30px;
+    font-size: 18px;
+    background-color: rgb(204, 204, 204);
+    border-radius: 50px;
+    font-family: 'Host Grotesk';
+    text-align: center;
 }
