@@ -79,6 +79,17 @@ socket.on("client_joined", function(data){
 
 socket.on("control-authorized", function(data){
     console.log("A control of type "+data["requested-action"]+" has been requested")
+    switch (data["requested-action"]){
+        case "pause":
+            pausePlay()
+            break;
+        case "skip-next":
+            skip();
+            break;
+        case "skip-previous":
+            previous();
+            break;
+    }
 })
 
 var qrcode;
