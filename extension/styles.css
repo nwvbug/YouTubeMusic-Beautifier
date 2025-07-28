@@ -4,176 +4,508 @@ body{
     padding:0;
     margin:0;
 }
+
+
+
+
+
 h1{
-    font-weight:800;
-    font-size:30px;
     margin:0;
+    padding:0;
+    color:white;
 }
 h2{
-    font-weight:400;
-    padding:0;
     margin:0;
-}
-.main-body{
-    box-sizing: border-box;
-    padding:50px 150px;
-    display:flex;
-    gap:100px;
-    width:100vw;
-    justify-content: space-evenly;
-    height:100vh;
-    align-items: center;
-    /* overflow:hidden; */
-    background-color: rgba(0, 0, 0, 0.15);
-    backdrop-filter: blur(80px); 
-    transition: gap 0.5s;
-}
-
-.info-body{
-    flex:1;
-    text-align: right;
+    padding:0;
     color:white;
-    display:flex;
-    flex-direction: column;
-    align-items: center;
-    gap:20px;
 }
 
-/* img{
-    border-radius:15px;
-    margin:10px;
-    width:500px;
-} */
-
-#lyrics-flex{
-    transition: max-width 0.5s, opacity 0.25s;
-    max-width: 50vw;
-    flex:1;
-    /* overflow:visible; */
-}
-
-#lyric-holder{
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-
-    /* width:30vw; */
-    width: 100%;
-    height:100%; 
-    overflow-y:scroll; /*
-    overflow-x:visible; */
-    color:white;
-    background-color:rgba(0, 0, 0, 0);
-    /* Create the fade effect */
-    -webkit-mask-image: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 10%,   /* Transparent at the top */
-    rgba(0, 0, 0, 1) 20%,   /* Fully opaque in the middle */
-    rgba(0, 0, 0, 1) 80%,   /* Fully opaque continues */
-    rgba(0, 0, 0, 0) 90%    /* Transparent at the bottom */
-    );
-    mask-image: linear-gradient(
-        to bottom,
-        rgba(0, 0, 0, 0) 10%, 
-        rgba(0, 0, 0, 1) 20%, 
-        rgba(0, 0, 0, 1) 80%, 
-        rgba(0, 0, 0, 0) 90%
-    );
-    -webkit-mask-size: 100% 100%;
-    mask-size: 100% 100%;
-
-    /* Ensure the div blends well with the background */
-    background-blend-mode: normal;
-}
-
-#lyric-holder > div {
-    font-size: 32px;
-    opacity: 0.4;
-    transition: 0.25s;
-    font-weight: 500;
-    width:80%;
-}
-
-#lyric-holder::-webkit-scrollbar {
-    display: none;
+/* Phone Sizing */
+    #control-text{
+        padding:30px;
+        text-align: center;
     }
 
-#middle-space{
-    width:10vw;
-}
+    .content-body{
+        backdrop-filter: blur(80px);
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        width:100vw;
+        height:100vh;
+        justify-content: space-between;
+        overflow:hidden;
+    }
 
-.words-div{
-    text-align: center;
-    width:100%;
-    align-self: self-end;
+    .lyrics-holder{
+        height:100vh;
+        width: 90vw;
+        overflow-y:scroll;
+        color:white;
+        background-color:rgba(0, 0, 0, 0);
+        /* Create the fade effect */
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 25%, 
+            rgba(0, 0, 0, 1) 40%, 
+            rgba(0, 0, 0, 1) 90%, 
+            rgba(0, 0, 0, 0) 97%
+        );
+        mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 25%, 
+            rgba(0, 0, 0, 1) 40%, 
+            rgba(0, 0, 0, 1) 80%, 
+            rgba(0, 0, 0, 0) 97%
+        );
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+
+        /* Ensure the div blends well with the background */
+        background-blend-mode: normal;
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+        display: flex;
+        flex-direction: column;
+        gap:30px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .info-panel{
+        margin-top:7vh;
+        transition: all 0.25s ease-in-out;
+        position:absolute;
+        z-index:2;
+    }
+
+    .info-panel-contents{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap:3vw;
+        padding-left:20px;
+        padding-right:20px;
+    }
+
+    .image-holder{
+        width: 25vw;
+        height: 25vw;
+    }
+    .image-holder img{
+        width:100%;
+        height:100%;
+        border-radius: 5px 5px 0px 0px;
+    }
+    .title-artist-album{
+        text-align: center;
+    }
+    .title{
+        font-weight: 800;
+        font-size:20px;
+    }
+    .artist-album{
+        font-weight:400;
+        font-size:14px;
+    }
+
+    .controls{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        gap:20px;
+    }
+     .text-controls-holder{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:15px;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .control-button{
+        width:15px;
+        aspect-ratio: 1;
+        transition:all 0.15s ease-in-out;
+        cursor: pointer;
+    }
+
+    .pause{
+        aspect-ratio:0.8;
+    }
+
+    .controls img:hover{
+        transform: scale(1.2);
+    }
+
+    .portrait-progress-bar{
+        width: 25vw;
+        height: 7px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 0px 0px 5px 5px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .progress-bar-inner{
+        height: 100%;
+        background-color: white;
+        transition: width 0.1s ease-in-out;
+        border-radius:0px 0px 5px 5px;
+        width:40%;
+    }
+    .lyrics-holder div{
+        cursor: pointer; 
+        font-size: 32px; 
+        width: 80%; 
+        opacity: 0.4; 
+        font-weight: 500;
+        transition:0.25s;
+    }
+
+
+    .image-holder img:hover{
+        transform: scale(1.01);
+        transition: 0.25s;
+        box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.25);
+    }
+
+@media (min-width:481px) {
     
+  
+    #control-text{
+        padding:0px;
+        text-align: left;
+    }
+    .content-body{
+        backdrop-filter: blur(80px);
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        width:100vw;
+        height:100vh;
+        justify-content: space-between;
+        overflow:hidden;
+    }
+
+    .lyrics-holder{
+        height:100vh;
+        width: 90vw;
+        overflow-y:scroll;
+        color:white;
+        background-color:rgba(0, 0, 0, 0);
+        /* Create the fade effect */
+        -webkit-mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0)37%, 
+            rgba(0, 0, 0, 1) 42%, 
+            rgba(0, 0, 0, 1) 80%, 
+            rgba(0, 0, 0, 0) 97%
+        );
+        mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0)37%, 
+            rgba(0, 0, 0, 1) 42%, 
+            rgba(0, 0, 0, 1) 80%, 
+            rgba(0, 0, 0, 0) 97%
+        );
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+
+        /* Ensure the div blends well with the background */
+        background-blend-mode: normal;
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+        display: flex;
+        flex-direction: column;
+        gap:30px;
+        align-items: center;
+        text-align: center;
+    }
+
+    .info-panel{
+        margin-top:7vh;
+        position:absolute;
+    }
+
+    .info-panel-contents{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap:3vw;
+
+    }
+
+    .image-holder{
+        width: 30vh;
+        height: 30vh;
+    }
+    .image-holder img{
+        width:100%;
+        height:100%;
+        border-radius: 5px 5px 0px 0px;
+    }
+    .title-artist-album{
+        text-align: center;
+    }
+    .title{
+        font-weight: 800;
+        font-size:30px;
+    }
+    .artist-album{
+        font-weight:400;
+        font-size:18px;
+    }
+
+    .controls{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        gap:30px;
+    }
+     .text-controls-holder{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:15px;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .control-button{
+        width:20px;
+        aspect-ratio: 1;
+        transition:all 0.15s ease-in-out;
+        cursor: pointer;
+    }
+
+    .pause{
+        aspect-ratio:0.8;
+    }
+
+    .controls img:hover{
+        transform: scale(1.2);
+    }
+
+    .portrait-progress-bar{
+        width: 30vh;
+        height: 7px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 0px 0px 5px 5px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .progress-bar-inner{
+        height: 100%;
+        background-color: white;
+        transition: width 0.1s ease-in-out;
+        border-radius:0px 0px 5px 5px;
+        width:40%;
+    }
+    .lyrics-holder div{
+        cursor: pointer; 
+        font-size: 32px; 
+        width: 80%; 
+        opacity: 0.4; 
+        font-weight: 500;
+        transition:0.25s;
+    }
 }
 
-h2{
-    height:20px;
+@media (min-width:1300px) {
+      .want-to-host{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap:10px;
+        margin-top: 20px;
+        color:white;
+        position:absolute;
+        bottom:35px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    #want-to-host-text{
+        text-align: left;
+    }
+    /* Overall content body*/
+  .content-body{
+        backdrop-filter: blur(80px);
+        box-sizing:border-box;
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        width:100vw;
+        height:100vh;
+        gap:10vw;
+    }
+
+    /* Left Side */
+
+    .info-panel{
+        flex:1;
+        display:flex;
+        flex-direction: column;
+        align-items:flex-end;
+        transition: all 0.25s ease-in-out;
+        margin-top:0;
+        position:relative;
+    }
+
+    .info-panel.closed{
+        align-items:center;
+    }
+
+    .info-panel-contents{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:20px;
+        transition: all 0.25s ease-in-out;
+
+    }
+
+    .text-controls-holder{
+        display:flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap:20px;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .image-holder{
+        width: 55vh;
+        height: 55vh;
+    }
+    .image-holder img{
+        width:100%;
+        height:100%;
+        border-radius: 10px;
+    }
+    .title-artist-album{
+        text-align: center;
+    }
+    .title{
+        font-weight: 800;
+        font-size:30px;
+    }
+    .artist-album{
+        font-weight:400;
+        font-size:18px;
+    }
+
+    .controls{
+        display:flex;
+        flex-direction: row;
+        align-items: center;
+        gap:55px;
+    }
+
+    .controls img{
+        height:25px;
+        width:25px;
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+    }
+
+    .controls img:hover{
+        transform: scale(1.2);
+    }
+
+    .pause{
+        height:30px !important;
+        width: 30px !important;
+    }
+
+    .progress-bar{
+        width: 55vh;
+        height: 7px;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 5px;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .progress-bar-inner{
+        height: 100%;
+        background-color: white;
+        transition: width 0.1s ease-in-out;
+        border-radius:5px;
+    }
+
+    /* Right Side */
+    .lyrics-panel{
+        display: flex;
+        flex:1;
+        align-items: center;
+        transition: all 0.25s ease-in-out;
+    }
+
+    .lyrics-holder{
+        height:90vh;
+        width: 38vw;
+        overflow-y:scroll;
+        color:white;
+        background-color:rgba(0, 0, 0, 0);
+        /* Create the fade effect */
+        -webkit-mask-image: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0) 10%,   /* Transparent at the top */
+        rgba(0, 0, 0, 1) 20%,   /* Fully opaque in the middle */
+        rgba(0, 0, 0, 1) 80%,   /* Fully opaque continues */
+        rgba(0, 0, 0, 0) 90%    /* Transparent at the bottom */
+        );
+        mask-image: linear-gradient(
+            to bottom,
+            rgba(0, 0, 0, 0) 10%, 
+            rgba(0, 0, 0, 1) 20%, 
+            rgba(0, 0, 0, 1) 80%, 
+            rgba(0, 0, 0, 0) 90%
+        );
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+
+        /* Ensure the div blends well with the background */
+        background-blend-mode: normal;
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox, Safari 18.2+, Chromium 121+ */
+        text-align: left;
+        display: flex;
+        flex-direction: column;
+        gap:30px;
+        align-items: flex-start;
+    }
+
+    .lyrics-holder div{
+        cursor: pointer; 
+        font-size: 32px; 
+        width: 80%; 
+        opacity: 0.4; 
+        font-weight: 500;
+        transition:0.25s;
+    }
+
+
+    .portrait-progress-bar{
+        display:none;
+    }
+
+  
 }
 
-#controls-holder{
-    padding:10px;
-
-    display:flex;
-    justify-content: center;
-    gap:70px;
-    align-items: center;
-}
-
-#controls-holder > img{
-    height:20px;
-    width:20px;
-    border-radius:0;
-    cursor: pointer;
-    transition:0.25s;
-}
-
-#controls-holder > img:hover{
-    transform:scale(1.15);
-}
-
-#progressbarholder{
-    height:7px;
-    border-radius:10px;
-    width:30vw;
-    background-color: rgba(255, 255, 255, 0.4);
-    margin-left:10px;
-    align-self:center;
-    cursor:pointer;
-}
-#progressbar{
-    height:7px;
-    border-radius:10px;
-    width:0%;
-    background-color: white;
-    transition:0.2s;
-    
-}
 
 
 
-.album-image{
-    border-radius: 10px;
-    transition:0.25s;
-}
-.album-image:hover{
-    box-shadow: 0px 0px 20px 10px rgba(0, 0, 0, 0.25);
-    transform: scale(1.01);
-}
 
-#pauseplaybutton{
-    height:30px;
-    width:30px;
-}
-.controls-outer{
-    
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap:40%;
-}
 .mic{
     height:25px;
     width:25px;
@@ -201,7 +533,7 @@ h2{
     position: absolute;
     width:350px;
     height:150px;
-    top: -150px; /* Adjust the top value to position the popup above the button */
+    top: 50px; /* Adjust the top value to position the popup above the button */
     left: 50%; /* Center the popup horizontally */
     transform: translateX(-50%); /* Center the popup horizontally */
     display:none;
@@ -228,9 +560,7 @@ h2{
     color:white;
 }
 
-.time-container:hover .time-popup-holder{
-    display:flex;
-}
+
 .time-adjustment-controls{
     width:100%;
     display:flex;

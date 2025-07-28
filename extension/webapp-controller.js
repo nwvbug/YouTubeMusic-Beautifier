@@ -5,6 +5,8 @@ document.getElementById("nextbutton").onclick = skip
 document.getElementById("mic").onclick = toggleLyrics
 document.getElementById("subtractOffset").onclick = subtractOffset
 document.getElementById("addOffset").onclick = addOffset
+document.getElementById("clock").onclick=showTimeAdjustment
+
 
 
 var currentlyShowingLyrics = true;
@@ -325,3 +327,12 @@ function performDoubleEscapeAction() {
 }, 3000) 
 }
 
+function showTimeAdjustment(){
+    document.getElementById("time-popup").style.display = "flex"
+    document.getElementById("clock").onclick=hideTimeAdjustment
+}
+
+function hideTimeAdjustment(){
+    document.getElementById("time-popup").style.display = "none"
+    document.getElementById("clock").onclick=showTimeAdjustment
+}

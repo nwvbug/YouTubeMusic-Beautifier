@@ -160,11 +160,18 @@ animate()
 
 function updateTimestamp(elapsed, total){
     document.getElementById("progressbar").style.width = ((elapsed / total)  *100)+"%";
+    document.getElementById("progressbar-portrait").style.width = ((elapsed / total)  *100)+"%";
 }
 
 function highlightLyric(lyric_id){
-    document.getElementById(lyric_id).style.fontSize = "40px"
-    document.getElementById(lyric_id).style.width = "100%"
+    if (window.innerWidth > 1300){
+        document.getElementById(lyric_id).style.width = "100%"
+        document.getElementById(lyric_id).style.fontSize = "40px"
+    }
+    else {
+        document.getElementById(lyric_id).style.scale = "1.2"
+    }
+
     document.getElementById(lyric_id).style.opacity = 1
     document.getElementById(lyric_id).style.fontWeight = 800;
     document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
@@ -172,29 +179,70 @@ function highlightLyric(lyric_id){
 }
 
 function resetLyric(lyric_id){
-    document.getElementById(lyric_id).style.opacity = 0.4;
+    
     document.getElementById(lyric_id).style.width = "80%"
     document.getElementById(lyric_id).style.fontSize = "32px"
+    document.getElementById(lyric_id).style.scale = "1"
+
+    document.getElementById(lyric_id).style.opacity = 0.4;
+    
     document.getElementById(lyric_id).style.fontWeight = 500;
 
 }
-
 function hideLyricsView(){
-    document.getElementById("lyrics-flex").style.maxWidth = "0vw"
-    document.getElementById("lyrics-flex").style.opacity = "0"
-    document.getElementById("time").style.opacity = "0"
-    document.getElementById("time").style.pointerEvents = "none"
-    document.getElementById("main-body").style.gap = "0"
+    if (window.innerWidth > 1300){
+        document.getElementById("lyric-holder").style.maxWidth = "0vw"
+        document.getElementById("lyrics-flex").style.opacity = "0"
+        document.getElementById("lyrics-flex").style.flex = "0"
+        document.getElementById("info-panel").classList.toggle("closed", true)
+        document.getElementById("main-body").style.gap = "0"
+    } else {
+        document.getElementById("lyric-holder").style.maxHeight = "0vh"
+        document.getElementById("info-panel").style.flex = "1"
+        document.getElementById("info-panel").style.display = "flex"
+        document.getElementById("info-panel").style.marginTop = "0"
+        document.getElementById("info-panel").style.bottom = "0"
+        document.getElementById("info-panel").style.top = "0"
+        document.getElementById("info-panel-contents").style.flexDirection="column";
+    }
+    return
+}
+
+window.onresize = function(event) {
+    if (window.innerWidth > 1300){
+        document.getElementById("info-panel-contents").style.flexDirection="column";
+    } if (window.innerWidth <= 1300){
+        document.getElementById("lyric-holder").style.maxWidth = "100vw"
+    }
+    hideLyricsView()
+    showLyricsView()
 }
 
 function showLyricsView(){
-    document.getElementById("lyrics-flex").style.maxWidth = "50vw"
-    document.getElementById("lyrics-flex").style.opacity = "1"
-    document.getElementById("main-body").style.gap = "100px"
-    if (lyric_source == "unofficial"){
-        document.getElementById("time").style.opacity = "1"
-        document.getElementById("time").style.pointerEvents = "all"
+    if (window.innerWidth > 1300){
+        setTimeout(() => {
+            document.getElementById("lyric-holder").style.maxWidth = "50vw"
+        }, 250);
+        document.getElementById("lyrics-flex").style.opacity = "1"
+        document.getElementById("main-body").style.gap = "10vw"
+        document.getElementById("lyrics-flex").style.flex = "1"
+        document.getElementById("info-panel").classList.toggle("closed", false)
+        document.getElementById("info-panel-contents").style.flexDirection="column";
+
+    } else {
+        
+    
+        setTimeout(() => {
+            document.getElementById("lyric-holder").style.maxHeight = "100vh"
+        }, 250);
+        document.getElementById("info-panel").style.bottom = ""
+        
+        document.getElementById("info-panel").style.flex = ""
+        document.getElementById("info-panel").style.display = ""
+        document.getElementById("info-panel").style.marginTop = "7vh"
+        document.getElementById("info-panel-contents").style.flexDirection="row";
     }
+    return
 }
 
 function hideBackground(){

@@ -8,50 +8,49 @@
 <body>
     <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
     <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
-    <div class="main-body" id="main-body">
-        <div class="info-body">
-            <img id="album-image" class="album-image">
-            
-            <div id="progressbarholder">
-                <div id="progressbar">
-                    
-                </div>
-            </div>
-            <div class="words-div">
-                <h1 id="title" style="">Title</h1>
-                <h2 id="artist-album" style="">Artist • Album</h2>
-                
-            </div>  
-            <div class="controls-outer">
-                <img src="assets/mic.svg" class="mic" id="mic">
-
-                <div id="controls-holder">
-                    <img src="assets/left skip.png" id="backbutton">
-                    <img src="assets/pause.png" data-paused="false" id="pauseplaybutton" style="width:30px; height:30px;">
-                    <img src="assets/right skip.png" id="nextbutton">
-                </div>                
-                <div class="time-container" id="time">
-                    <div class="time-popup-holder">
-                        <div class="time-adjustment">
-                            <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
-                            <div class="time-adjustment-controls">
-                                <button class="time-adjustment-button" id="subtractOffset">-</button>
-                                <div class="offset" id="offset">0</div>
-                                <button class="time-adjustment-button" id="addOffset">+</button>
-                            </div>
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
+        <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
+        <div class="content-body" id="main-body">
+            <div class="info-panel" id="info-panel">
+                <div class="info-panel-contents" id="info-panel-contents">
+                <div class="image-holder">
+                    <img id="album-image" src="/static/linkinparktestimage.jpg">
+                    <div class="portrait-progress-bar" id="progressbarholder-portrait">
+                        <div class="progress-bar-inner" id="progressbar-portrait">
                         </div>
                     </div>
-                    
-                    <img src="assets/clock.svg" class="clock" id="clock">
+                </div>
+                <div class="progress-bar" id="progressbarholder">
+                    <div class="progress-bar-inner" id="progressbar" style="width: 40%;"></div>
+                </div>
+
+                <div class="text-controls-holder">
+                    <div class="title-artist-album">
+                        <h1 class="title" id="title">The Emptiness Machine</h1>
+                        <h2 class="artist-album" id="artist-album">Linkin Park • From Zero</h2>
+                    </div>
+
+                
+
+                    <div class="controls">
+                        <img src="/assets/left skip.png" class="control-button" id="backbutton" onclick="requestSkipToPrevious()">
+                        <img src="/assets/pause.png" class="pause control-button" id="pauseplaybutton" onclick="requestPause()">
+                        <img src="/assets/right skip.png" class="control-button" id="nextbutton" onclick="requestSkipToNext()">
+                    </div>
+                </div>
+                
+
                 </div>
             </div>
             
-        </div>
-        
-        <div id="lyrics-flex">
-            <div id="lyric-holder">
+            
+            <div class="lyrics-panel" id="lyrics-flex">
+                <div class="lyrics-holder" id="lyric-holder">
+                    
     
+                </div>
             </div>
+
         </div>
         
         <!-- <div class="previous-in-queue" id="prev">
@@ -70,6 +69,21 @@
         </div> -->
     </div>
     <div class="top-bar">
+        <div class="time-container" id="time">
+                    <div class="time-popup-holder" id="time-popup">
+                        <div class="time-adjustment">
+                            <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
+                            <div class="time-adjustment-controls">
+                                <button class="time-adjustment-button" id="subtractOffset">-</button>
+                                <div class="offset" id="offset">0</div>
+                                <button class="time-adjustment-button" id="addOffset">+</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <img src="assets/clock.svg" class="clock" id="clock">
+                </div>
+        <img src="assets/mic.svg" class="mic" id="mic">
         <div class="sharing-button-holder" id="sharing-button-holder">  
             <svg width="40.13" height="30" viewBox="0 0 301 225" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M227 74C213.193 74 202 85.1929 202 99V200C202 213.807 213.193 225 227 225H276C289.807 225 301 213.807 301 200V99C301 85.1929 289.807 74 276 74H227ZM231.5 213C229.567 213 228 214.567 228 216.5C228 218.433 229.567 220 231.5 220H271.5C273.433 220 275 218.433 275 216.5C275 214.567 273.433 213 271.5 213H231.5Z" fill="white" id="sharingpath1"/>
