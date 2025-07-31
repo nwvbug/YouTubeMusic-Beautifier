@@ -110,7 +110,8 @@ function disableSharing(){
     document.getElementById("startsharing").style.color = "black"
     document.getElementById("startsharing").innerText = "Start Sharing"
     //disconnect from sockets
-    socket.disconnect()
+    socket.emit("dispose-room")
+    live = false
     document.getElementById("startsharing").onclick = setupSharing;
     document.getElementById("sharingpath1").setAttribute("fill", "white")
     document.getElementById("sharingpath2").setAttribute("fill", "white")

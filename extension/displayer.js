@@ -7,7 +7,7 @@ function initializeLyrics(){
     document.getElementById("lyric-holder").innerHTML = ""
     
     let totalhtml = ""
-    for (let i = 0; i<7; i++){ //invis elements to push down first lines to center
+    for (let i = 0; i<20; i++){ //invis elements to push down first lines to center
         let html = `<div></div>`
         totalhtml+=(html)
     }
@@ -15,7 +15,7 @@ function initializeLyrics(){
         let html = `<div id=${i} style="cursor:pointer;">${lyrics[i]}</div>`
         totalhtml+=(html)
     }
-    for (let i = 0; i<7; i++){ //invis elements to push up last lines to center
+    for (let i = 0; i<20; i++){ //invis elements to push up last lines to center
         let html = `<div></div>`
         totalhtml+=(html)
     }
@@ -35,7 +35,7 @@ function initializeLyrics(){
     //document.getElementById("lyric-holder").style.maxWidth = document.getElementById("lyric-holder").offsetWidth
     current_index = 0;
     current_time = -1;
-    document.getElementById("lyric-holder").scrollTo(0,0)
+    highlightLyric(0)
 }
 
 function selectNewLyric(i){
