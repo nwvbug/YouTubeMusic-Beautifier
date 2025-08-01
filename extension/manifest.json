@@ -1,9 +1,12 @@
 {
     "name": "YouTube Music Beautifier",
     "version": "1.1.0",
-    "description": "Gives YouTube Music's web app a proper full screen view complete with time-synced lyrics and animations.",
+    "description": "Elevate your YouTube Music Experience! Sing along to accurate time-synced lyrics, watch beautiful animated backgrounds, and control your playback from your other devices!",
     "manifest_version": 3,
     "author": "Natesh Vemuri",
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://ytm.nwvbug.com wss://ytm.nwvbug.com;"
+    },
     "action":{
         "default_popup": "popup.html",
         "default_title": "lyrics configuration"
