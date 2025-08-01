@@ -13,6 +13,9 @@ window.addEventListener("beforeunload", () =>{
     socket.emit("disconnect")
 })
 
+socket.on("disconnect", (reason) => {
+    console.log("Disconnected from server. Reason:", reason);
+});
 
 function send_packet(){
     let data_to_send = {
@@ -91,9 +94,26 @@ socket.on("control-authorized", function(data){
             break;
     }
 })
-
+window.myAudioContext = null; 
 var qrcode;
 function setupSharing(){
+    try {
+        // Assign to the global variable here
+        window.myAudioContext = new (window.AudioContext || window.webkitAudioContext)();
+        
+        const source = window.myAudioContext.createBufferSource();
+        source.buffer = window.myAudioContext.createBuffer(1, window.myAudioContext.sampleRate * 1, window.myAudioContext.sampleRate);
+        source.loop = true;
+        source.connect(window.myAudioContext.destination);
+        
+        if (window.myAudioContext.state === 'suspended') {
+            window.myAudioContext.resume();
+        }
+        source.start(0);
+        console.log("Silent audio loop started to prevent tab sleeping.");
+    } catch (e) {
+        console.error("Could not start silent audio loop:", e);
+    }
     let data_to_send = {
         "allow_remote_control":document.getElementById("remote-control-check").checked
 
