@@ -5,13 +5,13 @@
     "manifest_version": 3,
     "author": "Natesh Vemuri",
     "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://ytm.nwvbug.com wss://ytm.nwvbug.com;"
+        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://ytm.nwvbug.com wss://ytm.nwvbug.com https://ytmbeta.nwvbug.com wss://ytmbeta.nwvbug.com http://127.0.0.1:7071 ws://127.0.0.1:7071;"
     },
     "action":{
         "default_popup": "popup.html",
         "default_title": "lyrics configuration"
     },
-    "permissions": ["storage"],
+    "permissions": ["storage", "offscreen"],
     "content_scripts": [
         {
             "js": ["ytm-controller.js"],
