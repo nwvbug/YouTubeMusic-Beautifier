@@ -13,27 +13,22 @@ var currentlyShowingLyrics = true;
 var currentMainImage = "i1"
 var currentPrevImage = "i0"
 var currentNextImage = "i2"
+
+
+
 function pausePlay(){
     // let album_img = document.getElementById("album-image")
     // album_img.style.boxShadow = "0px 0px 20px 10px rgba(255, 255, 255, 0.5)"
     // setTimeout(() => {
     //     album_img.style.boxShadow = "none"
     // }, (200));
-    let button = document.getElementById("pauseplaybutton")
-    if (button.getAttribute("data-paused") == "false"){
-        button.src = "assets/play.png"
-        button.setAttribute("data-paused", "true")
-    } else {
-        button.src = "assets/pause.png"
-        button.setAttribute("data-paused", "false")
-    }
-    chrome.runtime.sendMessage({ action: 'ytm-pause', data: null })
+    chrome.runtime.sendMessage({origin:"webapp", payload: 'ytm-pause', data: null })
     
 }
 
 function previous(){
     document.getElementById("lyric-holder").scrollTo(0, 0)
-    chrome.runtime.sendMessage({ action: 'ytm-back', data: null })
+    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-back', data: null })
 }
 
 function skip(){
@@ -72,18 +67,14 @@ function skip(){
     //     },500)
     // }, 1000)    
 
-    chrome.runtime.sendMessage({ action: 'ytm-next', data: null })
+    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-next', data: null })
 }
 
 
-
-function requestQueueUpdate(){
-    chrome.runtime.sendMessage({ action: 'ytm-request-queue-update', data: null })
-}
 function requestSongDataUpdate(){
-    chrome.runtime.sendMessage({ action: 'ytm-request-song-data-update', data: null })
+    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-requestUpdate', data: null })
 }
-requestQueueUpdate();
+
 requestSongDataUpdate();
 
 function toggleLyrics(){
@@ -171,9 +162,8 @@ document.getElementById("sharing-panel").onclick = function(e){ e.stopPropagatio
 function requestScanTo(timecode){
     let timeToScan = timecode - current_time;
     console.log("Requesting scan to timecode: ", timeToScan)
-    chrome.runtime.sendMessage({ action: 'ytm-scan-to', data: {time:timeToScan} }).then(response => {
-        console.log('Response from background:', response); 
-      })
+
+    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-scan-to', data: {time:timeToScan} })
 }
 
 var background_blur;
@@ -336,3 +326,6 @@ function hideTimeAdjustment(){
     document.getElementById("time-popup").style.display = "none"
     document.getElementById("clock").onclick=showTimeAdjustment
 }
+
+
+

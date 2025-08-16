@@ -118,7 +118,7 @@ console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 function collectCurrentSongData(){
   let data = getNowPlaying();
   console.log(data)
-  chrome.runtime.sendMessage({ action: 'sendData', data: data }).then(response => {
+  chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'sendData', data: data }}).then(response => {
     console.log('Response from background:', response); 
   })
   .catch(error => {
@@ -296,7 +296,7 @@ function getQueue(){
     "previous":previous,
     "queue_data":queue_data
   }
-  chrome.runtime.sendMessage({ action: 'sendQueue', data: queue }).then(response => {
+  chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'sendQueue', data: queue }}).then(response => {
     console.log('Response from background:', response); 
   })
   .catch(error => {
@@ -382,10 +382,10 @@ function triggerBack() {
 
 window.addEventListener('blur', () => {
  console.log('YTM unfocused');
-    chrome.runtime.sendMessage({ action: 'TAB_UNFOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } });
+    chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'TAB_UNFOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } }});
 });
 
 window.addEventListener('focus', () => {
  console.log('YTM focused');
-    chrome.runtime.sendMessage({ action: 'TAB_FOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } });
+    chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'TAB_FOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } }});
 });

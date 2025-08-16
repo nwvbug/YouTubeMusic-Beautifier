@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
+</body>
+<script src="extension/colorUtils.js"></script>
+<script src="extension/backgroundMovingImage.js"></script>
+<script>  
+    const canvas = document.getElementById("backgroundCanvas")
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const ctx = canvas.getContext("2d")
+    var images = []
+    function drawStaticImagedBackground(imageUrl){
+        console.log("starting")
+        images = []
+        for (let i = 0; i<10; i++){
+            console.log("pushing")
+            images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, 0.5, 0.5, 0.5))
+        }
+        setTimeout(()=> {
+            console.log("timeout")
+            ctx.clearRect(0, 0, canvas.width, canvas.height)
+            images.forEach(image => {
+                console.log("drawing")
+                image.draw()
+            })
+        }, 1000)
+    }
+
+    drawStaticImagedBackground("https://lh3.googleusercontent.com/BVHYnWIH4AkjpL3mMfBZWy716dTHSL4f-rm0XUjyTcA3TWczFrFEmfrW_VsyTxz5wKsq3BZMB2DRU0mSxQ=w544-h544-l90-rj")
+</script>
+</html>
