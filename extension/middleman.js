@@ -8,6 +8,7 @@ var current_song_identifier = ""
 var webapp_loaded = false
 var searched_for_lyrics = false
 var live
+var current_album_art = undefined
 
 //lyrics fresh and searched for lyrics explanation:
 //lyrics fresh = do lyrics match current song
@@ -109,6 +110,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             }
             //end offscreen origin request case
             break
+        
+        case "popup":
+            //popup (on ytm page- when extension clicked) origin request case
+            if (request.action=="request_image"){
+                chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
+            }
     }
 });
 
@@ -126,7 +133,7 @@ function getSongLyrics(title, artist, album){
       // Handle the received text data
       console.log(result); 
       searched_for_lyrics = true
-      if (result == "no_lyrics_found"){
+      if (result == "no_lyrics_found" || result.includes("<title>500 Internal Server Error</title>")){
         console.log("no lyrics")
         lyric_source = "none"
         lyrics_fresh = false
@@ -139,6 +146,9 @@ function getSongLyrics(title, artist, album){
           parseUnofficialLyrics(data)
         } else if (result["source"] == "ytm"){
           parseYTMLyrics(data)
+        }
+        if (times.length == 0){
+            lyrics_fresh = false
         }
       }
       
@@ -204,6 +214,7 @@ function next(){
 function parseYTMData(data){
     console.log("Parsing")
     console.log(data)
+    current_album_art = data.large_image
     let incoming_id = data.title+data.artist+data.album
     if (incoming_id != current_song_identifier && webapp_loaded){
         console.log("New Song, checking for lyrics")
@@ -220,7 +231,7 @@ function parseYTMData(data){
         "total_time":data.total,
         "elapsed_time":data.elapsed,
         "song_identifier":incoming_id,
-        "pause_state":data.isPlaying,
+        "pause_state":data.pause_state,
         "incoming_second_offset":data.secondOffset,
         "lyrics_bank":lyrics,
         "times_bank":times,

@@ -9,12 +9,14 @@
     body{
         font-family:"Host Grotesk", serif;
         color: white;
-        background-color: black;
+        background-color: white;
+        margin:0;
+        padding:0;
     }
     button::before{
         display:flex;
         flex-direction: column;
-        content: 'Open Pretty Fullscreen';
+        content: 'Open Beautifier';
         text-align: center;
         justify-content: center;
         position: absolute;
@@ -28,8 +30,7 @@
         border-radius: 5px;
     }
     button{
-        background-color: black;
-
+        background-color: rgba(255, 255, 255, 0);
         position:relative;
         cursor:pointer;
         font-family:"Host Grotesk", serif;
@@ -44,11 +45,47 @@
     button:hover::before{
        opacity:1;
     }
+    #contentBody{
+        
+        display:flex; flex-direction: column; align-items: center; justify-content: center;
+        width:100vw;
+        height:100vh;
+        background-color: rgba(0,0,0,0.15);
+        backdrop-filter: blur(20px);
+    }
+    #canvasBlocker{
+        width:100vw;
+        height:100vh;
+        position:absolute;
+        background-color: black;
+        transition:0.25s;
+    }
+    #logo{
+        height:35px;
+        aspect-ratio: 1;
+        position:absolute;
+        top:7px;
+        left:7px;
+    }
+    #albumart{
+        height:150px;
+        aspect-ratio:1;
+        border-radius:10px;
+    }
 </style>
-<body style="height:300px; width:275px; display:flex; flex-direction: column; align-items: center; justify-content: center;">
-    <img src="assets/128x128.png">
-    <h1>YTM Beautifier</h1>
-    <button id="openWebApp">Open Pretty Fullscreen</button>
+<body style="height:350px; width:275px; ">
+    <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
+    <div id="canvasBlocker"></div>
+    <div id="contentBody">
+        <img id="logo" src="assets/128x128.png">
+        <img id="albumart" src="">
+        <p id="musicquotes">Great song choice!</p>
+        <h1>YTM Beautifier</h1>
+        <button id="openWebApp">Open Beautifier</button>
+    </div>
+    
 </body>
+<script src="colorUtils.js"></script>
+<script src="backgroundMovingImage.js"></script>
 <script src="popup-scripts.js"></script>
 </html>

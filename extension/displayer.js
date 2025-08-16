@@ -35,7 +35,9 @@ function initializeLyrics(){
     //document.getElementById("lyric-holder").style.maxWidth = document.getElementById("lyric-holder").offsetWidth
     current_index = 0;
     current_time = -1;
-    highlightLyric(0)
+    setTimeout(()=>{
+        document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center"})
+    }, 200)
 }
 
 function selectNewLyric(i){
@@ -98,37 +100,18 @@ canvas.height = window.innerHeight;
 // Also log the viewport size to compare
 const ctx = canvas.getContext("2d")
 var images = []
+var staticImages = []
 const speedsX = [-0.15, 0.17, -0.1, 0.12, -0.15, -0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
 const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2, -0.15, 0.17, -0.1, 0.12, -0.15,]
 
 const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.0002, -0.0003, 0.0004, -0.0005, -0.0003, 0.0004, -0.0005, 0.0003, -0.0004]
 
-function createStaticBackground(imageUrl){
-    
-    const image = new Image();
-    image.src = imageUrl
-    image.crossOrigin = "Anonymous"
-    image.onload = () => {
-        let offscreenCanvas = new OffscreenCanvas(image.width, image.height);
-        let ctx = offscreenCanvas.getContext('2d');
-
-        ctx.drawImage(image, 0, 0);
-
-        let imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        let commons = getMostCommonColorValue(imageData)
-
-        let color1 = findBackgroundColor(imageData, commons[0]);
-        let color2 = findBackgroundColor(imageData, commons[1]);
-        document.body.style.backgroundImage = `linear-gradient(${Math.floor(Math.random() * 361)}deg, ${color1},  ${color2}`
-    };
-}
 
 
 
 function createAnimatedBackground(imageUrl){
-    createStaticBackground(imageUrl)
     images = []
-    for (let i = 0; i<15; i++){
+    for (let i = 0; i<20; i++){
         images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i], rotationSpeeds[i]))
     }
     setTimeout(() => {    drawInitialFrame()
