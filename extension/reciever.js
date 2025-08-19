@@ -6,7 +6,6 @@ var queue_cache;
 var queue_hash;
 var current_queue_index;
 var compareAgainst = "data:image/gif;base64"
-var incomingSecondOffset = 0;
 var totalDuration
 var last_lyrics_refresh = ""
 var current_song_title
@@ -53,6 +52,9 @@ function onUpdate(data){
            showBackground()
           if (currentlyShowingLyrics && data.lyrics_freshness){
             showLyricsView()
+            console.log("SCROLLING TO LYRICS 1")
+            document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+            
           }
         }, 1000);
         console.log("song id: "+data.song_identifier)
@@ -80,6 +82,10 @@ function onUpdate(data){
             lyrics = data.lyrics_bank
             tim = data.times_bank
             initializeLyrics()
+            setTimeout(()=>{
+                console.log("SCROLLING TO LYRICS 2")
+                document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+            }, 250)
             displayLyricOneAtATime(data.elapsed_time)
             last_lyrics_refresh = data.song_identifier
         }

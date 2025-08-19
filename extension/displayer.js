@@ -3,6 +3,7 @@ current_index = 0
 var doAnimation = true;
 
 function initializeLyrics(){
+    console.log("INIT LYRICS")
     document.getElementById("lyric-holder").style.maxWidth = ""
     document.getElementById("lyric-holder").innerHTML = ""
     
@@ -35,9 +36,6 @@ function initializeLyrics(){
     //document.getElementById("lyric-holder").style.maxWidth = document.getElementById("lyric-holder").offsetWidth
     current_index = 0;
     current_time = -1;
-    setTimeout(()=>{
-        document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center"})
-    }, 200)
 }
 
 function selectNewLyric(i){
@@ -157,7 +155,7 @@ function highlightLyric(lyric_id){
 
     document.getElementById(lyric_id).style.opacity = 1
     document.getElementById(lyric_id).style.fontWeight = 800;
-    document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+    document.getElementById(lyric_id).scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth", "container":"nearest"})
 
 }
 

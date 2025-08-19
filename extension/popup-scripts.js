@@ -27,7 +27,6 @@ let music_quotes = [
     "Instant replay material 🔄",
     "Playlist royalty 🎭"
 ]
-document.getElementById("musicquotes").innerText = music_quotes[Math.floor(Math.random()*music_quotes.length)]
 
 const canvas = document.getElementById("backgroundCanvas")
 canvas.width = window.innerWidth;
@@ -73,6 +72,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         console.log("popup background image")
         console.log(request.payload)
         if (request.payload){
+            document.getElementById("musicquotes").innerText = music_quotes[Math.floor(Math.random()*music_quotes.length)]
             document.getElementById("albumart").src=request.payload
             setTimeout(()=>{
                 drawStaticImagedBackground(request.payload)

@@ -1,5 +1,5 @@
 var contentId; //ID of origin YTM tab (to make sure messages are delivered when sent back)
-var secondOffset
+var incomingSecondOffset = 0
 var lyrics= []
 var times = []
 var lyrics_fresh = false
@@ -17,13 +17,10 @@ var current_album_art = undefined
 // lyrics not fresh, not searched: show searching option
 // lyrics not fresh, searched: show no lyrics option
 
-const REST_URL = "http://127.0.0.1:7071" //Change if you have self-hosted lyrics server
+//const REST_URL = "http://127.0.0.1:7071" //Change if you have self-hosted lyrics server
 //const REST_URL = "https://ytm.nwvbug.com"
-//const REST_URL = "https://ytmbeta.nwvbug.com"
+const REST_URL = "https://ytmbeta.nwvbug.com"
 
-
-//const WS_URL = "http://localhost:7071"
-//const WS_URL = "https://ytmbeta.nwvbug.com"
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let origin = request.origin
@@ -223,16 +220,16 @@ function parseYTMData(data){
         secondOffset = 0
         getSongLyrics(data.title, data.artist, data.album)
         current_song_identifier = incoming_id
+        chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
     }
     let data_to_send = {
         "song_name":data.title,
         "song_artist":data.artist,
         "song_album":data.album,
         "total_time":data.total,
-        "elapsed_time":data.elapsed,
+        "elapsed_time":data.elapsed - incomingSecondOffset,
         "song_identifier":incoming_id,
         "pause_state":data.pause_state,
-        "incoming_second_offset":data.secondOffset,
         "lyrics_bank":lyrics,
         "times_bank":times,
         "album_art":data.large_image,
@@ -249,14 +246,36 @@ function sendToWebapp(endpoint, data){
     chrome.runtime.sendMessage({origin:"middleman", action:endpoint, payload:data})
 }
 
+function subtractOffset(){
+    incomingSecondOffset++;
+    document.getElementById("offset").innerText = -1 * incomingSecondOffset
+    saveOffset()
+}
 
+function addOffset(){
+    incomingSecondOffset--;
+    document.getElementById("offset").innerText = -1 * incomingSecondOffset
+    saveOffset()
+}   
 
+function resetOffset(){
+    chrome.storage.sync.get(current_song_identifier, (result) => {
+        if (result != undefined && result[current_song_identifier] != undefined){
+            incomingSecondOffset = result[current_song_identifier]
+            document.getElementById("offset").innerText = -1 * result[current_song_identifier]
+        } else {
+            incomingSecondOffset = 0
+            document.getElementById("offset").innerText = 0
+        }
+      });
+    
+}
 
-
-
-
-
-
+function saveOffset(){
+    chrome.storage.sync.set({ [current_song_identifier]: incomingSecondOffset }, () => {
+        console.log(`Saved ${incomingSecondOffset} under key ${current_song_identifier}`);
+      });
+}
 
 
 

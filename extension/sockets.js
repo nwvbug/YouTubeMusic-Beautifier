@@ -25,12 +25,13 @@ function playSilentAudio() {
 playSilentAudio();
 
 
-
-
+//const WS_URL = "http://127.0.0.1:7071"
+const WS_URL = "https://ytmbeta.nwvbug.com"
+var last_packet;
 var client_count = 0;
 var allow_remote = null
 let socket;
-socket = io("http://127.0.0.1:7071", {
+socket = io(WS_URL, {
     auth: {
         role:"host",
     }
@@ -52,7 +53,7 @@ function send_packet(data_to_send){
 
 socket.on("request_update", function(data){
     console.log("Update Requested")
-    send_packet()
+    send_packet(last_packet)
 })
 
 socket.on("room_created", function(data){
@@ -159,6 +160,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             setupSharing()
             break
         case "update":
+            last_packet = request.data
             send_packet(request.data)
     }
 })

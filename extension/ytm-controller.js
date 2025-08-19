@@ -16,23 +16,29 @@ function timestampToSeconds(timestamp) {
   return minutes * 60 + seconds;
 }
 
+function format(str){
+  str = str.replaceAll("&amp;", "&")
+  str = str.replaceAll("&nbsp;", " ")
+  return str
+}
+
 function getNowPlaying() {
   const outer = playerBar.querySelector(
     "yt-formatted-string.byline.ytmusic-player-bar.complex-string",
   );
   if (!outer) return null;
   const thumbnail = playerBar.querySelector("img.ytmusic-player-bar").src;
-  const title = playerBar.querySelector(
+  const title = format(playerBar.querySelector(
     "yt-formatted-string.title.ytmusic-player-bar",
-  ).innerHTML;
+  ).innerHTML);
 
   let str = ""
   const items = document.querySelector('.byline.style-scope.ytmusic-player-bar.complex-string').children
   for (let elem of items){str+=elem.innerText}
   str = str.split("•")
-  artist = str[0]
-  album = str[1]
-  date = str[2]
+  artist = format(str[0])
+  album = format(str[1])
+  date = format(str[2])
   
 
   const leftControls = playerBar.querySelector(

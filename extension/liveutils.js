@@ -1,3 +1,5 @@
+let client_count = 0
+
 function generateQrCode(roomcode){
     try{
         qrcode.clear()
