@@ -31,12 +31,26 @@ var last_packet;
 var client_count = 0;
 var allow_remote = null
 let socket;
+let identity = undefined
 socket = io(WS_URL, {
-    auth: {
-        role:"host",
-    }
+    auth: (callback) => {
+        callback({
+            role: "host",
+            identity: identity // This uses the CURRENT value of identity
+        });
+    },
 })
 
+
+socket.on("provide-identity", function(data){
+    console.log("Identity Provided")
+    identity = data["identity"]
+    sendToManager({event:"ready"})
+})
+
+socket.on("invalid-identity", function(data){
+    console.log("Reconnect happened too late- server removed data")
+})
 
 window.addEventListener("beforeunload", () =>{
     
@@ -51,12 +65,13 @@ function send_packet(data_to_send){
     socket.emit("update", {"current_playing":data_to_send})
 }
 
-socket.on("request_update", function(data){
+socket.on("request-update", function(data){
     console.log("Update Requested")
     send_packet(last_packet)
 })
 
-socket.on("room_created", function(data){
+socket.on("room-created", function(data){
+    console.log("ROOM CREATED")
     let room_id = data["room_id"];
     sendToManager({event:"room_created", data:room_id})
     live = true;
@@ -68,13 +83,13 @@ socket.on("update", function(data){
     console.log("own update heard")
 })
 
-socket.on("client_disconnected", function(data){
+socket.on("client-disconnected", function(data){
     console.log("A client has disconnected")
     console.log(data["client_internal_id"])
     sendToManager({event:"client_disconnected", data:data["client_internal_id"]})
 })
 
-socket.on("client_joined", function(data){
+socket.on("client-joined", function(data){
     console.log("a client has joined")
     console.log(data["client_os"])
     console.log(data["client_internal_id"])
@@ -100,12 +115,16 @@ socket.on("control-authorized", function(data){
     }
 })
 
+socket.on("disconnect", function(data){
+    console.warn("Socket disconnected from server.")
+})
+
 var qrcode;
 function setupSharing(){
     console.log("SENDING CREATE ROOM TO SERVER")
     //emit to worker
     //socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":getOS()}, "allow_remote_control":document.getElementById("remote-control-check").checked})
-   socket.emit("create_room", {"host_details":{"host_name":"test", "host_device_type":getOS()}, "allow_remote_control":allow_remote})
+   socket.emit("create-room", {"host_details":{"host_name":"test", "host_device_type":getOS()}, "allow_remote_control":allow_remote})
 }
 
 
@@ -113,9 +132,9 @@ function disableSharing(){
     
     //disconnect from sockets, emit to worker
     //socket.emit("dispose-room")
-    socket.emit("dispose-room", null)
+    socket.emit("dispose-room")
     live = false
-    
+    sendToManager({event:"request_termination", data:null})
 }
 
 
@@ -165,4 +184,5 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 })
 
-sendToManager({event:"ready"})
+
+

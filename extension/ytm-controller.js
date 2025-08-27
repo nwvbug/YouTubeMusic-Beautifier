@@ -95,7 +95,8 @@ function getNowPlaying() {
     total: timestampToSeconds(total),
     url,
     large_image,
-    playPauseState
+    playPauseState,
+    date
   };
 }
 
@@ -120,20 +121,23 @@ queueObserver.observe(queue_element, {
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
-
+let debounced = true
 function collectCurrentSongData(){
-  let data = getNowPlaying();
-  console.log(data)
-  chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'sendData', data: data }}).then(response => {
-    console.log('Response from background:', response); 
-  })
-  .catch(error => {
-    console.error('Error sending message:', error); 
-  });
-  //getQueue(); disabled for performance reasons
-  if (document.hasFocus()){
-    getQueue();
+  if (debounced){
+    let data = getNowPlaying();
+    console.log(data)
+    chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'sendData', data: data }}).then(response => {
+      console.log('Response from background:', response); 
+    })
+    .catch(error => {
+      console.error('Error sending message:', error); 
+    });
+    debounced = false
+    setTimeout(() => {
+      debounced = true
+    }, 150);
   }
+  
 }
 
 function triggerPause(){

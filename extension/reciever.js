@@ -12,7 +12,7 @@ var current_song_title
 var current_song_artist
 var current_song_album
 var current_song_album_art
-
+var lyrics_code
 var lyrics_fresh = false;
 var tim = []
 var lyrics = []
@@ -73,21 +73,10 @@ function onUpdate(data){
           hideLyricOption()
         }
     } else {
-        if (data.song_identifier != last_lyrics_refresh){
-            showLyricOption()
-            tim = data.times_bank
-            lyrics = data.lyrics_bank
-            console.log("Refreshing Lyrics")
-            showLyricsView()
-            lyrics = data.lyrics_bank
-            tim = data.times_bank
-            initializeLyrics()
-            setTimeout(()=>{
-                console.log("SCROLLING TO LYRICS 2")
-                document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-            }, 250)
-            displayLyricOneAtATime(data.elapsed_time)
-            last_lyrics_refresh = data.song_identifier
+        if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
+            refreshAndDisplayLyrics(data)
+            incomingSecondOffset = data["offset-for-display"]
+            document.getElementById("offset").innerText = -1 * incomingSecondOffset
         }
         
     }
@@ -100,6 +89,28 @@ function onUpdate(data){
         document.getElementById("play-pause").src = "/assets/play.png"
     }
 
+    if ((data.live) && (!live)){ //if middleman says live and page says not, trust middleman
+      live = true
+      document.getElementById("shareinfo").style.display = ""
+      generateQrCode(data.room_code)
+    }
    
 }
 
+function refreshAndDisplayLyrics(data){
+  lyrics_code = data.lyrics_code
+  showLyricOption()
+  tim = data.times_bank
+  lyrics = data.lyrics_bank
+  console.log("Refreshing Lyrics")
+  showLyricsView()
+  lyrics = data.lyrics_bank
+  tim = data.times_bank
+  initializeLyrics()
+  setTimeout(()=>{
+      console.log("SCROLLING TO LYRICS 2")
+      document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+  }, 250)
+  displayLyricOneAtATime(data.elapsed_time)
+  last_lyrics_refresh = data.song_identifier
+}

@@ -3,18 +3,53 @@ document.getElementById("album-image").onclick = pausePlay
 document.getElementById("backbutton").onclick = previous
 document.getElementById("nextbutton").onclick = skip
 document.getElementById("mic").onclick = toggleLyrics
+document.getElementById("reloadlyrics").onclick= reloadLyrics
 document.getElementById("subtractOffset").onclick = subtractOffset
 document.getElementById("addOffset").onclick = addOffset
 document.getElementById("clock").onclick=showTimeAdjustment
 
-
+var currentlyShowingTopBar = true;
+var topBarTimeout;
 
 var currentlyShowingLyrics = true;
 var currentMainImage = "i1"
 var currentPrevImage = "i0"
 var currentNextImage = "i2"
 
+let incomingSecondOffset = 0;
 
+topBarTimeout = setTimeout(function(){
+    if (currentlyShowingTopBar){
+        currentlyShowingTopBar = false;
+        document.getElementById("topbar").classList.add("invisible-top-bar")
+    }
+    
+}, 5000)
+
+
+addEventListener("mousemove", (event) => { 
+    if (topBarTimeout){
+        clearTimeout(topBarTimeout)
+    }
+    if (!currentlyShowingTopBar){
+        currentlyShowingTopBar = true
+        document.getElementById("topbar").classList.remove("invisible-top-bar")
+
+    }
+    topBarTimeout = setTimeout(function(){
+        if (currentlyShowingTopBar){
+            currentlyShowingTopBar = false;
+            document.getElementById("topbar").classList.add("invisible-top-bar")
+        }
+    
+    }, 5000)
+})
+
+function reloadLyrics(){
+    chrome.runtime.sendMessage({origin:"webapp", payload: 'reroll-lyrics', data: null })
+    loadLyricOption()
+
+}
 
 function pausePlay(){
     // let album_img = document.getElementById("album-image")
@@ -89,49 +124,36 @@ function toggleLyrics(){
 function subtractOffset(){
     incomingSecondOffset++;
     document.getElementById("offset").innerText = -1 * incomingSecondOffset
-    saveOffset()
+    chrome.runtime.sendMessage({origin:"webapp", payload: 'offset-down', data: null })
 }
 
 function addOffset(){
     incomingSecondOffset--;
     document.getElementById("offset").innerText = -1 * incomingSecondOffset
-    saveOffset()
+    chrome.runtime.sendMessage({origin:"webapp", payload: 'offset-up', data: null })
 }   
-
-function resetOffset(){
-    chrome.storage.sync.get(current_song, (result) => {
-        if (result != undefined && result[current_song] != undefined){
-            incomingSecondOffset = result[current_song]
-            document.getElementById("offset").innerText = -1 * result[current_song]
-        } else {
-            incomingSecondOffset = 0
-            document.getElementById("offset").innerText = 0
-        }
-      });
-    
-}
-
-function saveOffset(){
-    chrome.storage.sync.set({ [current_song]: incomingSecondOffset }, () => {
-        console.log(`Saved ${incomingSecondOffset} under key ${current_song}`);
-      });
-}
 
 function hideLyricOption(){
     document.getElementById("mic").style.pointerEvents = "none"
     document.getElementById("mic").style.animation = ""
     document.getElementById("mic").style.opacity = "0.15"
+
+    document.getElementById("reloadlyrics").style.display = "none"
+
 }
 
 function showLyricOption(){
-    document.getElementById("mic").style.pointerEvents = "all"
-    document.getElementById("mic").style.animation = ""
-    document.getElementById("mic").style.opacity = "1"
+    document.getElementById("mic").style.display = ""
+    document.getElementById("overallmic").style.display = "none"
+    document.getElementById("reloadlyrics").style.display = ""
+
 }
 
 function loadLyricOption(){
-    document.getElementById("mic").style.animation = "1.5s ease-in-out loadingMic infinite"
-    document.getElementById("mic").style.pointerEvents = "none"
+    document.getElementById("overallmic").style.display = ""
+    document.getElementById("mic").style.display = "none"
+    document.getElementById("reloadlyrics").style.display = "none"
+
 }
 
 function showSettings(){

@@ -1,14 +1,27 @@
-var contentId; //ID of origin YTM tab (to make sure messages are delivered when sent back)
+var ytmTabId; //ID of origin YTM tab (to make sure messages are delivered when sent back)
+var webappTabId; //id of webapp (to watch for closure and stop background processes when closed)
+var webapp_loaded = false
+let unacknowledged = 0
+
 var incomingSecondOffset = 0
 var lyrics= []
+var lyrics_code;
 var times = []
 var lyrics_fresh = false
-var allow_remote_control = true
-var current_song_identifier = ""
-var webapp_loaded = false
 var searched_for_lyrics = false
-var live
+var current_song_identifier = ""
+
+var allow_remote_control = true
+var live = false
+var current_room_code = undefined;
+
 var current_album_art = undefined
+var current_song_title = undefined
+var current_song_artist = undefined
+var current_song_album = undefined
+var current_song_year = undefined
+
+
 
 //lyrics fresh and searched for lyrics explanation:
 //lyrics fresh = do lyrics match current song
@@ -27,11 +40,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     let payload = request.payload
     console.log("Middleman Recieved Message From: "+origin+" With payload of ")
     //console.log(payload)
-
+    console.log("UNACK: "+unacknowledged)
     switch (origin){
         case "ytm":
             //Start YTM Origin Request Case
-            contentId = sender.tab.id
+            ytmTabId = sender.tab.id
             let action = payload.action
             if (action == "sendData"){
                 console.log("Origin Update Recieved, sending data through")
@@ -54,10 +67,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             break
 
         case "webapp":
+            webappTabId = sender.tab.id
             //Webapp origin request case
             if (payload == "acknowledge"){
                 console.log("Webapp hears updates, connected")
                 webapp_loaded = true
+                unacknowledged = 0
             } else if (payload == "ytm-pause"){
                 console.log("Webapp requests pause / play")
                 requestPausePlay()
@@ -70,7 +85,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             } else if (payload == "ytm-scan-to"){
                 console.log("webapp requests scanto")
                 requestScanTo(request.data)
-            } 
+            } else if (payload == "reroll-lyrics"){
+               getSongLyrics()
+            } else if (payload=="offset-up"){
+                addOffset()
+            } else if (payload=="offset-down"){
+                subtractOffset()
+            }
             
             else if (payload == "start-sharing"){
                 console.log("STARTING SHARING")
@@ -80,8 +101,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 let user_id = request.data.user_id
                 chrome.runtime.sendMessage({destination:"offscreen", payload:"kick_user", user_id:user_id})
             } else if (payload == "disable-sharing"){
-                live = false
-                chrome.runtime.sendMessage({destination:"offscreen", payload:"disable_sharing"})
+                disableSharing()
             }
             //end webapp origin request case
             break
@@ -91,6 +111,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
             let intents = request.payload.event
             if (intents == "room_created"){
                 live = true
+                current_room_code = request.payload.data
                 chrome.runtime.sendMessage({origin:"middleman", action:"room_created", payload:request.payload.data})
             } else if (intents == "client_disconnected"){
                 chrome.runtime.sendMessage({origin:"middleman", action:"client_disconnected", payload:request.payload.data})
@@ -104,6 +125,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 requestPrevious()
             } else if (intents == "ready"){
                 chrome.runtime.sendMessage({destination:"offscreen", payload:"start_sharing", remote:allow_remote_control})
+            } else if (intents == "request_termination"){
+                //offscreen has completed disposal cycle and is ready to close
+                chrome.offscreen.closeDocument()
             }
             //end offscreen origin request case
             break
@@ -117,12 +141,32 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 
+chrome.tabs.onRemoved.addListener((tabId, removeInfo) =>{
+    if (tabId == webappTabId){
+        console.log("User has terminated YTM:B Webapp. Shutting down active processes")
+        webapp_loaded = false;
+        if (live){
+            disableSharing()
+        }
+    }
+})
+
+function disableSharing(){
+    live = false
+    chrome.runtime.sendMessage({destination:"offscreen", payload:"disable_sharing"})
+}
+
 
 //LYRICS FINDING AND PARSING
 
-function getSongLyrics(title, artist, album){
-  
-  let url_addon = title+" "+artist
+function getSongLyrics(title, artist, album, year, reroll=false){
+  resetOffset()
+  let url_addon = ""
+  if (!reroll){
+    url_addon = title+" "+artist+" "+year
+  } else {
+    url_addon = title+" "+artist+" "+album+" "+year
+  }
   url_addon = url_addon.replaceAll("/", "-")
   url_addon = url_addon.replaceAll("%", "%25")
   fetch(REST_URL+"/request-lyrics/"+url_addon).then(response => response.text()) // Change server in config.js
@@ -136,6 +180,7 @@ function getSongLyrics(title, artist, album){
         lyrics_fresh = false
       } else {
         lyrics_fresh = true;
+        lyrics_code = crypto.randomUUID()
         result = JSON.parse(result)
         data = result["lrc"]
         console.log(data)
@@ -212,13 +257,17 @@ function parseYTMData(data){
     console.log("Parsing")
     console.log(data)
     current_album_art = data.large_image
+    current_song_album = data.album
+    current_song_artist = data.artist
+    current_song_title = data.title
+    current_song_year = data.date
     let incoming_id = data.title+data.artist+data.album
-    if (incoming_id != current_song_identifier && webapp_loaded){
+    
+    if ((incoming_id != current_song_identifier) && webapp_loaded){
         console.log("New Song, checking for lyrics")
         lyrics_fresh = false
         searched_for_lyrics = false
-        secondOffset = 0
-        getSongLyrics(data.title, data.artist, data.album)
+        getSongLyrics(data.title, data.artist, data.album, data.date)
         current_song_identifier = incoming_id
         chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
     }
@@ -231,11 +280,15 @@ function parseYTMData(data){
         "song_identifier":incoming_id,
         "pause_state":data.pause_state,
         "lyrics_bank":lyrics,
+        "lyrics_code":lyrics_code,
         "times_bank":times,
         "album_art":data.large_image,
         "lyric_freshness":lyrics_fresh,
         "allow_remote_control":allow_remote_control,
-        "searched_for_lyrics":searched_for_lyrics
+        "searched_for_lyrics":searched_for_lyrics,
+        "live":live,
+        "room_code":current_room_code,
+        "offset-for-display":incomingSecondOffset
     }
     console.log(data_to_send)
     return data_to_send
@@ -243,6 +296,7 @@ function parseYTMData(data){
 
 
 function sendToWebapp(endpoint, data){
+    unacknowledged++;
     chrome.runtime.sendMessage({origin:"middleman", action:endpoint, payload:data})
 }
 
@@ -309,26 +363,26 @@ function sendToOffscreen(update_data){
 // Authenticated functions: Use this for requests that are known to be good and want to complete
 
 function requestScanTo(scanData){
-        chrome.tabs.sendMessage(contentId, { action: 'ytm-scan-to', data: scanData }, (response) => {
+        chrome.tabs.sendMessage(ytmTabId, { action: 'ytm-scan-to', data: scanData }, (response) => {
             console.log("Response heard.")
         }); 
 }
 
 function requestNext(){
-    chrome.tabs.sendMessage(contentId, { action: 'next-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { action: 'next-from-middleman-ytm', data: null }, (response) => {
         console.log("Response heard.")
         console.log(response)
     }); 
 }
 
 function requestPrevious(){
-    chrome.tabs.sendMessage(contentId, { action: 'back-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { action: 'back-from-middleman-ytm', data: null }, (response) => {
         console.log("Response heard.")
     }); 
 }
 
 function requestPausePlay(){
-    chrome.tabs.sendMessage(contentId, { action: 'pause-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { action: 'pause-from-middleman-ytm', data: null }, (response) => {
         console.log("Response heard.")
     }); 
 }

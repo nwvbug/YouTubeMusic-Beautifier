@@ -67,7 +67,7 @@
             <img class="queue-image" id="next-image" src="https://media.istockphoto.com/id/1222357475/vector/image-preview-icon-picture-placeholder-for-website-or-ui-ux-design-vector-illustration.jpg?s=612x612&w=0&k=20&c=KuCo-dRBYV7nz2gbk4J9w1WtTAgpTdznHu55W9FjimE=">
         </div> -->
     </div>
-    <div class="top-bar">
+    <div class="top-bar" id="topbar">
         <div class="time-container" id="time">
                     <div class="time-popup-holder" id="time-popup">
                         <div class="time-adjustment">
@@ -82,7 +82,9 @@
                     
                     <img src="assets/clock.svg" class="clock" id="clock">
                 </div>
-        <img src="assets/mic.svg" class="mic" id="mic">
+        <img src="assets/mic.svg" class="overallmic" id="overallmic">
+        <img src="assets/show lyrics.png" class="mic" id="mic">
+        <img src="assets/reload lyrics.svg" class="mic" id="reloadlyrics">
         <div class="sharing-button-holder" id="sharing-button-holder">  
             <svg width="40.13" height="30" viewBox="0 0 301 225" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd" clip-rule="evenodd" d="M227 74C213.193 74 202 85.1929 202 99V200C202 213.807 213.193 225 227 225H276C289.807 225 301 213.807 301 200V99C301 85.1929 289.807 74 276 74H227ZM231.5 213C229.567 213 228 214.567 228 216.5C228 218.433 229.567 220 231.5 220H271.5C273.433 220 275 218.433 275 216.5C275 214.567 273.433 213 271.5 213H231.5Z" fill="white" id="sharingpath1"/>
@@ -113,7 +115,7 @@
     <div class="settings-holder" id="sharing-overall" style="z-index:2;">
         <div class="settings-panel" id="sharing-panel">
             <img src="assets/128x128.png" style="height:100px; width:100px; margin-top:20px;">
-            <h1>Connectivity & Sharing</h1>
+            <h1>Live Share & Remote Control</h1>
             <h2 style="margin-bottom:10px;">Control playback and view lyrics from your other devices!</h2>
             <div id="startsharing" class="generic-button" style="background-color: white; color:black; font-weight:bold; border-radius:10px; padding:10px; cursor:pointer; font-size:15px;">
                 Start Sharing
@@ -123,11 +125,14 @@
                 <div style="display:flex; flex-direction: column; align-items: center; justify-content: center;">
                     <div class="qrcodeholder">
                         <div id="qrcode">
-                    
+                            
                         </div>
-                        <div style="color:black; font-weight:600; margin-top:20px;" id="codetext">Not currently sharing.</div>
+                        <div style="display:flex; margin-top:20px; gap:15px;" id="textcodeholder">
+                            <div style="color:black; font-weight:600;" id="codetext">Not currently sharing.</div>
+                            <img src="assets/copy.png" style="height:20px; display:none;" id="copyicon" class="hovergrow">
+                        </div>
                     </div>
-                    <div style="margin-top:10px;">Scan the QR Code or go to ytm.nwvbug.com/live and enter the Room Code to join!</div>
+                    <div style="margin-top:10px; display:none" id="instructions">Scan the QR Code or go to ytm.nwvbug.com/live and enter the Room Code to join!</div>
                 </div>
             </div>
 
@@ -146,17 +151,6 @@
                             <span class="slider round"></span>
                         </label>
                     </div>
-
-
-                    <div class="source-entry" style="width:100%;">
-                        <div class="source-name">
-                            <div>
-                                <p style="font-size:18px; margin-bottom:0;">This Device's Name</p>  
-                                <p style="margin-top:0">What people will see when they connect.</p>
-                            </div>
-                        </div>
-                        <input type="text" class="settings-input" id="device-name-input">
-                    </div>
                 </div>
             </div>
 
@@ -168,10 +162,10 @@
                 </div>
             </div>
             <div style="text-align:center;">
-                Connectivity & Sharing is still in beta. Please let me know of any bugs you find with it, either using <a style="color:white;" href="https://github.com/nwvbug/YouTubeMusic-Beautifier/issues">GitHub</a> or messaging me on <a style= "color:white;" href="https://www.reddit.com/user/TopPie31/">Reddit</a>.
+                Live Share & Remote Control are still in beta. Please let me know of any bugs you find with it, either using <a style="color:white;" href="https://github.com/nwvbug/YouTubeMusic-Beautifier/issues">GitHub</a> or messaging me on <a style= "color:white;" href="https://www.reddit.com/user/TopPie31/">Reddit</a>.
             </div>
             <div>
-                Read the <a style="color:white;" href="https://ytm.nwvbug.com/connectivity">Connectivity & Sharing: Privacy and Security Details</a>           
+                Read the <a style="color:white;" href="https://ytm.nwvbug.com/connectivity">Live Share & Remote Control: Privacy and Security Details</a>           
             </div>
                 
                 
@@ -255,6 +249,11 @@
     <div class="escape-notif" id="esc-notif">
         <div class="escape-notif-inner">
             Alt-Tab or use the taskbar to return to YouTube Music.
+        </div>
+    </div>
+    <div class="escape-notif" id="copied-notif">
+        <div class="escape-notif-inner" id="copied-text">
+            Live Share link copied to clipboard.
         </div>
     </div>
 </body>

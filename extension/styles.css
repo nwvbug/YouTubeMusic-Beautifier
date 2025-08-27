@@ -6,7 +6,14 @@ body{
 }
 
 
+.hovergrow{
+    transition:0.25s;
+    cursor:pointer;
+}
 
+.hovergrow:hover{
+    transform:scale(1.2);
+}
 
 
 h1{
@@ -519,10 +526,16 @@ h2{
 
 
 
-
+.overallmic{
+    aspect-ratio: 1;
+    width:25px;
+    transition: 0.25s;
+    cursor: pointer;
+    animation: 1.5s ease-in-out loadingMic infinite
+}
 
 .mic{
-    height:25px;
+    aspect-ratio: 0.78;
     width:25px;
     transition: 0.25s;
     cursor: pointer;
@@ -738,7 +751,7 @@ border-radius: 50%;
 }
 
 .settings-button-holder{
-    opacity:0.25;
+    opacity:1;
     transition:0.25s;
     cursor:pointer;
 }
@@ -749,7 +762,7 @@ border-radius: 50%;
 }
 
 .fullscreen-button-holder{
-    opacity:0.25;
+    opacity:1;
     transition:0.25s;
     cursor:pointer;
 }
@@ -760,7 +773,7 @@ border-radius: 50%;
 }
 
 .sharing-button-holder{
-    opacity:0.25;
+    opacity:1;
     transition:0.25s;
     cursor:pointer;
 }
@@ -776,9 +789,16 @@ border-radius: 50%;
     display:flex;
     align-items: center;
     gap:15px;
+    opacity:1;
+    transition:0.5s;
+}
+
+.invisible-top-bar{
+    opacity:0;
 }
 
 .escape-notif{
+    z-index:3;
     position: absolute;
     bottom: 20px;
     left:50%;
