@@ -31,8 +31,8 @@ var current_song_year = undefined
 // lyrics not fresh, searched: show no lyrics option
 
 //const REST_URL = "http://127.0.0.1:7071" //Change if you have self-hosted lyrics server
-//const REST_URL = "https://ytm.nwvbug.com"
-const REST_URL = "https://ytmbeta.nwvbug.com"
+const REST_URL = "https://ytm.nwvbug.com"
+//const REST_URL = "https://ytmbeta.nwvbug.com"
 
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -86,7 +86,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 console.log("webapp requests scanto")
                 requestScanTo(request.data)
             } else if (payload == "reroll-lyrics"){
-               getSongLyrics()
+               getSongLyrics(current_song_title, current_song_artist, current_song_album, current_song_year, true)
             } else if (payload=="offset-up"){
                 addOffset()
             } else if (payload=="offset-down"){
