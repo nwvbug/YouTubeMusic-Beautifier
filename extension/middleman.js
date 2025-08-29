@@ -302,13 +302,13 @@ function sendToWebapp(endpoint, data){
 
 function subtractOffset(){
     incomingSecondOffset++;
-    document.getElementById("offset").innerText = -1 * incomingSecondOffset
+    //document.getElementById("offset").innerText = -1 * incomingSecondOffset
     saveOffset()
 }
 
 function addOffset(){
     incomingSecondOffset--;
-    document.getElementById("offset").innerText = -1 * incomingSecondOffset
+    //document.getElementById("offset").innerText = -1 * incomingSecondOffset
     saveOffset()
 }   
 
@@ -316,10 +316,10 @@ function resetOffset(){
     chrome.storage.sync.get(current_song_identifier, (result) => {
         if (result != undefined && result[current_song_identifier] != undefined){
             incomingSecondOffset = result[current_song_identifier]
-            document.getElementById("offset").innerText = -1 * result[current_song_identifier]
+            //document.getElementById("offset").innerText = -1 * result[current_song_identifier]
         } else {
             incomingSecondOffset = 0
-            document.getElementById("offset").innerText = 0
+            //document.getElementById("offset").innerText = 0
         }
       });
     
