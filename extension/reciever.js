@@ -16,6 +16,7 @@ var lyrics_code
 var lyrics_fresh = false;
 var tim = []
 var lyrics = []
+var started = false
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.origin != "middleman"){
@@ -52,17 +53,22 @@ function onUpdate(data){
            showBackground()
           if (currentlyShowingLyrics && data.lyrics_freshness){
             showLyricsView()
-            console.log("SCROLLING TO LYRICS 1")
-            document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+            // console.log("SCROLLING TO LYRICS 1")
+            // document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
             
           }
         }, 1000);
         console.log("song id: "+data.song_identifier)
         document.getElementById("title").innerText = data.song_name;
-        document.getElementById("artist-album").innerText = data.song_artist + " • " + data.song_album
+        if (data.song_album.length > 40){
+            document.getElementById("artist-album").innerText = data.song_artist + " • " + data.song_album.substring(0,27)+"..."
+        } else {
+            document.getElementById("artist-album").innerText = data.song_artist + " • " + data.song_album
+
+        }
         document.getElementById("album-image").src = data.album_art;
         createAnimatedBackground(data.album_art)
-        document.title = data.song_name + " | Live via YTM-B"
+        document.title = data.song_name + " | YTM-B"
     }
     console.log("Lyrics Freshness: "+data.lyric_freshness)
     if (data.lyric_freshness == false){
@@ -94,7 +100,10 @@ function onUpdate(data){
       document.getElementById("shareinfo").style.display = ""
       generateQrCode(data.room_code)
     }
-   
+   if (!started){
+      started = true
+      document.getElementById("loader").style.display = "none"
+   }
 }
 
 function refreshAndDisplayLyrics(data){
@@ -107,10 +116,10 @@ function refreshAndDisplayLyrics(data){
   lyrics = data.lyrics_bank
   tim = data.times_bank
   initializeLyrics()
-  setTimeout(()=>{
-      console.log("SCROLLING TO LYRICS 2")
-      document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-  }, 250)
+  // setTimeout(()=>{
+  //     console.log("SCROLLING TO LYRICS 2")
+  //     document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
+  // }, 250)
   displayLyricOneAtATime(data.elapsed_time)
   last_lyrics_refresh = data.song_identifier
 }

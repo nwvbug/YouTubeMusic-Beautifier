@@ -5,7 +5,7 @@
     "manifest_version": 3,
     "author": "Natesh Vemuri",
     "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://ytm.nwvbug.com https://ws.nwvbug.com wss://ws.nwvbug.com;"
+        "extension_pages": "script-src 'self'; object-src 'self'; connect-src https://ytm.nwvbug.com https://ws.nwvbug.com wss://ws.nwvbug.com https://zn.nwvbug.com http://127.0.0.1:7071 ws://127.0.0.1:7071;"
     },
     "action":{
         "default_popup": "popup.html",

@@ -121,6 +121,7 @@ queueObserver.observe(queue_element, {
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
+
 let debounced = true
 function collectCurrentSongData(){
   if (debounced){
@@ -399,3 +400,25 @@ window.addEventListener('focus', () => {
  console.log('YTM focused');
     chrome.runtime.sendMessage({origin:"ytm",payload:{ action: 'TAB_FOCUSED', tabInfo: { url: window.location.href, visibilityState: document.visibilityState } }});
 });
+
+
+let messageDispatched = false
+
+setInterval(() => {
+  if (!messageDispatched){
+    try {
+      let traditionalLyricHolder = document.querySelector("#contents > ytmusic-description-shelf-renderer > span")
+      let disclaimer = document.createElement("div")
+      disclaimer.innerText = "To use the YouTube Music Beautifier and view synced lyrics, launch the extension from your Extensions menu (puzzle piece icon)."
+      disclaimer.style.fontSize = "15px"
+      disclaimer.style.marginTop = "10px"
+      disclaimer.style.opacity = "0.7"
+      disclaimer.style.textAlign = "center"
+      disclaimer.style.padding = "0 10px"
+      traditionalLyricHolder.appendChild(disclaimer)
+      messageDispatched = true
+    } catch {
+
+    }
+  }
+}, 1000)

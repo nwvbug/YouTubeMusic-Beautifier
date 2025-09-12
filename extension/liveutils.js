@@ -75,12 +75,12 @@ function disableSharing(){
     document.getElementById("sharingpath1").setAttribute("fill", "white")
     document.getElementById("sharingpath2").setAttribute("fill", "white")
     chrome.runtime.sendMessage({origin:"webapp", payload:"disable-sharing"})
-    qrcode.clear()
+    
 }
 
 async function copyCode(){
     try {
-        await navigator.clipboard.writeText("https://ytmbeta.nwvbug.com/live?code="+code)
+        await navigator.clipboard.writeText("https://ytm.nwvbug.com/live?code="+code)
         document.getElementById("copied-text").innerText = "Live Share link copied to clipboard."
         document.getElementById("copied-notif").style.opacity = "1"
         document.getElementById("copied-notif").style.pointerEvents = "all"

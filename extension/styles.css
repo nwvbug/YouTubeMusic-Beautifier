@@ -4,7 +4,34 @@ body{
     padding:0;
     margin:0;
 }
-
+@keyframes load {
+    0% {
+        transform: scale(0.8);
+    }
+    50% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0.8);
+    }
+}
+.loader-image{
+    animation: load 1.5s ease-in-out infinite;
+    margin-bottom: 20px;
+}
+#loader{
+    position:absolute;
+    display:flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width:100vw;
+    height:100vh;
+    background: black;
+    background-size: 300% 300%;
+    animation: gradient-animation 30s ease infinite;
+    z-index:2;
+}
 
 .hovergrow{
     transition:0.25s;
@@ -400,6 +427,7 @@ h2{
     }
     .title-artist-album{
         text-align: center;
+        max-width: 55vh;
     }
     .title{
         font-weight: 800;

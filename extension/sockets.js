@@ -132,12 +132,18 @@ function disableSharing(){
     
     //disconnect from sockets, emit to worker
     //socket.emit("dispose-room")
-    socket.emit("dispose-room")
+    socket.emit("dispose-room", {"identity":identity})
+    socket.disconnect()
     live = false
     sendToManager({event:"request_termination", data:null})
 }
 
-
+function simulateDisconnect(){
+    socket.disconnect()
+    setTimeout(() => {
+        socket.connect()
+    }, 1000);
+}
 
 function getOS(){
   let os = "Unknown Device";

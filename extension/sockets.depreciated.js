@@ -140,11 +140,11 @@ function disableSharing(){
 function generateQrCode(roomcode){
     try{
         qrcode.clear()
-        qrcode.makeCode("http://ytmbeta.nwvbug.com/live?code="+roomcode)
+        qrcode.makeCode("http://ytm.nwvbug.com/live?code="+roomcode)
     } catch {
         console.log("QRCode not initialized, creating new one")
         qrcode = new QRCode("qrcode", {
-            text: "http://ytmbeta.nwvbug.com/live?code="+roomcode
+            text: "http://ytm.nwvbug.com/live?code="+roomcode
         });
     }
     
