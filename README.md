@@ -4,33 +4,18 @@
 
 - Accurate Time-Synced Lyrics using the same YTM data from the mobile app's time-synced lyrics (acquired via [ytmusicapi](https://github.com/sigma67/ytmusicapi))
   - Backup sources like MusixMatch and NetEase (using [syncedlyrics](https://github.com/moehmeni/syncedlyrics)) when YTM does not have time-synced lyrics
+- Live Share and Remote Control: Control your PC's Playback from your phone (or other device)
 - Beautiful fullscreen view including **animated** backgrounds to match album art (akin to Apple Music's)
-- Control YouTube music without leaving the fullscreen view
-![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-1.png?raw=true)
+  
+![Example Image](https://ytm.nwvbug.com/static/songchoices/dieforyou.png)
 
 ## How to use
 
 #### It's about as simple as it can get. Install the extension through the [Chrome Web Store](https://chromewebstore.google.com/detail/youtube-music-beautifier/mfgecbliilfimjghneojngcbificbdpa?hl=en) 
 When in YouTube Music, activate the extension by going to the top right of your window and clicking on the icon. Then, just click the "Open Pretty Fullscreen" button. Done! The extension will work by itself now. 
 
-## Details & customization
-
-There are a few more things that are good to know:
-- Click on the microphone icon at the bottom left of the album art to toggle whether the extension shows lyrics or not
-  - Also, if the microphone is pulsing between grey and white, it is searching for a lyrics match.
-  - and if the microphone is solidly greyed out, it failed to find lyrics for your song.
-- You can know whether the extension is using official lyrics (gotten from YouTube) or unofficial lyrics based on the presence of the clock icon at the bottom right of the album art.
-  - If it is not there, you are using official lyrics that should be accurate.
-  - If it is there, that means you are using one of the backup lyric databases. You can click on the clock to set a lyric offset in case the lyric timing is not accurate. Your offsets are saved to your Chrome's storage.
-- There is no settings menu in v1.0.0. However, that is coming soon (with the release of a performance mode)
-
-## What to expect from v1.1.0 (Next Version)
-- Settings Menu
-  - Customize background tint and animations
-- Device Connectivity
-  - Connect your phone or other device to control your PC's music playback!
-- Skip-to Lyrics
-  - Select a lyric and skip to that portion of the song
+## What to expect from v1.2.0 (Next Version)
+- I don't know yet! I have some ideas in the works, though. Check back here for updates.
 
 ## How it works
 
@@ -44,20 +29,11 @@ There are a few more things that are good to know:
 If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app simply displays a nice fullscreen view.
 ![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
 
-## Future Features
-- Connectivity!
-  - Use your phone or other device to control your YouTube Music! Similar to how Spotify lets you control media playback between devices.
-  - Watch lyrics & see song info on a different device than the one playing it.
-- Background optimization
-  - Upgrade from Canvas to WebGL
-- Community-based offset timings for unofficial sources
-  - Sometimes, the unoffical times can be incorrect. You can adjust the timings for these lyrics, but in the future, these edits can be collected and used when someone else in the community listens to the same song.
-- Queue management
-  - Manage your upcoming and past songs through YTM Beautifier instead of having to return to the YTM webapp.
 
 ## Info
 Privacy policy for the extension can be found at https://ytm.nwvbug.com/privacy
 
+Specific info about Live Share & Remote Control can be found at https://ytm.nwvbug.com/connectivity
 
 ## Support
 I make this primarily as a passion project and something that I wanted to exist. As such, do not feel like you have to pay anything to use the extension. All the features are free for a reason! However, if you wish to support the project, I have a buymeacoffee page here: https://buymeacoffee.com/nvemuri 
