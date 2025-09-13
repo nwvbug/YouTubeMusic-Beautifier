@@ -25,8 +25,8 @@ function playSilentAudio() {
 playSilentAudio();
 
 
-//const WS_URL = "http://127.0.0.1:7071"
-const WS_URL = "https://ws.nwvbug.com"
+const WS_URL = "http://127.0.0.1:7071"
+//const WS_URL = "https://ws.nwvbug.com"
 var last_packet;
 var client_count = 0;
 var allow_remote = null
@@ -101,6 +101,7 @@ function kick(client_id){
 }
 
 socket.on("control-authorized", function(data){
+    console.log(data)
     console.log("A control of type "+data["requested-action"]+" has been requested")
     switch (data["requested-action"]){
         case "pause":

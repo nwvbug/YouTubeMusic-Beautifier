@@ -96,6 +96,7 @@ function getNowPlaying() {
     url,
     large_image,
     playPauseState,
+    isPlaying,
     date
   };
 }

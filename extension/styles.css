@@ -19,6 +19,62 @@ body{
     animation: load 1.5s ease-in-out infinite;
     margin-bottom: 20px;
 }
+.tooltip-container {
+  position: relative; /* This is crucial for positioning the tooltip */
+  display: inline-block;
+}
+
+/* The tooltip text - hidden by default */
+.tooltip-container .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  width: 160px;
+  background-color: #333;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 8px;
+  
+  /* Position the tooltip below the button */
+  position: absolute;
+  z-index: 1;
+  top: 115%; /* Place it below the container */
+  left: 50%;
+  transform: translateX(-50%); /* Center the tooltip */
+
+  /* Add a smooth fade-in effect */
+  transition: opacity 0.3s;
+}
+
+/* Optional: Add a pointer arrow */
+.tooltip-container .tooltip-text::after {
+  content: "";
+  position: absolute;
+  bottom: 100%; /* Position arrow at the top of the tooltip */
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent #333 transparent;
+}
+
+
+.rightedge-tooltip-container .tooltip-text{
+    left: auto;
+    right: 0;
+    transform: translateX(0); /* Align the tooltip to the right edge */
+}
+.rightedge-tooltip-container .tooltip-text::after {
+    left: auto;
+    right: 10px; /* Adjust this value to position the arrow */
+}
+
+/* Show the tooltip when hovering over the container */
+.tooltip-container:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
+}
+
 #loader{
     position:absolute;
     display:flex;

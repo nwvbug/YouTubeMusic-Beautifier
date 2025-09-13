@@ -21,7 +21,8 @@ var current_song_artist = undefined
 var current_song_album = undefined
 var current_song_year = undefined
 
-
+var sendNewUpdate = true
+var currentPauseState;
 
 //lyrics fresh and searched for lyrics explanation:
 //lyrics fresh = do lyrics match current song
@@ -49,15 +50,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 console.log("Origin Update Recieved, sending data through")
                 let data_to_send = parseYTMData(payload.data)
                 sendToWebapp("sendParsedData", data_to_send)
-                if (live){
+                let isImportant = isUpdateImportant(data_to_send)
+                if (live && sendNewUpdate){
                     sendToOffscreen(data_to_send)
+                    sendNewUpdate = false
+                    setTimeout(() => {
+                        sendNewUpdate = true
+                    }, 200); 
+                } else if (live && isImportant){
+                    sendToOffscreen(data_to_send) //send it regardless if it contains new song or pause state change
                 }
             } else if (action == "sendQueue"){
                 console.log("Defunct Message, Ignoring")
             } else if (action=="TAB_UNFOCUSED"){
                 console.log("Unfocused Tab, sending thru")
+                sendToWebapp("tab-unfocused", null)
             } else if (action=="TAB_FOCUSED"){
                 console.log("Unfocused Tab, sending thru")
+                sendToWebapp("tab-focused", null)
             } else {
                 console.log("Unknown action intention, ignoring")
             }
@@ -101,6 +111,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 chrome.runtime.sendMessage({destination:"offscreen", payload:"kick_user", user_id:user_id})
             } else if (payload == "disable-sharing"){
                 disableSharing()
+            } else if (payload == "swap-remote-control"){
+                console.log("Swapping remote control to "+request.data.allow_remote_control)
+                allow_remote_control = request.data.allow_remote_control
             }
             //end webapp origin request case
             break
@@ -263,11 +276,12 @@ function parseYTMData(data){
     let incoming_id = data.title+data.artist+data.album
     
     if ((incoming_id != current_song_identifier) && webapp_loaded){
+        current_song_identifier = incoming_id
         console.log("New Song, checking for lyrics")
         lyrics_fresh = false
         searched_for_lyrics = false
         getSongLyrics(data.title, data.artist, data.album, data.date)
-        current_song_identifier = incoming_id
+        
         chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
     }
     let data_to_send = {
@@ -277,7 +291,7 @@ function parseYTMData(data){
         "total_time":data.total,
         "elapsed_time":data.elapsed - incomingSecondOffset,
         "song_identifier":incoming_id,
-        "pause_state":data.pause_state,
+        "pause_state":data.playPauseState,
         "lyrics_bank":lyrics,
         "lyrics_code":lyrics_code,
         "times_bank":times,
@@ -291,6 +305,17 @@ function parseYTMData(data){
     }
     console.log(data_to_send)
     return data_to_send
+}
+
+function isUpdateImportant(newData){
+    if (newData.song_identifier != current_song_identifier){
+        return true
+    }
+    if (newData.pause_state != currentPauseState){
+        currentPauseState = newData.pause_state
+        return true
+    }
+    return false
 }
 
 
@@ -312,11 +337,14 @@ function addOffset(){
 }   
 
 function resetOffset(){
+    console.log("Resetting Offset")
     chrome.storage.sync.get(current_song_identifier, (result) => {
         if (result != undefined && result[current_song_identifier] != undefined){
+            console.log("Found saved offset: "+result[current_song_identifier])
             incomingSecondOffset = result[current_song_identifier]
             //document.getElementById("offset").innerText = -1 * result[current_song_identifier]
         } else {
+            console.log("No saved offset found, resetting to 0")
             incomingSecondOffset = 0
             //document.getElementById("offset").innerText = 0
         }

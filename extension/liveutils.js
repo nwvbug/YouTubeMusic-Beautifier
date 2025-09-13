@@ -1,25 +1,26 @@
 let live = false
 let client_count = 0
 let code;
-var qrcode
+var qrcode = new QRCode("qrcode")
+
+document.getElementById("remote-control-check").onclick = swapRC;
+
+
+function swapRC(){
+    allow_remote = document.getElementById("remote-control-check").checked
+    chrome.runtime.sendMessage({origin:"webapp", payload:"swap-remote-control", data:{"allow_remote_control":allow_remote}})
+}
 
 function generateQrCode(roomcode){
     code = roomcode
-    try{
-        qrcode.clear()
-        qrcode.makeCode("http://ytm.nwvbug.com/live?code="+roomcode)
-    } catch {
-        console.log("QRCode not initialized, creating new one")
-        qrcode = new QRCode("qrcode", {
-            text: "http://ytm.nwvbug.com/live?code="+roomcode
-        });
-    }
-    
+    qrcode.clear()
+    qrcode.makeCode("http://ytm.nwvbug.com/live?code="+roomcode)
+    document.getElementById("qrcode").style.display = ""
     document.getElementById("codetext").innerText = "Room Code: "+roomcode
     document.getElementById("codetext").style.fontSize = 18
     document.getElementById("textcodeholder").style.marginTop = "20px"
     document.getElementById("copyicon").style.display = ""
-    document.getElementById("clientinfo").style.display = ""
+    //document.getElementById("clientinfo").style.display = ""
     document.getElementById("startsharing").style.backgroundColor = "rgba(255, 0, 0, 1)"
     document.getElementById("startsharing").style.color = "white"
     document.getElementById("startsharing").innerText = "Stop Sharing"
@@ -30,32 +31,43 @@ function generateQrCode(roomcode){
 }
 
 function clientDisconnected(client_id){
-    client_count--;
-    document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
-    document.getElementById("device-"+client_id).remove()
+    console.log("Client Disconnected")
+    // client_count--;
+    // document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
+    // document.getElementById("device-"+client_id).remove()
 }
 
 function clientJoined(client_data){
-    client_count++;
-    document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
-    document.getElementById("connected_device_list").innerHTML += `
-    <div class="source-entry" style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;" id="device-${client_data["client_internal_id"]}">
-        <div class="source-name">
-            <p style="font-size:18px;">${client_data["client_os"]}</p>  
-        </div>
-        <div class="generic-button" style="background-color: red; color:white; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;" id="kickbutton-${client_data["client_internal_id"]}">
-            Kick
-        </div>
-    </div>`
-    document.getElementById("kickbutton-"+client_data["client_internal_id"]).onclick = function(){
-        chrome.runtime.sendMessage({origin:"webapp", payload:"kick_connected_user", data:{user_id:client_data["client_internal_id"]}})
-    }
+    console.log("Client Joined")
+    // client_count++;
+    // document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
+    // document.getElementById("connected_device_list").innerHTML += `
+    // <div class="source-entry" style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;" id="device-${client_data["client_internal_id"]}">
+    //     <div class="source-name">
+    //         <p style="font-size:18px;">${client_data["client_os"]}</p>  
+    //     </div>
+    //     <div class="generic-button" style="background-color: red; color:white; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;" id="kickbutton-${client_data["client_internal_id"]}">
+    //         Kick
+    //     </div>
+    // </div>`
+    // document.getElementById("kickbutton-"+client_data["client_internal_id"]).onclick = function(){
+    //     chrome.runtime.sendMessage({origin:"webapp", payload:"kick_connected_user", data:{user_id:client_data["client_internal_id"]}})
+    // }
 }
 
 function setupSharing(){
+    try {
+        qrcode.clear()
+    } catch {
+        console.log("QRCode not initialized")
+    }
+    document.getElementById("qrcode").style.display = "none"
     document.getElementById("shareinfo").style.display = ""
     document.getElementById("textcodeholder").style.marginTop = "0px"
     document.getElementById("codetext").innerText = "Starting your Live Share"
+    document.getElementById("copyicon").style.display = "none"
+    document.getElementById("codetext").style.fontSize = 14
+
     let data_to_send = {
         "allow_remote_control":document.getElementById("remote-control-check").checked
     }

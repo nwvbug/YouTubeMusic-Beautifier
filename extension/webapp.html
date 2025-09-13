@@ -71,47 +71,70 @@
         </div> -->
     </div>
     <div class="top-bar" id="topbar">
-        <div class="time-container" id="time">
-                    <div class="time-popup-holder" id="time-popup">
-                        <div class="time-adjustment">
-                            <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
-                            <div class="time-adjustment-controls">
-                                <button class="time-adjustment-button" id="subtractOffset">-</button>
-                                <div class="offset" id="offset">0</div>
-                                <button class="time-adjustment-button" id="addOffset">+</button>
-                            </div>
+        <div class="tooltip-container">
+            <div class="time-container" id="time">
+                <div class="time-popup-holder" id="time-popup">
+                    <div class="time-adjustment">
+                        <div class="time-adjustment-details">Adjust Lyrics Time Offset</div>
+                        <div class="time-adjustment-controls">
+                            <button class="time-adjustment-button" id="subtractOffset">-</button>
+                            <div class="offset" id="offset">0</div>
+                            <button class="time-adjustment-button" id="addOffset">+</button>
                         </div>
                     </div>
-                    
-                    <img src="assets/clock.svg" class="clock" id="clock">
                 </div>
-        <img src="assets/mic.svg" class="overallmic" id="overallmic">
-        <img src="assets/show lyrics.png" class="mic" id="mic">
-        <img src="assets/reload lyrics.svg" class="mic" id="reloadlyrics">
-        <div class="sharing-button-holder" id="sharing-button-holder">  
-            <svg width="40.13" height="30" viewBox="0 0 301 225" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M227 74C213.193 74 202 85.1929 202 99V200C202 213.807 213.193 225 227 225H276C289.807 225 301 213.807 301 200V99C301 85.1929 289.807 74 276 74H227ZM231.5 213C229.567 213 228 214.567 228 216.5C228 218.433 229.567 220 231.5 220H271.5C273.433 220 275 218.433 275 216.5C275 214.567 273.433 213 271.5 213H231.5Z" fill="white" id="sharingpath1"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 39.9999C0 17.9086 17.9086 0 40 0H250.132C272.223 0 290.132 17.9086 290.132 40V62.996C288.262 62.6313 286.33 62.4402 284.354 62.4402H256V56C256 44.9543 247.046 36 236 36H55C43.9543 36 35 44.9543 35 56V133C35 144.046 43.9543 153 55 153H190.55V187.321H40C17.9086 187.321 0 169.412 0 147.321V39.9999Z" fill="white" id="sharingpath2"/>
-                </svg>
+                
+                <img src="assets/clock.svg" class="clock" id="clock">
+            </div>
+            <span class="tooltip-text">Adjust Lyric Offset</span>
         </div>
-        <div class="fullscreen-button-holder" id="fullscreen-button-holder">
-            <svg width="29.71" height="29.71" viewBox="0 0 208 208" fill="none" xmlns="http://www.w3.org/2000/svg" id="maximize">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M69 0H50C22.3858 0 0 22.3858 0 50V69H35V50C35 41.7157 41.7157 35 50 35H69V0ZM139 35H158C166.284 35 173 41.7157 173 50V69H208V50C208 22.3858 185.614 0 158 0H139V35ZM173 158V139H208V158C208 185.614 185.614 208 158 208H139V173H158C166.284 173 173 166.284 173 158ZM69 173H50C41.7157 173 35 166.284 35 158V139H0V158C0 185.614 22.3858 208 50 208H69V173Z" fill="white"/>
-                </svg>     
-            <svg width="29.71" height="29.71" viewBox="0 0 206 204" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;" id="minimize">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M187 135H206V170H187C178.716 170 172 176.716 172 185V204H137V185C137 157.386 159.386 135 187 135Z" fill="white"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M0 170H19C27.2843 170 34 176.716 34 185V204H69V185C69 157.386 46.6142 135 19 135H0V170Z" fill="white"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M34 19V0H69V19C69 46.6142 46.6142 69 19 69H0V34H19C27.2843 34 34 27.2843 34 19Z" fill="white"/>
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M206 34H187C178.716 34 172 27.2843 172 19V0H137V19C137 46.6142 159.386 69 187 69H206V34Z" fill="white"/>
-                </svg>
-                      
+        
+        <div class="tooltip-container" id="overallmiccontainer">
+            <img src="assets/mic.svg" class="overallmic" id="overallmic">
+            <span class="tooltip-text">Searching for lyrics...</span>
         </div>
-        <div class="settings-button-holder" id="settings-button-holder">       
-            <svg width="30" height="30" viewBox="0 0 244 243" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path fill-rule="evenodd" clip-rule="evenodd" d="M219.411 94.3951H231.3C237.785 94.3951 243.189 99.7891 244 106.262V136.468C244 142.941 238.596 148.335 232.111 148.335H220.221C218.06 156.696 214.817 164.247 210.764 171.529L219.141 179.89C223.734 184.475 223.734 192.027 219.141 196.612L197.524 218.188C192.93 222.772 185.364 222.772 180.771 218.188L172.394 209.827C165.099 213.872 157.262 217.109 149.156 219.266V231.133C149.156 237.606 143.752 243 137.267 243H106.733C100.248 243 94.8439 237.606 94.8439 231.133V219.266C86.4673 217.109 78.9014 213.872 71.6058 209.827L63.2292 218.188C58.6357 222.772 51.0698 222.772 46.4762 218.188L24.8594 196.612C20.2658 192.027 20.2658 184.475 24.8594 179.89L33.2359 171.529C29.1827 164.247 25.9402 156.426 23.7785 148.335H11.8893C5.134 148.335 0 142.941 0 136.738V106.262C0 99.7891 5.134 94.3951 11.8893 94.6648H23.5083C25.67 86.3041 28.9125 78.7525 32.9657 71.4706L24.5892 63.1099C19.9955 58.525 19.9955 50.9734 24.5892 46.3884L46.206 24.8124C50.7996 20.2275 58.3654 20.2275 62.959 24.8124L71.3356 33.1732C78.6312 29.1276 86.4673 25.8912 94.5737 23.7336V11.8668C94.5737 5.39398 99.7076 0 106.463 0H136.726C143.211 0 148.616 5.39398 148.346 11.8668V23.4639C156.722 25.6215 164.288 28.8579 171.584 32.9034L179.96 24.5427C184.554 19.9578 192.12 19.9578 196.713 24.5427L218.33 46.1188C222.924 50.7037 222.924 58.2552 218.33 62.8401L209.953 71.2009C214.007 78.4828 217.249 86.3041 219.411 94.3951ZM122 188C159.003 188 189 158.003 189 121C189 83.9969 159.003 54 122 54C84.9969 54 55 83.9969 55 121C55 158.003 84.9969 188 122 188Z" fill="white"/>
-                </svg>
-                    
+        <div class="tooltip-container" id="miccontainer">
+            <img src="assets/show lyrics.png" class="mic" id="mic">
+            <span class="tooltip-text">Show / Hide Lyrics</span>
         </div>
+        <div class="tooltip-container" id="reloadlyricscontainer">
+            <img src="assets/reload lyrics.svg" class="mic" id="reloadlyrics">
+            <span class="tooltip-text">Re-Search for Lyrics</span>
+        </div>
+        <div class="tooltip-container" id="sharingcontainer">
+            <div class="sharing-button-holder" id="sharing-button-holder">  
+                <svg width="40.13" height="30" viewBox="0 0 301 225" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M227 74C213.193 74 202 85.1929 202 99V200C202 213.807 213.193 225 227 225H276C289.807 225 301 213.807 301 200V99C301 85.1929 289.807 74 276 74H227ZM231.5 213C229.567 213 228 214.567 228 216.5C228 218.433 229.567 220 231.5 220H271.5C273.433 220 275 218.433 275 216.5C275 214.567 273.433 213 271.5 213H231.5Z" fill="white" id="sharingpath1"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 39.9999C0 17.9086 17.9086 0 40 0H250.132C272.223 0 290.132 17.9086 290.132 40V62.996C288.262 62.6313 286.33 62.4402 284.354 62.4402H256V56C256 44.9543 247.046 36 236 36H55C43.9543 36 35 44.9543 35 56V133C35 144.046 43.9543 153 55 153H190.55V187.321H40C17.9086 187.321 0 169.412 0 147.321V39.9999Z" fill="white" id="sharingpath2"/>
+                    </svg>
+            </div>
+            <span class="tooltip-text">Live Share & Remote Control</span>
+        </div>
+        <div class="rightedge-tooltip-container tooltip-container">
+            <div class="fullscreen-button-holder" id="fullscreen-button-holder">
+                <svg width="29.71" height="29.71" viewBox="0 0 208 208" fill="none" xmlns="http://www.w3.org/2000/svg" id="maximize">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M69 0H50C22.3858 0 0 22.3858 0 50V69H35V50C35 41.7157 41.7157 35 50 35H69V0ZM139 35H158C166.284 35 173 41.7157 173 50V69H208V50C208 22.3858 185.614 0 158 0H139V35ZM173 158V139H208V158C208 185.614 185.614 208 158 208H139V173H158C166.284 173 173 166.284 173 158ZM69 173H50C41.7157 173 35 166.284 35 158V139H0V158C0 185.614 22.3858 208 50 208H69V173Z" fill="white"/>
+                    </svg>     
+                <svg width="29.71" height="29.71" viewBox="0 0 206 204" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:none;" id="minimize">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M187 135H206V170H187C178.716 170 172 176.716 172 185V204H137V185C137 157.386 159.386 135 187 135Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 170H19C27.2843 170 34 176.716 34 185V204H69V185C69 157.386 46.6142 135 19 135H0V170Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M34 19V0H69V19C69 46.6142 46.6142 69 19 69H0V34H19C27.2843 34 34 27.2843 34 19Z" fill="white"/>
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M206 34H187C178.716 34 172 27.2843 172 19V0H137V19C137 46.6142 159.386 69 187 69H206V34Z" fill="white"/>
+                    </svg>
+                        
+            </div>
+            <span class="tooltip-text">Toggle Fullscreen</span>
+        </div>
+        
+        <div class="tooltip-container rightedge-tooltip-container">
+            <div class="settings-button-holder" id="settings-button-holder">       
+                <svg width="30" height="30" viewBox="0 0 244 243" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M219.411 94.3951H231.3C237.785 94.3951 243.189 99.7891 244 106.262V136.468C244 142.941 238.596 148.335 232.111 148.335H220.221C218.06 156.696 214.817 164.247 210.764 171.529L219.141 179.89C223.734 184.475 223.734 192.027 219.141 196.612L197.524 218.188C192.93 222.772 185.364 222.772 180.771 218.188L172.394 209.827C165.099 213.872 157.262 217.109 149.156 219.266V231.133C149.156 237.606 143.752 243 137.267 243H106.733C100.248 243 94.8439 237.606 94.8439 231.133V219.266C86.4673 217.109 78.9014 213.872 71.6058 209.827L63.2292 218.188C58.6357 222.772 51.0698 222.772 46.4762 218.188L24.8594 196.612C20.2658 192.027 20.2658 184.475 24.8594 179.89L33.2359 171.529C29.1827 164.247 25.9402 156.426 23.7785 148.335H11.8893C5.134 148.335 0 142.941 0 136.738V106.262C0 99.7891 5.134 94.3951 11.8893 94.6648H23.5083C25.67 86.3041 28.9125 78.7525 32.9657 71.4706L24.5892 63.1099C19.9955 58.525 19.9955 50.9734 24.5892 46.3884L46.206 24.8124C50.7996 20.2275 58.3654 20.2275 62.959 24.8124L71.3356 33.1732C78.6312 29.1276 86.4673 25.8912 94.5737 23.7336V11.8668C94.5737 5.39398 99.7076 0 106.463 0H136.726C143.211 0 148.616 5.39398 148.346 11.8668V23.4639C156.722 25.6215 164.288 28.8579 171.584 32.9034L179.96 24.5427C184.554 19.9578 192.12 19.9578 196.713 24.5427L218.33 46.1188C222.924 50.7037 222.924 58.2552 218.33 62.8401L209.953 71.2009C214.007 78.4828 217.249 86.3041 219.411 94.3951ZM122 188C159.003 188 189 158.003 189 121C189 83.9969 159.003 54 122 54C84.9969 54 55 83.9969 55 121C55 158.003 84.9969 188 122 188Z" fill="white"/>
+                </svg>
+            </div>
+            <span class="tooltip-text">Settings</span>
+        </div>
+        
         
     </div>
 

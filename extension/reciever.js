@@ -17,6 +17,7 @@ var lyrics_fresh = false;
 var tim = []
 var lyrics = []
 var started = false
+var displayedOffset = 0
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.origin != "middleman"){
@@ -33,6 +34,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     generateQrCode(request.payload)
   } else if (request.action == "client_joined"){
     clientJoined(request.payload)
+  } else if (request.action == "tab-focused"){
+    console.log("YTM Tab Focused")
+    doAnimation = false
+  } else if (request.action == "tab-unfocused"){
+    console.log("YTM Tab Unfocused")
+    doAnimation = true
   }
   
 })
@@ -45,8 +52,10 @@ function onUpdate(data){
         
     } else { //new song
         console.log("New Song")
+        rerolled = false;
         loadLyricOption()
         current_song = data.song_identifier
+        totalDuration = data.total_time
         hideLyricsView()
         hideBackground()
         setTimeout(() => {
@@ -69,6 +78,11 @@ function onUpdate(data){
         document.getElementById("album-image").src = data.album_art;
         createAnimatedBackground(data.album_art)
         document.title = data.song_name + " | YTM-B"
+
+        if (displayedOffset != data["offset-for-display"]){
+            displayedOffset = data["offset-for-display"]
+            document.getElementById("offset").innerText = displayedOffset
+        }
     }
     console.log("Lyrics Freshness: "+data.lyric_freshness)
     if (data.lyric_freshness == false){
@@ -87,12 +101,12 @@ function onUpdate(data){
         
     }
 
-    if (data.pause_state == true && document.getElementById("play-pause").src !="/assets/pause.png"){
+    if (data.pause_state == "Pause" && document.getElementById("pauseplaybutton").src !="/assets/pause.png"){
         console.log("Playing")
-        document.getElementById("play-pause").src = "/assets/pause.png"
-    } else if (data.pause_state == false && document.getElementById("play-pause").src != "/assets/play.png"){
+        document.getElementById("pauseplaybutton").src = "/assets/pause.png"
+    } else if (data.pause_state == "Play" && document.getElementById("pauseplaybutton").src != "/assets/play.png"){
         console.log("Paused")
-        document.getElementById("play-pause").src = "/assets/play.png"
+        document.getElementById("pauseplaybutton").src = "/assets/play.png"
     }
 
     if ((data.live) && (!live)){ //if middleman says live and page says not, trust middleman

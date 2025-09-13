@@ -45,8 +45,12 @@ addEventListener("mousemove", (event) => {
     }, 5000)
 })
 
+var rerolled = false;
 function reloadLyrics(){
-    chrome.runtime.sendMessage({origin:"webapp", payload: 'reroll-lyrics', data: null })
+    if (!rerolled){
+        chrome.runtime.sendMessage({origin:"webapp", payload: 'reroll-lyrics', data: null })
+        rerolled = true;
+    }
     loadLyricOption()
 
 }
@@ -134,26 +138,40 @@ function addOffset(){
 }   
 
 function hideLyricOption(){
+    document.getElementById("miccontainer").style.display = ""
     document.getElementById("mic").style.pointerEvents = "none"
     document.getElementById("mic").style.animation = ""
     document.getElementById("mic").style.opacity = "0.15"
 
-    document.getElementById("reloadlyrics").style.display = "none"
+    document.getElementById("overallmiccontainer").style.display = "none"
+
+    document.getElementById("reloadlyricscontainer").style.display = ""
+    if (rerolled){
+        document.getElementById("reloadlyrics").style.opacity = "0.15"
+        document.getElementById("reloadlyrics").style.pointerEvents = "none"
+    }
 
 }
 
 function showLyricOption(){
-    document.getElementById("mic").style.display = ""
-    document.getElementById("overallmic").style.display = "none"
-    document.getElementById("reloadlyrics").style.display = ""
+    document.getElementById("miccontainer").style.display = ""
+    document.getElementById("overallmiccontainer").style.display = "none"
+    document.getElementById("reloadlyricscontainer").style.display = ""
+    if (rerolled){
+        document.getElementById("reloadlyrics").style.opacity = "0.15"
+        document.getElementById("reloadlyrics").style.pointerEvents = "none"
+    }
 
 }
 
 function loadLyricOption(){
-    document.getElementById("overallmic").style.display = ""
-    document.getElementById("mic").style.display = "none"
-    document.getElementById("reloadlyrics").style.display = "none"
-
+    document.getElementById("overallmiccontainer").style.display = ""
+    document.getElementById("miccontainer").style.display = "none"
+    document.getElementById("reloadlyricscontainer").style.display = "none"
+    document.getElementById("reloadlyrics").style.opacity = "1"
+    document.getElementById("reloadlyrics").style.pointerEvents = "all"
+    document.getElementById("mic").style.opacity = "1"
+    document.getElementById("mic").style.pointerEvents = "all"
 }
 
 function showSettings(){
@@ -294,6 +312,8 @@ progressBarContainer.addEventListener('click', handleProgressBarClick);
 function getScanned(percentage) {
     console.log('Clicked at percentage:', percentage);
     let timeToScan = Math.floor(percentage * totalDuration);
+    console.log('Time to scan to:', timeToScan);
+    console.log(typeof timeToScan);
     requestScanTo(timeToScan);
 }
 
