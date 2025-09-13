@@ -15,6 +15,15 @@
 When in YouTube Music, activate the extension by going to the top right of your window and clicking on the icon. Then, just click the "Open Pretty Fullscreen" button. Done! The extension will work by itself now. 
 ![Example Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/ss3.png?raw=true)
 
+## Toolbar
+![Toolbar Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/toolbar.png?raw=true)
+- Clock Image: Change the Lyric Offset if they are ahead or behind of the music
+- Microphone with Eye: Show/Hide Lyrics
+- Microphone with Reload: Re-search for lyrics using a different query (If incorrect lyrics found)
+- Sharing Icon (rectangle and phone): Open the Live Share / Remote Control menu
+- Fullscreen Icon: Enter or Exit Fullscreen
+- Settings Icon: Open the Settings menu
+
 ## What to expect from v1.2.0 (Next Version)
 - I don't know yet! I have some ideas in the works, though. Check back here for updates.
 
