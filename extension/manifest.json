@@ -1,7 +1,7 @@
 {
     "name": "YouTube Music Beautifier",
     "version": "1.1.0",
-    "description": "Elevate your YouTube Music Experience! Sing along to accurate time-synced lyrics, watch beautiful animated backgrounds, and control your playback from your other devices!",
+    "description": "Elevate your YouTube Music Experience with time-synced lyrics, beautiful animated backgrounds, and remote control!",
     "manifest_version": 3,
     "author": "Natesh Vemuri",
     "content_security_policy": {
