@@ -13,6 +13,7 @@
 
 #### It's about as simple as it can get. Install the extension through the [Chrome Web Store](https://chromewebstore.google.com/detail/youtube-music-beautifier/mfgecbliilfimjghneojngcbificbdpa?hl=en) 
 When in YouTube Music, activate the extension by going to the top right of your window and clicking on the icon. Then, just click the "Open Pretty Fullscreen" button. Done! The extension will work by itself now. 
+![Example Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/ss3.png?raw=true)
 
 ## What to expect from v1.2.0 (Next Version)
 - I don't know yet! I have some ideas in the works, though. Check back here for updates.
@@ -24,10 +25,9 @@ When in YouTube Music, activate the extension by going to the top right of your 
 - Extension page can send information back to YTM which allows for play/pause back/skip
 - Backgrounds done with JS Canvas
 
-![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/lyrics-ex-2.png?raw=true)
+![Example Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/ss4.png?raw=true)
 
-If there are no lyrics found (on YouTube Music, MusixMatch, or NetEase) the app simply displays a nice fullscreen view.
-![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/no-lyrics-ex.png?raw=true)
+![Example Image](https://github.com/nwvbug/Better-YouTubeMusic/blob/main/examples/ss5.png?raw=true)
 
 
 ## Info
