@@ -12,7 +12,7 @@
 ## How to use
 
 #### It's about as simple as it can get. Install the extension through the [Chrome Web Store](https://chromewebstore.google.com/detail/youtube-music-beautifier/mfgecbliilfimjghneojngcbificbdpa?hl=en) 
-When in YouTube Music, activate the extension by going to the top right of your window and clicking on the icon. Then, just click the "Open Pretty Fullscreen" button. Done! The extension will work by itself now. 
+When in YouTube Music, activate the extension by going to the top right of your window and clicking on the icon. Then, just click the "Open Beautifier" button. Done! The extension will work by itself now. 
 ![Example Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/ss3.png?raw=true)
 
 ## Toolbar
