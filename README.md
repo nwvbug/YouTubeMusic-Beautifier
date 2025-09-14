@@ -25,7 +25,8 @@ When in YouTube Music, activate the extension by going to the top right of your 
 - Settings Icon: Open the Settings menu
 
 ## What to expect from v1.2.0 (Next Version)
-- I don't know yet! I have some ideas in the works, though. Check back here for updates.
+- System to start PC playback from phone (more of a Remote Control Dashboard as opposed to a viewer with controls)
+- Auto Offset Detection for Live (Detect the ping time and implement an offset so that all devices are *exactly* in sync, down to a few ms)
 
 ## How it works
 
