@@ -1,60 +1,71 @@
 class BackgroundMovingImage {
-    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY, rotationSpeed, cors=true){
+    static MAX_PROCESS_SIZE = 400;
+
+    constructor(imageUrl, width, height, distortionFunction, velocityX, velocityY, rotationSpeed){
         this.height = height;
         this.width = width;
         this.x = Math.floor(Math.random() * canvas.width) - width/2
         this.y = Math.floor(Math.random() * canvas.height) - height/2
         this.velocityX = velocityX
         this.velocityY = velocityY
-        
+
         this.distortedCanvas = null;
-        this.initialize(imageUrl, distortionFunction, cors)
+        this.initialize(imageUrl, distortionFunction)
         this.angle = 0;
         this.rotationSpeed = rotationSpeed
     }
 
-    initialize(imageUrl, distortionFunction, cors) {
-        this.img = new Image();
-        if (cors){
-            this.img.crossOrigin = "Anonymous";
-        }
-        this.img.src= imageUrl
-    
-        this.img.onload = () =>{
-            this.distortedCanvas = new OffscreenCanvas(this.width, this.height);
-            // this.distortedCanvas.width = this.width;
-            // this.distortedCanvas.height = this.height;
+    initialize(imageUrl, distortionFunction) {
+        const scale = Math.min(
+            BackgroundMovingImage.MAX_PROCESS_SIZE / this.width,
+            BackgroundMovingImage.MAX_PROCESS_SIZE / this.height,
+            1
+        );
+        const processWidth = Math.max(1, Math.floor(this.width * scale));
+        const processHeight = Math.max(1, Math.floor(this.height * scale));
+
+        const buildCanvas = (img) => {
+            this.distortedCanvas = new OffscreenCanvas(processWidth, processHeight);
             const distortedCtx = this.distortedCanvas.getContext("2d");
             distortedCtx.beginPath();
-            distortedCtx.arc(this.width/2, this.height/2, (this.width/3), 0, Math.PI*2); // Circle with center at (150, 150) and radius 100
+            distortedCtx.arc(processWidth/2, processHeight/2, processWidth/3, 0, Math.PI*2);
             distortedCtx.closePath();
-
-            // Clip the canvas to the path
             distortedCtx.clip();
+            distortedCtx.drawImage(img, 0, 0, processWidth, processHeight);
+            try {
+                const imageData = distortedCtx.getImageData(0, 0, processWidth, processHeight);
+                distortionFunction(imageData)
+                distortedCtx.putImageData(imageData, 0, 0)
+            } catch (e) {
+                // Tainted canvas (cross-origin) — image still shows, just no distortion
+            }
+        };
 
-            distortedCtx.drawImage(this.img, 0, 0, this.width, this.height);
-            const imageData = distortedCtx.getImageData(0, 0, this.width, this.height);
-            distortionFunction(imageData)
-            distortedCtx.putImageData(imageData, 0, 0)
+        this.img = new Image();
+        this.img.crossOrigin = "Anonymous";
+        this.img.onload = () => buildCanvas(this.img);
+        this.img.onerror = () => {
+            // CORS load failed, retry without crossOrigin
+            const retryImg = new Image();
+            retryImg.onload = () => buildCanvas(retryImg);
+            retryImg.src = imageUrl;
         }
+        this.img.src = imageUrl;
     }
 
     updatePosition(){
-        let oldX = this.x;
-        let oldY = this.y;
-
         this.x += this.velocityX;
         this.y += this.velocityY;
-        
+
         if (this.x < 0-this.width/2 && this.velocityX < 0) {
             this.velocityX = -this.velocityX;
         } else if (this.x > (canvas.width-this.width/2) && this.velocityX > 0) {
             this.velocityX = -this.velocityX;
         }
 
-        if (this.y < 0 + ((canvas.height + this.height/2) + (canvas.height/3)) && this.velocityY < 0) {
+        if (this.y < 0 - this.height/2 && this.velocityY < 0) {
             this.velocityY = -this.velocityY;
-        } else if (this.y > (canvas.height-this.height/2) - (canvas.height/3) && this.velocityY > 0) {
+        } else if (this.y > (canvas.height - this.height/2) && this.velocityY > 0) {
             this.velocityY = -this.velocityY;
         }
 
@@ -63,20 +74,17 @@ class BackgroundMovingImage {
 
     draw(){
         if (this.distortedCanvas) {
-            ctx.save(); // Save the current context state
-            
-            // Translate to image center, rotate, then translate back
+            ctx.save();
             ctx.translate(this.x + this.width/2, this.y + this.height/2);
             ctx.rotate(this.angle);
             ctx.drawImage(
-                this.distortedCanvas, 
-                -this.width/2, // Adjust x position for centered rotation
-                -this.height/2, // Adjust y position for centered rotation
+                this.distortedCanvas,
+                -this.width/2,
+                -this.height/2,
                 this.width,
                 this.height
             );
-            
-            ctx.restore(); 
+            ctx.restore();
         }
     }
 }

@@ -19,55 +19,57 @@ var lyrics = []
 var started = false
 var displayedOffset = 0
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.origin != "middleman"){
-    return
-  }
-  chrome.runtime.sendMessage({origin:"webapp", payload:"acknowledge"})
-  console.log("Message Recieved. Action: "+request.action+" Payload:")
-  console.log(request.payload)
-  if (request.action == "sendParsedData"){
-    onUpdate(request.payload)
-  } else if (request.action == "client_disconnected"){
-    clientDisconnected(request.payload)
-  } else if (request.action == "room_created"){
-    generateQrCode(request.payload)
-  } else if (request.action == "client_joined"){
-    clientJoined(request.payload)
-  } else if (request.action == "tab-focused"){
-    console.log("YTM Tab Focused")
-    doAnimation = false
-  } else if (request.action == "tab-unfocused"){
-    console.log("YTM Tab Unfocused")
-    doAnimation = true
-  }
-  
-})
+var isExtension = (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.id);
+
+if (isExtension) {
+  chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.origin != "middleman"){
+      return
+    }
+    chrome.runtime.sendMessage({origin:"webapp", payload:"acknowledge"})
+    if (request.action == "sendParsedData"){
+      onUpdate(request.payload)
+    } else if (request.action == "client_disconnected"){
+      clientDisconnected(request.payload)
+    } else if (request.action == "room_created"){
+      generateQrCode(request.payload)
+    } else if (request.action == "client_joined"){
+      clientJoined(request.payload)
+    } else if (request.action == "tab-focused"){
+      doAnimation = false
+    } else if (request.action == "tab-unfocused"){
+      doAnimation = true
+    }
+  })
+}
 
 function onUpdate(data){
-    console.log("ONUpdate")
     updateTimestamp(data.elapsed_time, data.total_time)
     if (current_song == data.song_identifier){
         displayLyricOneAtATime(data.elapsed_time)
-        
+
     } else { //new song
-        console.log("New Song")
+        //console.log("New Song: "+data.song_identifier)
         rerolled = false;
         loadLyricOption()
         current_song = data.song_identifier
         totalDuration = data.total_time
+        tim = []
+        lyrics = []
+        last_lyrics_refresh = ""
+        current_time = -1
+        current_index = 0
+        document.getElementById("lyric-holder").innerHTML = ""
         hideLyricsView()
-        hideBackground()
+        if (started) {
+            hideBackground()
+        }
         setTimeout(() => {
            showBackground()
           if (currentlyShowingLyrics && data.lyrics_freshness){
             showLyricsView()
-            // console.log("SCROLLING TO LYRICS 1")
-            // document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-            
           }
-        }, 1000);
-        console.log("song id: "+data.song_identifier)
+        }, started ? 1000 : 50);
         document.getElementById("title").innerText = data.song_name;
         if (data.song_album.length > 40){
             document.getElementById("artist-album").innerText = data.song_artist + " • " + data.song_album.substring(0,27)+"..."
@@ -76,20 +78,19 @@ function onUpdate(data){
 
         }
         document.getElementById("album-image").src = data.album_art;
+        //console.log("Creating background with URL:", data.album_art)
         createAnimatedBackground(data.album_art)
-        document.title = data.song_name + " | YTM-B"
+        document.title = data.song_name + " - " + data.song_artist
+        updateFavicon(data.album_art)
 
         if (displayedOffset != data["offset-for-display"]){
             displayedOffset = data["offset-for-display"]
             document.getElementById("offset").innerText = displayedOffset
         }
     }
-    console.log("Lyrics Freshness: "+data.lyric_freshness)
     if (data.lyric_freshness == false){
         hideLyricsView()
-        console.log("Not Fresh Lyrics")
         if (data.searched_for_lyrics){
-          console.log("no lyrics found")
           hideLyricOption()
         }
     } else {
@@ -98,25 +99,30 @@ function onUpdate(data){
             incomingSecondOffset = data["offset-for-display"]
             document.getElementById("offset").innerText = -1 * incomingSecondOffset
         }
-        
+
     }
 
-    if (data.pause_state == "Pause" && document.getElementById("pauseplaybutton").src !="/assets/pause.png"){
-        console.log("Playing")
+    if (data.pause_state == "Pause" && !document.getElementById("pauseplaybutton").src.endsWith("/assets/pause.png")){
         document.getElementById("pauseplaybutton").src = "/assets/pause.png"
-    } else if (data.pause_state == "Play" && document.getElementById("pauseplaybutton").src != "/assets/play.png"){
-        console.log("Paused")
+    } else if (data.pause_state == "Play" && !document.getElementById("pauseplaybutton").src.endsWith("/assets/play.png")){
         document.getElementById("pauseplaybutton").src = "/assets/play.png"
     }
 
-    if ((data.live) && (!live)){ //if middleman says live and page says not, trust middleman
+    if ((data.live) && (!live)){
       live = true
       document.getElementById("shareinfo").style.display = ""
       generateQrCode(data.room_code)
     }
    if (!started){
       started = true
-      document.getElementById("loader").style.display = "none"
+      // Delay loader removal so background images have time to load and render
+      setTimeout(() => {
+          document.getElementById("loader").style.transition = "opacity 0.5s"
+          document.getElementById("loader").style.opacity = "0"
+          setTimeout(() => {
+              document.getElementById("loader").style.display = "none"
+          }, 500)
+      }, 1000)
    }
 }
 
@@ -125,15 +131,45 @@ function refreshAndDisplayLyrics(data){
   showLyricOption()
   tim = data.times_bank
   lyrics = data.lyrics_bank
-  console.log("Refreshing Lyrics")
   showLyricsView()
   lyrics = data.lyrics_bank
   tim = data.times_bank
   initializeLyrics()
-  // setTimeout(()=>{
-  //     console.log("SCROLLING TO LYRICS 2")
-  //     document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-  // }, 250)
   displayLyricOneAtATime(data.elapsed_time)
   last_lyrics_refresh = data.song_identifier
+}
+
+function updateFavicon(imageUrl) {
+  if (!imageUrl) return;
+  var favicon = document.getElementById('dynamic-favicon');
+  if (!favicon) {
+    favicon = document.createElement('link');
+    favicon.id = 'dynamic-favicon';
+    favicon.rel = 'icon';
+    document.head.appendChild(favicon);
+  }
+  var img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = function () {
+    var c = document.createElement('canvas');
+    c.width = 64;
+    c.height = 64;
+    var cx = c.getContext('2d');
+    var r = 10;
+    cx.beginPath();
+    cx.moveTo(r, 0);
+    cx.lineTo(64 - r, 0);
+    cx.quadraticCurveTo(64, 0, 64, r);
+    cx.lineTo(64, 64 - r);
+    cx.quadraticCurveTo(64, 64, 64 - r, 64);
+    cx.lineTo(r, 64);
+    cx.quadraticCurveTo(0, 64, 0, 64 - r);
+    cx.lineTo(0, r);
+    cx.quadraticCurveTo(0, 0, r, 0);
+    cx.closePath();
+    cx.clip();
+    cx.drawImage(img, 0, 0, 64, 64);
+    favicon.href = c.toDataURL('image/png');
+  };
+  img.src = imageUrl;
 }
