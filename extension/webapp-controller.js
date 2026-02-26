@@ -23,11 +23,11 @@ topBarTimeout = setTimeout(function(){
         currentlyShowingTopBar = false;
         document.getElementById("topbar").classList.add("invisible-top-bar")
     }
-    
+
 }, 5000)
 
 
-addEventListener("mousemove", (event) => { 
+addEventListener("mousemove", (event) => {
     if (topBarTimeout){
         clearTimeout(topBarTimeout)
     }
@@ -41,7 +41,7 @@ addEventListener("mousemove", (event) => {
             currentlyShowingTopBar = false;
             document.getElementById("topbar").classList.add("invisible-top-bar")
         }
-    
+
     }, 5000)
 })
 
@@ -56,13 +56,8 @@ function reloadLyrics(){
 }
 
 function pausePlay(){
-    // let album_img = document.getElementById("album-image")
-    // album_img.style.boxShadow = "0px 0px 20px 10px rgba(255, 255, 255, 0.5)"
-    // setTimeout(() => {
-    //     album_img.style.boxShadow = "none"
-    // }, (200));
     chrome.runtime.sendMessage({origin:"webapp", payload: 'ytm-pause', data: null })
-    
+
 }
 
 function previous(){
@@ -75,43 +70,12 @@ function skip(){
     document.getElementById("lyric-holder").scrollTo(0, 0)
     document.getElementById("lyric-holder").innerHtml = ""
     hideLyricsView()
-    // lyrics = []
-    // if (currentMainImage == "i2"){
-    //     currentMainImage = "i0"
-    //     currentNextImage = "i1"
-    //     currentPrevImage = "i2"
-    // } else if (currentMainImage == "i1"){
-    //     currentMainImage = "i2"
-    //     currentNextImage = "i0"
-    //     currentPrevImage = "i1"
-    // } else if (currentMainImage == "i0"){
-    //     currentMainImage = "i1"
-    //     currentNextImage = "i2"
-    //     currentPrevImage = "i0" 
-    // }
-    // document.getElementsByClassName("album main")[0].className = "album prev"
-    // document.getElementsByClassName("album next")[0].className = "album main"
-    // document.getElementsByClassName("album prev")[0].className = "album prev2"
-    // setTimeout(function(){
-    //     document.getElementsByClassName("album prev2")[0].style.display = "none"
-    // }, 500)
-
-    // setTimeout(function(){
-    //     document.getElementsByClassName("album prev2")[0].style.display = ""
-    //     document.getElementsByClassName("album prev2")[0].className = "album next2"
-
-    //     setTimeout(function(){
-    //         document.getElementsByClassName("album next2")[0].className = "album next"
-
-    //     },500)
-    // }, 1000)    
-
     chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-next', data: null })
 }
 
 
 function requestSongDataUpdate(){
-    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-requestUpdate', data: null })
+    if (isExtension) chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-requestUpdate', data: null })
 }
 
 requestSongDataUpdate();
@@ -135,7 +99,7 @@ function addOffset(){
     incomingSecondOffset--;
     document.getElementById("offset").innerText = -1 * incomingSecondOffset
     chrome.runtime.sendMessage({origin:"webapp", payload: 'offset-up', data: null })
-}   
+}
 
 function hideLyricOption(){
     document.getElementById("miccontainer").style.display = ""
@@ -197,12 +161,11 @@ function hideSharing(){
 
 document.getElementById("sharing-button-holder").onclick = showSharing;
 document.getElementById("sharing-overall").onclick = hideSharing;
-document.getElementById("sharing-panel").onclick = function(e){ e.stopPropagation(); } // prevent click from bubbling to hideSharing
+document.getElementById("sharing-panel").onclick = function(e){ e.stopPropagation(); }
 
 function requestScanTo(timecode){
     let timeToScan = timecode - current_time;
-    console.log("Requesting scan to timecode: ", timeToScan)
-
+    //console.log("Requesting scan to timecode: ", timeToScan)
     chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-scan-to', data: {time:timeToScan} })
 }
 
@@ -226,10 +189,8 @@ if (optimizationSetting == null|| optimizationSetting == undefined || optimizati
 
 let animationSeetting = window.localStorage.getItem("animation")
 if (animationSeetting == null || animationSeetting == undefined || animationSeetting == "true"){
-    console.log("Animations enabled")
     document.getElementById("settings-animation").checked = true
 } else {
-    console.log("Animations disabled")
     doAnimation = false;
     document.getElementById("settings-animation").checked = false
     document.getElementById("optimize-perf").style.opacity = "0.5";
@@ -289,7 +250,7 @@ document.getElementById("reset-tint").onclick = function(){
 }
 document.getElementById("settings-button-holder").onclick = showSettings;
 document.getElementById("settings-overall").onclick = hideSettings;
-document.getElementById("settings-panel").onclick = function(e){ e.stopPropagation(); } // prevent click from bubbling to hideSettings
+document.getElementById("settings-panel").onclick = function(e){ e.stopPropagation(); }
 document.getElementById("buymeacoffee").onclick = function(){
     window.open("https://buymeacoffee.com/nvemuri", "_blank").focus();
 }
@@ -301,19 +262,16 @@ const progressBarContainer = document.getElementById('progressbarholder');
 
 function handleProgressBarClick(event) {
     const rect = progressBarContainer.getBoundingClientRect();
-    const clickX = event.clientX - rect.left; 
+    const clickX = event.clientX - rect.left;
     const percentage = clickX / rect.width;
 
-    getScanned(percentage); 
+    getScanned(percentage);
 }
 
 progressBarContainer.addEventListener('click', handleProgressBarClick);
 
 function getScanned(percentage) {
-    console.log('Clicked at percentage:', percentage);
     let timeToScan = Math.floor(percentage * totalDuration);
-    console.log('Time to scan to:', timeToScan);
-    console.log(typeof timeToScan);
     requestScanTo(timeToScan);
 }
 
@@ -342,7 +300,6 @@ document.addEventListener('keydown', function(event) {
         escapePresses = 0;
       }, 5000);
     } else if (escapePresses === 2) {
-      console.log('Double Escape Pressed!');
       performDoubleEscapeAction();
       clearTimeout(timer);
       escapePresses = 0;
@@ -356,7 +313,7 @@ function performDoubleEscapeAction() {
   setTimeout(()=>{
     document.getElementById("esc-notif").style.opacity = "0"
     document.getElementById("esc-notif").style.pointerEvents = "none"
-}, 3000) 
+}, 3000)
 }
 
 function showTimeAdjustment(){
@@ -368,6 +325,3 @@ function hideTimeAdjustment(){
     document.getElementById("time-popup").style.display = "none"
     document.getElementById("clock").onclick=showTimeAdjustment
 }
-
-
-

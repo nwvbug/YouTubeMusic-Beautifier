@@ -3,7 +3,7 @@ current_index = 0
 var doAnimation = true;
 
 function initializeLyrics(){
-    console.log("INIT LYRICS")
+    //console.log("INIT LYRICS")
     document.getElementById("lyric-holder").style.maxWidth = ""
     document.getElementById("lyric-holder").innerHTML = ""
     
@@ -39,7 +39,7 @@ function initializeLyrics(){
 }
 
 function selectNewLyric(i){
-    console.log("attempting to select lyric "+i)
+    //console.log("attempting to select lyric "+i)
     requestScanTo(tim[i])
 }
 
@@ -95,14 +95,18 @@ function displayLyricOneAtATime(seconds, identifier=null){
 const canvas = document.getElementById("backgroundCanvas")
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
-// Also log the viewport size to compare
 const ctx = canvas.getContext("2d")
+
+//ctx.fillStyle = '#ff0000';
+//ctx.fillRect(0, 0, canvas.width, canvas.height);
+//console.log("DEBUG: drew red test pattern on canvas", canvas.width, "x", canvas.height)
+
 var images = []
 var staticImages = []
-const speedsX = [-0.15, 0.17, -0.1, 0.12, -0.15, -0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2]
-const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2, -0.15, 0.17, -0.1, 0.12, -0.15,]
+const speedsX = [-0.15, 0.17, -0.1, 0.12, -0.15, -0.1, -0.12, -0.15, -0.17, -0.2, 0.1, 0.12, 0.15, 0.17, 0.2, -0.13, 0.11, -0.16, 0.14, -0.18]
+const speedsY = [-0.15, 0.17, -0.1, 0.12, -0.15, 0.1, -0.12, 0.2, -0.17, 0.2, -0.15, 0.17, -0.1, 0.12, -0.15, 0.13, -0.11, 0.16, -0.14, 0.18]
 
-const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.0002, -0.0003, 0.0004, -0.0005, -0.0003, 0.0004, -0.0005, 0.0003, -0.0004]
+const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.0002, -0.0003, 0.0004, -0.0005, -0.0003, 0.0004, -0.0005, 0.0003, -0.0004, 0.0002, -0.0003, 0.0001, -0.0004, 0.0005]
 
 
 
@@ -110,14 +114,14 @@ const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.000
 function createAnimatedBackground(imageUrl){
     images = []
     for (let i = 0; i<20; i++){
-        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i], speedsY[i], rotationSpeeds[i]))
+        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i%speedsX.length], speedsY[i%speedsY.length], rotationSpeeds[i%rotationSpeeds.length]))
     }
     setTimeout(() => {    drawInitialFrame()
     }, 1000);
 }
 
 function drawInitialFrame(){
-    console.log("draw initiated")
+    //console.log("draw initiated")
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     images.forEach(image => {
         
@@ -138,6 +142,32 @@ function animate(){
 }
 animate()
 
+// In non-extension context (PWA / standalone), create a default background
+// since no song data will arrive via chrome.runtime messaging.
+if (!isExtension) {
+    document.getElementById("loader").style.display = "none"
+    started = true
+    // Generate a colorful gradient background directly on canvas
+    createFallbackBackground()
+}
+
+function createFallbackBackground() {
+    var fallbackCanvas = new OffscreenCanvas(400, 400);
+    var fctx = fallbackCanvas.getContext("2d");
+    // Create a vibrant radial gradient as a placeholder "album art"
+    var grad = fctx.createRadialGradient(200, 200, 50, 200, 200, 200);
+    grad.addColorStop(0, "#6366f1");
+    grad.addColorStop(0.4, "#a855f7");
+    grad.addColorStop(0.7, "#ec4899");
+    grad.addColorStop(1, "#1e1b4b");
+    fctx.fillStyle = grad;
+    fctx.fillRect(0, 0, 400, 400);
+    // Convert to a data URL and feed into the normal background pipeline
+    fallbackCanvas.convertToBlob().then(function(blob) {
+        var url = URL.createObjectURL(blob);
+        createAnimatedBackground(url);
+    });
+}
 
 function updateTimestamp(elapsed, total){
     document.getElementById("progressbar").style.width = ((elapsed / total)  *100)+"%";
@@ -190,6 +220,8 @@ function hideLyricsView(){
 }
 
 window.onresize = function(event) {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     if (window.innerWidth > 1300){
         document.getElementById("info-panel-contents").style.flexDirection="column";
     } if (window.innerWidth <= 1300){

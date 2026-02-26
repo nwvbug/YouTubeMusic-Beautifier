@@ -62,6 +62,14 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 }
             } else if (action == "sendQueue"){
                 console.log("Defunct Message, Ignoring")
+            } else if (action == "open-webapp"){
+                console.log("Opening webapp in standalone window")
+                chrome.windows.create({
+                    url: chrome.runtime.getURL('webapp.html'),
+                    type: 'popup',
+                    width: 1200,
+                    height: 800
+                });
             } else if (action=="TAB_UNFOCUSED"){
                 console.log("Unfocused Tab, sending thru")
                 sendToWebapp("tab-unfocused", null)
@@ -102,6 +110,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
                 subtractOffset()
             }
             
+            else if (payload == "ytm-requestUpdate"){
+                if (ytmTabId) {
+                    chrome.tabs.sendMessage(ytmTabId, { action: 'ytm-request-song-data-update' })
+                }
+            }
             else if (payload == "start-sharing"){
                 console.log("STARTING SHARING")
                 createOffscreenDocument()

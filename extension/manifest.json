@@ -11,14 +11,15 @@
         "default_popup": "popup.html",
         "default_title": "lyrics configuration"
     },
-    "permissions": ["storage", "offscreen"],
+    "permissions": ["storage", "offscreen", "tabs"],
     "content_scripts": [
         {
             "js": ["ytm-controller.js"],
             "matches": [
                 "https://music.youtube.com/*"
             ],
-            "run_at": "document_end"
+            "run_at": "document_end",
+            "all_frames": true
         }
     ],
     "background":{
@@ -28,6 +29,11 @@
         "16": "assets/16x16.png",
         "48": "assets/48x48.png",
         "128": "assets/128x128.png"
-    }
-      
+    },
+    "web_accessible_resources": [
+        {
+            "resources": ["webapp.webmanifest", "pwa-sw.js"],
+            "matches": ["<all_urls>"]
+        }
+    ]
 }

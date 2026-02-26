@@ -1,8 +1,12 @@
 console.log("document")
 document.getElementById('openWebApp').addEventListener('click', () => {
-    // Open the web app in a new window/tab (adjust as needed)
-    const extensionUrl = chrome.runtime.getURL('');
-    chrome.tabs.create({ url: extensionUrl+"/webapp.html" });
+    // Open the web app in a standalone popup window
+    chrome.windows.create({
+        url: chrome.runtime.getURL('webapp.html'),
+        type: 'popup',
+        width: 1200,
+        height: 800
+    });
 });
 
 

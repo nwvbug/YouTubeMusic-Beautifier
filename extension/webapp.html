@@ -4,6 +4,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YTM Beautifier</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="manifest" href="webapp.webmanifest">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="assets/128x128.png">
+    <link rel="icon" id="dynamic-favicon" href="assets/48x48.png" type="image/png">
 </head>
 <body>
     <div id="loader">
@@ -11,7 +15,6 @@
     </div>
     <canvas id="backgroundCanvas" style="width:100vw; height:100vh; position:absolute; z-index:-2;"></canvas>
     <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
-        <div id="canvas-hider" style="z-index:-1; position: absolute; width:100vw; height:100vh; background-color:black; opacity: 0; transition: 0.5s;"></div>
         <div class="content-body" id="main-body">
             <div class="info-panel" id="info-panel">
                 <div class="info-panel-contents" id="info-panel-contents">
@@ -285,13 +288,16 @@
 </body>
 <script src="libs/socket.io.min.js"></script>
 <script src="libs/qrcode.min.js"></script>
-<script src="config.js"></script>
 <script src="backgroundMovingImage.js"></script>
 <script src="colorUtils.js"></script>
-<script src="parser.js"></script>
 <script src="reciever.js"></script>
 <script src="displayer.js"></script>
 <script src="liveutils.js"></script>
 <script src="webapp-controller.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('pwa-sw.js').catch(() => {});
+}
+</script>
 
 </html>

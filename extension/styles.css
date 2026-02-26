@@ -1,8 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Host+Grotesk:ital,wght@0,300..800;1,300..800&display=swap');
+html{
+    background-color: #000000;
+}
 body{
+    background-color: transparent;
+    scrollbar-width: none;
     font-family:"Host Grotesk", serif;
     padding:0;
     margin:0;
+    overflow: hidden;
 }
 @keyframes load {
     0% {
@@ -83,7 +89,7 @@ body{
     justify-content: center;
     width:100vw;
     height:100vh;
-    background: black;
+    background: #000000;
     background-size: 300% 300%;
     animation: gradient-animation 30s ease infinite;
     z-index:2;

@@ -8,7 +8,7 @@ document.getElementById("remote-control-check").onclick = swapRC;
 
 function swapRC(){
     allow_remote = document.getElementById("remote-control-check").checked
-    chrome.runtime.sendMessage({origin:"webapp", payload:"swap-remote-control", data:{"allow_remote_control":allow_remote}})
+    if (isExtension) chrome.runtime.sendMessage({origin:"webapp", payload:"swap-remote-control", data:{"allow_remote_control":allow_remote}})
 }
 
 function generateQrCode(roomcode){
@@ -20,7 +20,6 @@ function generateQrCode(roomcode){
     document.getElementById("codetext").style.fontSize = 18
     document.getElementById("textcodeholder").style.marginTop = "20px"
     document.getElementById("copyicon").style.display = ""
-    //document.getElementById("clientinfo").style.display = ""
     document.getElementById("startsharing").style.backgroundColor = "rgba(255, 0, 0, 1)"
     document.getElementById("startsharing").style.color = "white"
     document.getElementById("startsharing").innerText = "Stop Sharing"
@@ -31,35 +30,18 @@ function generateQrCode(roomcode){
 }
 
 function clientDisconnected(client_id){
-    console.log("Client Disconnected")
-    // client_count--;
-    // document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
-    // document.getElementById("device-"+client_id).remove()
+    //console.log("Client Disconnected")
 }
 
 function clientJoined(client_data){
-    console.log("Client Joined")
-    // client_count++;
-    // document.getElementById("devices_connected").innerText = "You have "+client_count+" devices connected."
-    // document.getElementById("connected_device_list").innerHTML += `
-    // <div class="source-entry" style="width:100%; display:flex; flex-direction: row; align-items: center; justify-content: space-between;" id="device-${client_data["client_internal_id"]}">
-    //     <div class="source-name">
-    //         <p style="font-size:18px;">${client_data["client_os"]}</p>  
-    //     </div>
-    //     <div class="generic-button" style="background-color: red; color:white; border-radius:10px; padding:10px; cursor:pointer; font-size:15px; font-weight:bold;" id="kickbutton-${client_data["client_internal_id"]}">
-    //         Kick
-    //     </div>
-    // </div>`
-    // document.getElementById("kickbutton-"+client_data["client_internal_id"]).onclick = function(){
-    //     chrome.runtime.sendMessage({origin:"webapp", payload:"kick_connected_user", data:{user_id:client_data["client_internal_id"]}})
-    // }
+    //console.log("Client Joined")
 }
 
 function setupSharing(){
     try {
         qrcode.clear()
     } catch {
-        console.log("QRCode not initialized")
+        //console.log("QRCode not initialized")
     }
     document.getElementById("qrcode").style.display = "none"
     document.getElementById("shareinfo").style.display = ""
@@ -71,8 +53,8 @@ function setupSharing(){
     let data_to_send = {
         "allow_remote_control":document.getElementById("remote-control-check").checked
     }
-    console.log("Attempting to start sharing")
-    chrome.runtime.sendMessage({origin:"webapp", payload:"start-sharing", data:data_to_send})
+    //console.log("Attempting to start sharing")
+    if (isExtension) chrome.runtime.sendMessage({origin:"webapp", payload:"start-sharing", data:data_to_send})
     live = true
 }
 document.getElementById("startsharing").onclick = setupSharing;
@@ -86,8 +68,8 @@ function disableSharing(){
     document.getElementById("startsharing").onclick = setupSharing;
     document.getElementById("sharingpath1").setAttribute("fill", "white")
     document.getElementById("sharingpath2").setAttribute("fill", "white")
-    chrome.runtime.sendMessage({origin:"webapp", payload:"disable-sharing"})
-    
+    if (isExtension) chrome.runtime.sendMessage({origin:"webapp", payload:"disable-sharing"})
+
 }
 
 async function copyCode(){
@@ -99,7 +81,7 @@ async function copyCode(){
         setTimeout(()=>{
             document.getElementById("copied-notif").style.opacity = "0"
             document.getElementById("copied-notif").style.pointerEvents = "none"
-        }, 3000) 
+        }, 3000)
     } catch {
         document.getElementById("copied-text").innerText = "Failed to copy to clipboard (Check permissions)"
         document.getElementById("copied-notif").style.opacity = "1"
@@ -107,7 +89,7 @@ async function copyCode(){
         setTimeout(()=>{
             document.getElementById("copied-notif").style.opacity = "0"
             document.getElementById("copied-notif").style.pointerEvents = "none"
-        }, 3000) 
+        }, 3000)
     }
 }
 
