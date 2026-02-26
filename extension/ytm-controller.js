@@ -69,7 +69,7 @@ function getNowPlaying() {
     ".left-controls",
   );
   const playPauseButton = leftControls.querySelector("#play-pause-button");
-  const isPlaying = playPauseButton.getAttribute("aria-label") === "Pause";
+  const isPlaying = !(document.querySelector('video')?.paused);
   const [elapsed, total] = leftControls.querySelector(
     "span.time-info.ytmusic-player-bar",
   )
@@ -86,7 +86,7 @@ function getNowPlaying() {
   } catch{
     console.log("Image not grabbable")
   }
-  var playPauseState = document.getElementById("play-pause-button").getAttribute("title")
+  var playPauseState = document.querySelector('video')?.paused ? "Play" : "Pause"
 
   let url;
 
