@@ -66,10 +66,7 @@ function previous(){
 }
 
 function skip(){
-    hideBackground()
     document.getElementById("lyric-holder").scrollTo(0, 0)
-    document.getElementById("lyric-holder").innerHtml = ""
-    hideLyricsView()
     chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-next', data: null })
 }
 

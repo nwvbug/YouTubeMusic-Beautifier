@@ -111,32 +111,58 @@ const rotationSpeeds = [0.0001, -0.0002, 0.0003, -0.0004, 0.0005, -0.0001, 0.000
 
 
 
-function createAnimatedBackground(imageUrl){
-    images = []
-    for (let i = 0; i<20; i++){
-        images.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i%speedsX.length], speedsY[i%speedsY.length], rotationSpeeds[i%rotationSpeeds.length]))
-    }
-    setTimeout(() => {    drawInitialFrame()
-    }, 1000);
-}
+var pendingBackgroundSwap = null;
+var fadingOutImages = [];
+var crossfadeProgress = -1;
+var CROSSFADE_FRAMES = 180;
 
-function drawInitialFrame(){
-    //console.log("draw initiated")
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    images.forEach(image => {
-        
-        image.updatePosition()
-        image.draw()
-    })
+function createAnimatedBackground(imageUrl){
+    if (pendingBackgroundSwap) {
+        clearInterval(pendingBackgroundSwap)
+    }
+    var newImages = []
+    for (let i = 0; i<20; i++){
+        newImages.push(new BackgroundMovingImage(imageUrl, Math.floor(Math.random() * canvas.width) + canvas.width/1.5, Math.floor(Math.random() * canvas.height) + canvas.height/1.5, defaultWarp, speedsX[i%speedsX.length], speedsY[i%speedsY.length], rotationSpeeds[i%rotationSpeeds.length]))
+    }
+    pendingBackgroundSwap = setInterval(() => {
+        if (newImages.every(img => img.distortedCanvas !== null)) {
+            clearInterval(pendingBackgroundSwap)
+            pendingBackgroundSwap = null
+            fadingOutImages = images
+            images = newImages
+            crossfadeProgress = 0
+        }
+    }, 100)
 }
 
 function animate(){
     if (doAnimation){
         ctx.clearRect(0, 0, canvas.width, canvas.height)
-        images.forEach(image => {
-            image.updatePosition()
-            image.draw()
-        })
+        if (crossfadeProgress >= 0 && crossfadeProgress < CROSSFADE_FRAMES) {
+            var t = crossfadeProgress / CROSSFADE_FRAMES
+            t = t * t * (3 - 2 * t)
+            ctx.globalAlpha = 1 - t
+            fadingOutImages.forEach(image => {
+                image.updatePosition()
+                image.draw()
+            })
+            ctx.globalAlpha = t
+            images.forEach(image => {
+                image.updatePosition()
+                image.draw()
+            })
+            ctx.globalAlpha = 1
+            crossfadeProgress++
+            if (crossfadeProgress >= CROSSFADE_FRAMES) {
+                fadingOutImages = []
+                crossfadeProgress = -1
+            }
+        } else {
+            images.forEach(image => {
+                image.updatePosition()
+                image.draw()
+            })
+        }
     }
     requestAnimationFrame(animate)
 }

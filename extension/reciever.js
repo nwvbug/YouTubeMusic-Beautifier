@@ -60,16 +60,9 @@ function onUpdate(data){
         current_time = -1
         current_index = 0
         document.getElementById("lyric-holder").innerHTML = ""
-        hideLyricsView()
-        if (started) {
-            hideBackground()
+        if (!started) {
+            showBackground()
         }
-        setTimeout(() => {
-           showBackground()
-          if (currentlyShowingLyrics && data.lyrics_freshness){
-            showLyricsView()
-          }
-        }, started ? 1000 : 50);
         document.getElementById("title").innerText = data.song_name;
         if (data.song_album.length > 40){
             document.getElementById("artist-album").innerText = data.song_artist + " • " + data.song_album.substring(0,27)+"..."
@@ -89,8 +82,8 @@ function onUpdate(data){
         }
     }
     if (data.lyric_freshness == false){
-        hideLyricsView()
         if (data.searched_for_lyrics){
+          hideLyricsView()
           hideLyricOption()
         }
     } else {
