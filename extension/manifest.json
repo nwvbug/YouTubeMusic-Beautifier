@@ -22,7 +22,8 @@
         }
     ],
     "background":{
-        "service_worker":"middleman.js"
+        "service_worker":"middleman.js",
+        "type": "module"
     },
     "icons": {
         "16": "assets/16x16.png",

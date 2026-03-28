@@ -66,9 +66,9 @@ function animate(){
 }
 animate()
 
-chrome.runtime.sendMessage({origin:"popup", action:"request_image"})
+chrome.runtime.sendMessage({type: "POPUP_REQUEST_IMAGE"})
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.origin == "middleman" && request.action == "popup_image"){
+    if (request.type == "POPUP_IMAGE_UPDATE"){
         console.log("popup background image")
         console.log(request.payload)
         if (request.payload){

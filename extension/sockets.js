@@ -45,7 +45,7 @@ socket = io(WS_URL, {
 socket.on("provide-identity", function(data){
     console.log("Identity Provided")
     identity = data["identity"]
-    sendToManager({event:"ready"})
+    sendToManager({ type: "REMOTE_OFFSCREEN_READY" });
 })
 
 socket.on("invalid-identity", function(data){
@@ -56,8 +56,8 @@ window.addEventListener("beforeunload", () =>{
     
 })
 
-function sendToManager(data){
-    chrome.runtime.sendMessage({origin:"offscreen", payload:data})
+function sendToManager(message){
+    chrome.runtime.sendMessage(message)
 }
 
 function send_packet(data_to_send){
@@ -73,7 +73,7 @@ socket.on("request-update", function(data){
 socket.on("room-created", function(data){
     console.log("ROOM CREATED")
     let room_id = data["room_id"];
-    sendToManager({event:"room_created", data:room_id})
+    sendToManager({ type: "REMOTE_ROOM_CREATED", payload: room_id })
     live = true;
 })
     
@@ -86,14 +86,14 @@ socket.on("update", function(data){
 socket.on("client-disconnected", function(data){
     console.log("A client has disconnected")
     console.log(data["client_internal_id"])
-    sendToManager({event:"client_disconnected", data:data["client_internal_id"]})
+    sendToManager({ type: "REMOTE_CLIENT_DISCONNECTED", payload: data["client_internal_id"] })
 })
 
 socket.on("client-joined", function(data){
     console.log("a client has joined")
     console.log(data["client_os"])
     console.log(data["client_internal_id"])
-    sendToManager({event:"client_joined", data:data})
+    sendToManager({ type: "REMOTE_CLIENT_JOINED", payload: data })
 })
 
 function kick(client_id){
@@ -105,13 +105,13 @@ socket.on("control-authorized", function(data){
     console.log("A control of type "+data["requested-action"]+" has been requested")
     switch (data["requested-action"]){
         case "pause":
-            sendToManager({event:"pause", data:data})
+            sendToManager({ type: "REMOTE_REQUEST_PLAY_PAUSE" })
             break;
         case "skip-next":
-            sendToManager({event:"skip", data:data})
+            sendToManager({ type: "REMOTE_REQUEST_NEXT" })
             break;
         case "skip-previous":
-            sendToManager({event:"prev", data:data})
+            sendToManager({ type: "REMOTE_REQUEST_PREVIOUS" })
             break;
     }
 })
@@ -136,7 +136,7 @@ function disableSharing(){
     socket.emit("dispose-room", {"identity":identity})
     socket.disconnect()
     live = false
-    sendToManager({event:"request_termination", data:null})
+    sendToManager({ type: "REMOTE_OFFSCREEN_TERMINATED" })
 }
 
 function simulateDisconnect(){
@@ -166,28 +166,23 @@ function getOS(){
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log("Offscreen request recieved", request)
 
-    if (request.destination != "offscreen"){
-        return
-    }
-
-    console.log("Request recieved")
-
-    let payload = request.payload
-    switch (payload){
-        case "kick_user":
-            kick(request.user_id)
+    switch (request.type){
+        case "OFFSCREEN_KICK_USER":
+            kick(request.payload.user_id)
             break
-        case "disable_sharing":
+        case "OFFSCREEN_DISABLE_SHARING":
             disableSharing()
             break
-        case "start_sharing":
-            allow_remote = request.remote
+        case "OFFSCREEN_START_SHARING":
+            allow_remote = request.payload.remote
             setupSharing()
             break
-        case "update":
-            last_packet = request.data
-            send_packet(request.data)
+        case "OFFSCREEN_UPDATE_DATA":
+            last_packet = request.payload
+            send_packet(request.payload)
+            break
     }
 })
 

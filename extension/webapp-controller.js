@@ -48,7 +48,7 @@ addEventListener("mousemove", (event) => {
 var rerolled = false;
 function reloadLyrics(){
     if (!rerolled){
-        chrome.runtime.sendMessage({origin:"webapp", payload: 'reroll-lyrics', data: null })
+        chrome.runtime.sendMessage({type:"WEBAPP_REQUEST_REROLL_LYRICS"})
         rerolled = true;
     }
     loadLyricOption()
@@ -61,13 +61,13 @@ function pausePlay(){
     // setTimeout(() => {
     //     album_img.style.boxShadow = "none"
     // }, (200));
-    chrome.runtime.sendMessage({origin:"webapp", payload: 'ytm-pause', data: null })
+    chrome.runtime.sendMessage({type:"WEBAPP_REQUEST_PLAY_PAUSE"})
     
 }
 
 function previous(){
     document.getElementById("lyric-holder").scrollTo(0, 0)
-    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-back', data: null })
+    chrome.runtime.sendMessage({ type:"WEBAPP_REQUEST_PREVIOUS" })
 }
 
 function skip(){
@@ -106,15 +106,15 @@ function skip(){
     //     },500)
     // }, 1000)    
 
-    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-next', data: null })
+    chrome.runtime.sendMessage({ type:"WEBAPP_REQUEST_NEXT" })
 }
 
 
-function requestSongDataUpdate(){
-    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-requestUpdate', data: null })
+function acknowledge(){
+    chrome.runtime.sendMessage({ type: "WEBAPP_ACKNOWLEDGE" })
 }
 
-requestSongDataUpdate();
+acknowledge();
 
 function toggleLyrics(){
     if (currentlyShowingLyrics){
@@ -128,13 +128,13 @@ function toggleLyrics(){
 function subtractOffset(){
     incomingSecondOffset++;
     document.getElementById("offset").innerText = -1 * incomingSecondOffset
-    chrome.runtime.sendMessage({origin:"webapp", payload: 'offset-down', data: null })
+    chrome.runtime.sendMessage({type:"WEBAPP_OFFSET_DOWN"})
 }
 
 function addOffset(){
     incomingSecondOffset--;
     document.getElementById("offset").innerText = -1 * incomingSecondOffset
-    chrome.runtime.sendMessage({origin:"webapp", payload: 'offset-up', data: null })
+    chrome.runtime.sendMessage({type:"WEBAPP_OFFSET_UP"})
 }   
 
 function hideLyricOption(){
@@ -203,7 +203,7 @@ function requestScanTo(timecode){
     let timeToScan = timecode - current_time;
     console.log("Requesting scan to timecode: ", timeToScan)
 
-    chrome.runtime.sendMessage({ origin:"webapp", payload: 'ytm-scan-to', data: {time:timeToScan} })
+    chrome.runtime.sendMessage({ type:"WEBAPP_REQUEST_SCAN_TO", payload: {time:timeToScan} })
 }
 
 var background_blur;

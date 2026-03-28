@@ -20,29 +20,33 @@ var started = false
 var displayedOffset = 0
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.origin != "middleman"){
-    return
-  }
-  chrome.runtime.sendMessage({origin:"webapp", payload:"acknowledge"})
-  console.log("Message Recieved. Action: "+request.action+" Payload:")
+  chrome.runtime.sendMessage({ type: "WEBAPP_ACKNOWLEDGE" });
+  console.log("Message Recieved. Type: "+request.type+" Payload:")
   console.log(request.payload)
-  if (request.action == "sendParsedData"){
-    onUpdate(request.payload)
-  } else if (request.action == "client_disconnected"){
-    clientDisconnected(request.payload)
-  } else if (request.action == "room_created"){
-    generateQrCode(request.payload)
-  } else if (request.action == "client_joined"){
-    clientJoined(request.payload)
-  } else if (request.action == "tab-focused"){
-    console.log("YTM Tab Focused")
-    doAnimation = false
-  } else if (request.action == "tab-unfocused"){
-    console.log("YTM Tab Unfocused")
-    doAnimation = true
+
+  switch (request.type) {
+    case "STATE_UPDATE":
+      onUpdate(request.payload)
+      break;
+    case "WEBAPP_CLIENT_DISCONNECTED":
+      clientDisconnected(request.payload)
+      break;
+    case "WEBAPP_ROOM_CREATED":
+      generateQrCode(request.payload)
+      break;
+    case "WEBAPP_CLIENT_JOINED":
+      clientJoined(request.payload)
+      break;
+    case "YTM_TAB_FOCUSED":
+      console.log("YTM Tab Focused")
+      doAnimation = false
+      break;
+    case "YTM_TAB_UNFOCUSED":
+      console.log("YTM Tab Unfocused")
+      doAnimation = true
+      break;
   }
-  
-})
+});
 
 function onUpdate(data){
     console.log("ONUpdate")
