@@ -51,24 +51,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 function onUpdate(data){
     console.log("ONUpdate")
     updateTimestamp(data.elapsed_time, data.total_time)
-    if (current_song == data.song_identifier){
-        displayLyricOneAtATime(data.elapsed_time)
-        
-    } else { //new song
+    const isNewSong = current_song != data.song_identifier;
+
+    if (isNewSong){
         console.log("New Song")
         rerolled = false;
         loadLyricOption()
         current_song = data.song_identifier
         totalDuration = data.total_time
-        hideLyricsView()
         hideBackground()
         setTimeout(() => {
            showBackground()
-          if (currentlyShowingLyrics && data.lyrics_freshness){
+          if (userPrefersLyricsVisible && data.lyrics_freshness){
             showLyricsView()
-            // console.log("SCROLLING TO LYRICS 1")
-            // document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-            
+            if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
+                refreshAndDisplayLyrics(data)
+                incomingSecondOffset = data["offset-for-display"]
+                document.getElementById("offset").innerText = -1 * incomingSecondOffset
+            }
+          } else {
+            hideLyricsView()
           }
         }, 1000);
         console.log("song id: "+data.song_identifier)
@@ -87,7 +89,10 @@ function onUpdate(data){
             displayedOffset = data["offset-for-display"]
             document.getElementById("offset").innerText = displayedOffset
         }
+    } else {
+        displayLyricOneAtATime(data.elapsed_time)
     }
+
     console.log("Lyrics Freshness: "+data.lyric_freshness)
     if (data.lyric_freshness == false){
         hideLyricsView()
@@ -97,12 +102,16 @@ function onUpdate(data){
           hideLyricOption()
         }
     } else {
-        if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
-            refreshAndDisplayLyrics(data)
-            incomingSecondOffset = data["offset-for-display"]
-            document.getElementById("offset").innerText = -1 * incomingSecondOffset
+        if(userPrefersLyricsVisible) {
+            showLyricsView();
         }
-        
+        if (!isNewSong){
+            if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
+                refreshAndDisplayLyrics(data)
+                incomingSecondOffset = data["offset-for-display"]
+                document.getElementById("offset").innerText = -1 * incomingSecondOffset
+            }
+        }
     }
 
     if (data.pause_state == "Pause" && document.getElementById("pauseplaybutton").src !="/assets/pause.png"){
@@ -130,7 +139,6 @@ function refreshAndDisplayLyrics(data){
   tim = data.times_bank
   lyrics = data.lyrics_bank
   console.log("Refreshing Lyrics")
-  showLyricsView()
   lyrics = data.lyrics_bank
   tim = data.times_bank
   initializeLyrics()

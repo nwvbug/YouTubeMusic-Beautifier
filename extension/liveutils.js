@@ -8,7 +8,7 @@ document.getElementById("remote-control-check").onclick = swapRC;
 
 function swapRC(){
     allow_remote = document.getElementById("remote-control-check").checked
-    chrome.runtime.sendMessage({origin:"webapp", payload:"swap-remote-control", data:{"allow_remote_control":allow_remote}})
+    chrome.runtime.sendMessage({type:"WEBAPP_SWAP_REMOTE_CONTROL", payload:{"allow_remote_control":allow_remote}})
 }
 
 function generateQrCode(roomcode){
@@ -51,7 +51,7 @@ function clientJoined(client_data){
     //     </div>
     // </div>`
     // document.getElementById("kickbutton-"+client_data["client_internal_id"]).onclick = function(){
-    //     chrome.runtime.sendMessage({origin:"webapp", payload:"kick_connected_user", data:{user_id:client_data["client_internal_id"]}})
+    //     chrome.runtime.sendMessage({type:"WEBAPP_KICK_USER", payload:{user_id:client_data["client_internal_id"]}})
     // }
 }
 
@@ -72,7 +72,7 @@ function setupSharing(){
         "allow_remote_control":document.getElementById("remote-control-check").checked
     }
     console.log("Attempting to start sharing")
-    chrome.runtime.sendMessage({origin:"webapp", payload:"start-sharing", data:data_to_send})
+    chrome.runtime.sendMessage({type:"WEBAPP_START_SHARING", payload:data_to_send})
     live = true
 }
 document.getElementById("startsharing").onclick = setupSharing;
@@ -86,7 +86,7 @@ function disableSharing(){
     document.getElementById("startsharing").onclick = setupSharing;
     document.getElementById("sharingpath1").setAttribute("fill", "white")
     document.getElementById("sharingpath2").setAttribute("fill", "white")
-    chrome.runtime.sendMessage({origin:"webapp", payload:"disable-sharing"})
+    chrome.runtime.sendMessage({type:"WEBAPP_DISABLE_SHARING"})
     
 }
 

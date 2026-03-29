@@ -11,7 +11,7 @@ document.getElementById("clock").onclick=showTimeAdjustment
 var currentlyShowingTopBar = true;
 var topBarTimeout;
 
-var currentlyShowingLyrics = true;
+var userPrefersLyricsVisible = true;
 var currentMainImage = "i1"
 var currentPrevImage = "i0"
 var currentNextImage = "i2"
@@ -117,12 +117,12 @@ function acknowledge(){
 acknowledge();
 
 function toggleLyrics(){
-    if (currentlyShowingLyrics){
+    if (userPrefersLyricsVisible){
         hideLyricsView()
     } else {
         showLyricsView()
     }
-    currentlyShowingLyrics = !currentlyShowingLyrics
+    userPrefersLyricsVisible = !userPrefersLyricsVisible
 }
 
 function subtractOffset(){
@@ -157,6 +157,8 @@ function showLyricOption(){
     document.getElementById("miccontainer").style.display = ""
     document.getElementById("overallmiccontainer").style.display = "none"
     document.getElementById("reloadlyricscontainer").style.display = ""
+    document.getElementById("mic").style.opacity = "1"
+    document.getElementById("mic").style.pointerEvents = "all"
     if (rerolled){
         document.getElementById("reloadlyrics").style.opacity = "0.15"
         document.getElementById("reloadlyrics").style.pointerEvents = "none"

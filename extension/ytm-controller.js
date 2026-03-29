@@ -389,13 +389,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       break;
 
-    case 'YTM_CONTROL_SCAN_TO':
+        case 'YTM_CONTROL_SCAN_TO':
 
-      sendResponse("scanning to "+request.payload)
+          sendResponse("scanning to "+request.payload.time)
 
-      scan(request.payload);
+          scan(request.payload.time);
 
-      break;
+          break;
 
   }
 
