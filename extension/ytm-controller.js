@@ -245,6 +245,8 @@ queueObserver.observe(queue_element, {
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
+setInterval(collectCurrentSongData, 5000);
+
 
 
 
