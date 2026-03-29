@@ -35,120 +35,111 @@ var currentPauseState;
 const REST_URL = "https://ytm.nwvbug.com"
 
 
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    let origin = request.origin
-    let payload = request.payload
-    console.log("Middleman Recieved Message From: "+origin+" With payload of ")
-    //console.log(payload)
-    console.log("UNACK: "+unacknowledged)
-    switch (origin){
-        case "ytm":
-            //Start YTM Origin Request Case
-            ytmTabId = sender.tab.id
-            let action = payload.action
-            if (action == "sendData"){
-                console.log("Origin Update Recieved, sending data through")
-                let data_to_send = parseYTMData(payload.data)
-                sendToWebapp("sendParsedData", data_to_send)
-                let isImportant = isUpdateImportant(data_to_send)
-                if (live && sendNewUpdate){
-                    sendToOffscreen(data_to_send)
-                    sendNewUpdate = false
-                    setTimeout(() => {
-                        sendNewUpdate = true
-                    }, 200); 
-                } else if (live && isImportant){
-                    sendToOffscreen(data_to_send) //send it regardless if it contains new song or pause state change
-                }
-            } else if (action == "sendQueue"){
-                console.log("Defunct Message, Ignoring")
-            } else if (action=="TAB_UNFOCUSED"){
-                console.log("Unfocused Tab, sending thru")
-                sendToWebapp("tab-unfocused", null)
-            } else if (action=="TAB_FOCUSED"){
-                console.log("Unfocused Tab, sending thru")
-                sendToWebapp("tab-focused", null)
-            } else {
-                console.log("Unknown action intention, ignoring")
-            }
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    console.log("Middleman Recieved Message: ", message);
 
-            //End YTM Origin Request Case
-            break
+    switch (message.type) {
+        // YTM Controller Messages
+        case "YTM_DATA_UPDATE":
+            if (!message.payload) return; // Add null guard here
+            ytmTabId = sender.tab.id;
+            let data_to_send = parseYTMData(message.payload);
+            sendToWebapp("STATE_UPDATE", data_to_send);
+            let isImportant = isUpdateImportant(data_to_send);
+            if (live && sendNewUpdate) {
+                sendToOffscreen({ type: "OFFSCREEN_UPDATE_DATA", payload: data_to_send });
+                sendNewUpdate = false;
+                setTimeout(() => {
+                    sendNewUpdate = true;
+                }, 200);
+            } else if (live && isImportant) {
+                sendToOffscreen({ type: "OFFSCREEN_UPDATE_DATA", payload: data_to_send });
+            }
+            break;
+        case "YTM_QUEUE_UPDATE":
+            console.log("Defunct Message, Ignoring");
+            break;
+        case "YTM_TAB_UNFOCUSED":
+            sendToWebapp("YTM_TAB_UNFOCUSED");
+            break;
+        case "YTM_TAB_FOCUSED":
+            sendToWebapp("YTM_TAB_FOCUSED");
+            break;
 
-        case "webapp":
-            webappTabId = sender.tab.id
-            //Webapp origin request case
-            if (payload == "acknowledge"){
-                console.log("Webapp hears updates, connected")
-                webapp_loaded = true
-                unacknowledged = 0
-            } else if (payload == "ytm-pause"){
-                console.log("Webapp requests pause / play")
-                requestPausePlay()
-            } else if (payload == "ytm-back"){
-                console.log("Webapp requests back")
-                requestPrevious()
-            } else if (payload == "ytm-next"){
-                console.log("Webapp requests next")
-                requestNext()
-            } else if (payload == "ytm-scan-to"){
-                console.log("webapp requests scanto")
-                requestScanTo(request.data)
-            } else if (payload == "reroll-lyrics"){
-               getSongLyrics(current_song_title, current_song_artist, current_song_album, current_song_year, true)
-            } else if (payload=="offset-up"){
-                addOffset()
-            } else if (payload=="offset-down"){
-                subtractOffset()
-            }
-            
-            else if (payload == "start-sharing"){
-                console.log("STARTING SHARING")
-                createOffscreenDocument()
-                allow_remote_control = request.data.allow_remote_control
-            } else if (payload == "kick_connected_user"){
-                let user_id = request.data.user_id
-                chrome.runtime.sendMessage({destination:"offscreen", payload:"kick_user", user_id:user_id})
-            } else if (payload == "disable-sharing"){
-                disableSharing()
-            } else if (payload == "swap-remote-control"){
-                console.log("Swapping remote control to "+request.data.allow_remote_control)
-                allow_remote_control = request.data.allow_remote_control
-            }
-            //end webapp origin request case
-            break
+        // Webapp Messages
+        case "WEBAPP_ACKNOWLEDGE":
+            webappTabId = sender.tab.id;
+            console.log("Webapp hears updates, connected");
+            webapp_loaded = true;
+            unacknowledged = 0;
+            break;
+        case "WEBAPP_REQUEST_PLAY_PAUSE":
+            requestPausePlay();
+            break;
+        case "WEBAPP_REQUEST_PREVIOUS":
+            requestPrevious();
+            break;
+        case "WEBAPP_REQUEST_NEXT":
+            requestNext();
+            break;
+        case "WEBAPP_REQUEST_SCAN_TO":
+            requestScanTo(message.payload);
+            break;
+        case "WEBAPP_REQUEST_REROLL_LYRICS":
+            getSongLyrics(current_song_title, current_song_artist, current_song_album, current_song_year, true);
+            break;
+        case "WEBAPP_OFFSET_UP":
+            addOffset();
+            break;
+        case "WEBAPP_OFFSET_DOWN":
+            subtractOffset();
+            break;
+        case "WEBAPP_START_SHARING":
+            createOffscreenDocument();
+            allow_remote_control = message.payload.allow_remote_control;
+            break;
+        case "WEBAPP_KICK_USER":
+            sendToOffscreen({ type: "OFFSCREEN_KICK_USER", payload: { user_id: message.payload.user_id }});
+            break;
+        case "WEBAPP_DISABLE_SHARING":
+            disableSharing();
+            break;
+        case "WEBAPP_SWAP_REMOTE_CONTROL":
+            allow_remote_control = message.payload.allow_remote_control;
+            break;
 
-        case "offscreen":
-            //offscreen (socket) origin request case
-            let intents = request.payload.event
-            if (intents == "room_created"){
-                live = true
-                current_room_code = request.payload.data
-                chrome.runtime.sendMessage({origin:"middleman", action:"room_created", payload:request.payload.data})
-            } else if (intents == "client_disconnected"){
-                chrome.runtime.sendMessage({origin:"middleman", action:"client_disconnected", payload:request.payload.data})
-            } else if (intents == "client_joined"){
-                chrome.runtime.sendMessage({origin:"middleman", action:"client_joined", payload:request.payload.data})
-            } else if (intents == "pause"){
-                requestPausePlay()
-            } else if (intents == "skip"){
-                requestNext()
-            } else if (intents == "prev"){
-                requestPrevious()
-            } else if (intents == "ready"){
-                chrome.runtime.sendMessage({destination:"offscreen", payload:"start_sharing", remote:allow_remote_control})
-            } else if (intents == "request_termination"){
-                //offscreen has completed disposal cycle and is ready to close
-                chrome.offscreen.closeDocument()
-            }
-            //end offscreen origin request case
-            break
-        
-        case "popup":
-            //popup (on ytm page- when extension clicked) origin request case
-            if (request.action=="request_image"){
-                chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
-            }
+        // Offscreen (Socket) Messages
+        case "REMOTE_ROOM_CREATED":
+            live = true;
+            current_room_code = message.payload;
+            sendToWebapp("WEBAPP_ROOM_CREATED", message.payload);
+            break;
+        case "REMOTE_CLIENT_DISCONNECTED":
+            sendToWebapp("WEBAPP_CLIENT_DISCONNECTED", message.payload);
+            break;
+        case "REMOTE_CLIENT_JOINED":
+            sendToWebapp("WEBAPP_CLIENT_JOINED", message.payload);
+            break;
+        case "REMOTE_REQUEST_PLAY_PAUSE":
+            requestPausePlay();
+            break;
+        case "REMOTE_REQUEST_NEXT":
+            requestNext();
+            break;
+        case "REMOTE_REQUEST_PREVIOUS":
+            requestPrevious();
+            break;
+        case "REMOTE_OFFSCREEN_READY":
+            sendToOffscreen({ type: "OFFSCREEN_START_SHARING", payload: { remote: allow_remote_control }});
+            break;
+        case "REMOTE_OFFSCREEN_TERMINATED":
+            chrome.offscreen.closeDocument();
+            break;
+
+        // Popup Messages
+        case "POPUP_REQUEST_IMAGE":
+            chrome.runtime.sendMessage({ type: "POPUP_IMAGE_UPDATE", payload: current_album_art });
+            break;
     }
 });
 
@@ -165,13 +156,14 @@ chrome.tabs.onRemoved.addListener((tabId, removeInfo) =>{
 
 function disableSharing(){
     live = false
-    chrome.runtime.sendMessage({destination:"offscreen", payload:"disable_sharing"})
+    sendToOffscreen({ type: "OFFSCREEN_DISABLE_SHARING" });
 }
 
 
 //LYRICS FINDING AND PARSING
 
 function getSongLyrics(title, artist, album, year, reroll=false){
+  searched_for_lyrics = true;
   resetOffset()
   let url_addon = ""
   if (!reroll){
@@ -185,7 +177,6 @@ function getSongLyrics(title, artist, album, year, reroll=false){
   .then(result => {
       // Handle the received text data
       console.log(result); 
-      searched_for_lyrics = true
       if (result == "no_lyrics_found" || result.includes("<title>500 Internal Server Error</title>")){
         console.log("no lyrics")
         lyric_source = "none"
@@ -194,7 +185,7 @@ function getSongLyrics(title, artist, album, year, reroll=false){
         lyrics_fresh = true;
         lyrics_code = crypto.randomUUID()
         result = JSON.parse(result)
-        data = result["lrc"]
+        let data = result["lrc"]
         console.log(data)
         if (result["source"] == "unofficial"){
           parseUnofficialLyrics(data)
@@ -244,19 +235,19 @@ function processData(allText) { // This will only divide with respect to new lin
 } 
 
 function next(){
-    for (i=0;i<allTextLines.length;i++){
+    for (let i=0;i<allTextLines.length;i++){
         if (allTextLines[i].search(/^(\[)(\d*)(:)(.*)(\])(.*)/i)>=0 ){// any line without the prescribed format wont enter this loop 
             line = allTextLines[i].match(/^(\[)(\d*)(:)(.*)(\])(.*)/i);
-            times[i] = (parseInt(line[2])*60)+ parseInt(line[4]); // will give seconds 
-            lyrics[i]= line[6] ;//will give lyrics 
+            let time = (parseInt(line[2])*60)+ parseInt(line[4]); // will give seconds 
+            let lyric = line[6] ;//will give lyrics 
 
+            if (lyric === " " || lyric === '' || lyric.substring(1,3) === "作曲" || lyric.substring(1,3) === "作词"){
+                lyric = "♪♪"
+            }
+            times.push(time);
+            lyrics.push(lyric);
         }
     }  
-    for (i=0; i<lyrics.length; i++){
-        if (lyrics[i] == " " || lyrics[i] == '' || lyrics[i].substring(1,3) == "作曲" || lyrics[i].substring(1,3) == "作词"){
-            lyrics[i] = "♪♪"
-        }
-    }
     console.log(lyrics)
     console.log(times)
 } 
@@ -268,22 +259,34 @@ function next(){
 function parseYTMData(data){
     console.log("Parsing")
     console.log(data)
-    current_album_art = data.large_image
+
+    // Decouple popup image update from webapp status
+    const new_album_art = data.large_image;
+    if (new_album_art && new_album_art !== current_album_art) {
+        current_album_art = new_album_art;
+        chrome.runtime.sendMessage({ type: "POPUP_IMAGE_UPDATE", payload: current_album_art });
+    }
+
     current_song_album = data.album
     current_song_artist = data.artist
     current_song_title = data.title
     current_song_year = data.date
     let incoming_id = data.title+data.artist+data.album
     
-    if ((incoming_id != current_song_identifier) && webapp_loaded){
-        current_song_identifier = incoming_id
-        console.log("New Song, checking for lyrics")
-        lyrics_fresh = false
-        searched_for_lyrics = false
-        getSongLyrics(data.title, data.artist, data.album, data.date)
-        
-        chrome.runtime.sendMessage({origin:"middleman", action:"popup_image", payload:current_album_art})
+    let is_new_song = (incoming_id != current_song_identifier);
+    
+    if (is_new_song) {
+        current_song_identifier = incoming_id;
+        lyrics_fresh = false; // Reset freshness for new song
+        searched_for_lyrics = false;
     }
+
+    // We should fetch if it's a new song, OR if we haven't searched for the current one yet.
+    if (webapp_loaded && !searched_for_lyrics) {
+        console.log("Checking for lyrics for song: " + data.title);
+        getSongLyrics(data.title, data.artist, data.album, data.date);
+    }
+
     let data_to_send = {
         "song_name":data.title,
         "song_artist":data.artist,
@@ -319,9 +322,9 @@ function isUpdateImportant(newData){
 }
 
 
-function sendToWebapp(endpoint, data){
+function sendToWebapp(type, payload){
     unacknowledged++;
-    chrome.runtime.sendMessage({origin:"middleman", action:endpoint, payload:data})
+    chrome.runtime.sendMessage({ type, payload })
 }
 
 function subtractOffset(){
@@ -383,33 +386,33 @@ async function createOffscreenDocument() {
 }
 
 
-function sendToOffscreen(update_data){
-    chrome.runtime.sendMessage({destination:"offscreen", payload:"update", data:update_data})
+function sendToOffscreen(message){
+    chrome.runtime.sendMessage(message)
 }
 
 // Authenticated functions: Use this for requests that are known to be good and want to complete
 
 function requestScanTo(scanData){
-        chrome.tabs.sendMessage(ytmTabId, { action: 'ytm-scan-to', data: scanData }, (response) => {
+        chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_CONTROL_SCAN_TO', payload: scanData }, (response) => {
             console.log("Response heard.")
         }); 
 }
 
 function requestNext(){
-    chrome.tabs.sendMessage(ytmTabId, { action: 'next-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_CONTROL_NEXT' }, (response) => {
         console.log("Response heard.")
         console.log(response)
     }); 
 }
 
 function requestPrevious(){
-    chrome.tabs.sendMessage(ytmTabId, { action: 'back-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_CONTROL_PREVIOUS' }, (response) => {
         console.log("Response heard.")
     }); 
 }
 
 function requestPausePlay(){
-    chrome.tabs.sendMessage(ytmTabId, { action: 'pause-from-middleman-ytm', data: null }, (response) => {
+    chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_CONTROL_PLAY_PAUSE' }, (response) => {
         console.log("Response heard.")
     }); 
 }

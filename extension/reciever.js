@@ -20,51 +20,57 @@ var started = false
 var displayedOffset = 0
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.origin != "middleman"){
-    return
-  }
-  chrome.runtime.sendMessage({origin:"webapp", payload:"acknowledge"})
-  console.log("Message Recieved. Action: "+request.action+" Payload:")
+  chrome.runtime.sendMessage({ type: "WEBAPP_ACKNOWLEDGE" });
+  console.log("Message Recieved. Type: "+request.type+" Payload:")
   console.log(request.payload)
-  if (request.action == "sendParsedData"){
-    onUpdate(request.payload)
-  } else if (request.action == "client_disconnected"){
-    clientDisconnected(request.payload)
-  } else if (request.action == "room_created"){
-    generateQrCode(request.payload)
-  } else if (request.action == "client_joined"){
-    clientJoined(request.payload)
-  } else if (request.action == "tab-focused"){
-    console.log("YTM Tab Focused")
-    doAnimation = false
-  } else if (request.action == "tab-unfocused"){
-    console.log("YTM Tab Unfocused")
-    doAnimation = true
+
+  switch (request.type) {
+    case "STATE_UPDATE":
+      onUpdate(request.payload)
+      break;
+    case "WEBAPP_CLIENT_DISCONNECTED":
+      clientDisconnected(request.payload)
+      break;
+    case "WEBAPP_ROOM_CREATED":
+      generateQrCode(request.payload)
+      break;
+    case "WEBAPP_CLIENT_JOINED":
+      clientJoined(request.payload)
+      break;
+    case "YTM_TAB_FOCUSED":
+      console.log("YTM Tab Focused")
+      doAnimation = false
+      break;
+    case "YTM_TAB_UNFOCUSED":
+      console.log("YTM Tab Unfocused")
+      doAnimation = true
+      break;
   }
-  
-})
+});
 
 function onUpdate(data){
     console.log("ONUpdate")
     updateTimestamp(data.elapsed_time, data.total_time)
-    if (current_song == data.song_identifier){
-        displayLyricOneAtATime(data.elapsed_time)
-        
-    } else { //new song
+    const isNewSong = current_song != data.song_identifier;
+
+    if (isNewSong){
         console.log("New Song")
         rerolled = false;
         loadLyricOption()
         current_song = data.song_identifier
         totalDuration = data.total_time
-        hideLyricsView()
         hideBackground()
         setTimeout(() => {
            showBackground()
-          if (currentlyShowingLyrics && data.lyrics_freshness){
+          if (userPrefersLyricsVisible && data.lyrics_freshness){
             showLyricsView()
-            // console.log("SCROLLING TO LYRICS 1")
-            // document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
-            
+            if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
+                refreshAndDisplayLyrics(data)
+                incomingSecondOffset = data["offset-for-display"]
+                document.getElementById("offset").innerText = -1 * incomingSecondOffset
+            }
+          } else {
+            hideLyricsView()
           }
         }, 1000);
         console.log("song id: "+data.song_identifier)
@@ -83,7 +89,10 @@ function onUpdate(data){
             displayedOffset = data["offset-for-display"]
             document.getElementById("offset").innerText = displayedOffset
         }
+    } else {
+        displayLyricOneAtATime(data.elapsed_time)
     }
+
     console.log("Lyrics Freshness: "+data.lyric_freshness)
     if (data.lyric_freshness == false){
         hideLyricsView()
@@ -93,12 +102,16 @@ function onUpdate(data){
           hideLyricOption()
         }
     } else {
-        if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
-            refreshAndDisplayLyrics(data)
-            incomingSecondOffset = data["offset-for-display"]
-            document.getElementById("offset").innerText = -1 * incomingSecondOffset
+        if(userPrefersLyricsVisible) {
+            showLyricsView();
         }
-        
+        if (!isNewSong){
+            if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
+                refreshAndDisplayLyrics(data)
+                incomingSecondOffset = data["offset-for-display"]
+                document.getElementById("offset").innerText = -1 * incomingSecondOffset
+            }
+        }
     }
 
     if (data.pause_state == "Pause" && document.getElementById("pauseplaybutton").src !="/assets/pause.png"){
@@ -126,7 +139,6 @@ function refreshAndDisplayLyrics(data){
   tim = data.times_bank
   lyrics = data.lyrics_bank
   console.log("Refreshing Lyrics")
-  showLyricsView()
   lyrics = data.lyrics_bank
   tim = data.times_bank
   initializeLyrics()
