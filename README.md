@@ -30,10 +30,14 @@ When in YouTube Music, activate the extension by going to the top right of your 
 
 ## How it works
 
-- Content script of the extension watches for mutations on the web app, and sends them to the extension's page.
-- The extension then displays the information and requests lyrics from the [unofficial youtube music api](https://github.com/sigma67/ytmusicapi)
-- Extension page can send information back to YTM which allows for play/pause back/skip
-- Backgrounds done with JS Canvas
+## How it works
+
+- **Metadata Scraping:** A content script uses a MutationObserver to watch the YouTube Music web app for high-level state changes like a new song starting.
+- **Millisecond-Precise Timing:** To get the current song's progress, the extension injects a bridge script into the YTM page. This script accesses YTM's internal player API and broadcasts highly precise, lag-free timestamps back to the isolated content script via `window.postMessage`.
+- **Clock Synchronization:** Rather than flooding the extension with constant message updates, the web app interface receives an anchor time and uses a local `requestAnimationFrame` loop to interpolate the current playback millisecond. 
+- **Lyrics:** The extension requests synced lyrics from the [unofficial youtube music api](https://github.com/sigma67/ytmusicapi).
+- **Playback Control:** The extension page can send commands back through the service worker to the content script, allowing for remote play/pause/skip functionality.
+- **Visuals:** The dynamic animated backgrounds are rendered using the JS Canvas API.
 
 ![Example Image](https://github.com/nwvbug/YouTubeMusic-Beautifier/blob/main/examples/ss4.png?raw=true)
 

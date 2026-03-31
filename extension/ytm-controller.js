@@ -1,6 +1,7 @@
 const playerBar = document.querySelector("ytmusic-player-bar");
 const queue_element = document.getElementById("queue").querySelector("#contents")
 var currently_playing_song;
+var previously_playing_song;
 
 // NEW Global state from time bridge
 let lastKnownPreciseTime = 0;
@@ -100,7 +101,7 @@ function getNowPlaying() {
 }
 
 let debounced = true
-const playBarObserver = new MutationObserver(collectCurrentSongData);
+const playBarObserver = new MutationObserver(checkForNewSong);
 
 playBarObserver.observe(playerBar, {
   childList: true,
@@ -108,13 +109,13 @@ playBarObserver.observe(playerBar, {
   attributes: true,
 });
 
-const queueObserver = new MutationObserver(getQueue);
+// const queueObserver = new MutationObserver(getQueue);
 
-queueObserver.observe(queue_element, {
-  childList: true,
-  subtree: true,
-  attributes: true,
-});
+// queueObserver.observe(queue_element, {
+//   childList: true,
+//   subtree: true,
+//   attributes: true,
+// });
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 var pollingInterval = 5000;
@@ -148,6 +149,18 @@ function speedUpPolling() {
         speedUpTimeout = null;
     }, 10000);
 }
+
+function checkForNewSong(){
+    let np = getNowPlaying()
+    if (np != null){
+        if (np.title+np.artist+np.album != previously_playing_song){
+            previously_playing_song = np.title+np.artist+np.album
+            speedUpPolling();
+        }
+    }
+    
+}
+
 function collectCurrentSongData(){
   if (debounced){
     let data = getNowPlaying();
@@ -212,13 +225,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       sendResponse("sending song update")
       collectCurrentSongData();
       break;
-      case 'YTM_CONTROL_SCAN_TO':
-        sendResponse("scanning to "+request.payload.time)
-        scan(request.payload.time);
+    case 'YTM_CONTROL_SCAN_TO':
+      sendResponse("scanning to "+request.payload.time)
+      scan(request.payload.time);
+      break;
+    case 'YTM_SPEED_UP_POLLING':
+        speedUpPolling();
         break;
-      case 'YTM_SPEED_UP_POLLING':
-          speedUpPolling();
-          break;
   }
 });
 function pressShiftP() {
@@ -343,6 +356,7 @@ function scan(seconds){
       triggerNext()
     }
   }
+  speedUpPolling();
 }
 function triggerNext() {
   const event = new KeyboardEvent('keydown', {
@@ -458,18 +472,7 @@ function addVideoEventListeners() {
 
         video.addEventListener('play', sendSyncUpdate);
         video.addEventListener('pause', sendSyncUpdate);
-        // video.addEventListener('seeked', () => {
-        //     // Recalculate offset on seek
-        //     const timeInfoSpan = document.querySelector("span.time-info.ytmusic-player-bar");
-        //     if (timeInfoSpan) {
-        //         const [elapsedText] = timeInfoSpan.innerHTML.trim().split(" / ");
-        //         const uiSeconds = timestampToSeconds(elapsedText);
-        //         // Use time from bridge for offset calculation
-        //         playbackOffset = lastKnownPreciseTime - uiSeconds;
-        //     }
-        //     // After recalculating, send a full update
-        //     sendSyncUpdate();
-        // });
+        video.addEventListener('seeked', sendSyncUpdate);
     } else {
         // If video is not found, try again in a second.
         setTimeout(addVideoEventListeners, 1000);
