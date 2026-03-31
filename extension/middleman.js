@@ -108,7 +108,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             allow_remote_control = message.payload.allow_remote_control;
             break;
         case "OPEN_WEBAPP":
-            chrome.tabs.create({ url: "webapp.html" });
+            if (webapp_loaded && webappTabId) {
+                chrome.tabs.get(webappTabId, (tab) => {
+                    if (chrome.runtime.lastError) {
+                        // The tab doesn't exist, so create it.
+                        chrome.tabs.create({ url: "webapp.html" });
+                    } else {
+                        // The tab exists, so focus it.
+                        chrome.tabs.update(webappTabId, { active: true });
+                        chrome.windows.update(tab.windowId, { focused: true });
+                    }
+                });
+            } else {
+                chrome.tabs.create({ url: "webapp.html" });
+            }
+            if (ytmTabId) {
+                chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
+            }
             break;
 
         // Offscreen (Socket) Messages

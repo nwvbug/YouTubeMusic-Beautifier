@@ -211,6 +211,8 @@ function getNowPlaying() {
 
 
 
+let debounced = true
+
 const playBarObserver = new MutationObserver(collectCurrentSongData);
 
 
@@ -245,13 +247,17 @@ queueObserver.observe(queue_element, {
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
-setInterval(collectCurrentSongData, 3000);
+var pollingInterval = 5000;
+var pollTimer;
+function poll() {
+   collectCurrentSongData();
+   pollTimer = setTimeout(poll, pollingInterval);
+}
+poll()
 
 
 
 
-
-let debounced = true
 
 function collectCurrentSongData(){
 
@@ -391,11 +397,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
       break;
 
-        case 'YTM_CONTROL_SCAN_TO':
+      case 'YTM_CONTROL_SCAN_TO':
 
-          sendResponse("scanning to "+request.payload.time)
+        sendResponse("scanning to "+request.payload.time)
 
-          scan(request.payload.time);
+        scan(request.payload.time);
+
+        break;
+
+      case 'YTM_SPEED_UP_POLLING':
+          clearTimeout(pollTimer);
+          pollingInterval = 500;
+          poll() //so that it immediately polls then switches to using 500ms, not after 5s or remaning time from prev
+
+          setTimeout(() => {
+
+              pollingInterval = 5000;
+
+          }, 10000);
 
           break;
 
