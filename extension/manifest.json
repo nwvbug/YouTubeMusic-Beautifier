@@ -31,10 +31,15 @@
         "128": "assets/128x128.png"
     },
     "web_accessible_resources": [
-        {
-            "resources": [ "assets/nobackground.png" ],
-            "matches": [ "https://music.youtube.com/*" ]
-        }
-    ]
+    {
+        "resources": [ 
+            "assets/nobackground.png",
+            "ytm-injected-timer.js"
+        ],
+        "matches": [ 
+            "*://music.youtube.com/*" 
+        ]
+    }
+]
       
 }

@@ -2,6 +2,24 @@ current_time = -1;
 current_index = 0
 var doAnimation = true;
 
+let syncedTime = 0;
+let syncTimestamp = 0;
+let isPlaying = false;
+let songTotalTime = 0;
+
+function updateSyncState(payload) {
+    syncedTime = payload.currentTime;
+    syncTimestamp = payload.syncTimestamp;
+    isPlaying = payload.isPlaying;
+    songTotalTime = payload.total_time;
+
+    // Perform an initial update, so the UI doesn't wait for the next animation frame, especially if paused.
+    if (!isPlaying) {
+        displayLyricOneAtATime(syncedTime);
+        updateTimestamp(syncedTime, songTotalTime);
+    }
+}
+
 function initializeLyrics(){
     console.log("INIT LYRICS")
     document.getElementById("lyric-holder").style.maxWidth = ""
@@ -44,6 +62,7 @@ function selectNewLyric(i){
 }
 
 function displayLyricOneAtATime(seconds, identifier=null){
+    //console.log("displaying lyric at time: "+seconds)
     if (seconds < current_time){
         //document.getElementById("lyric-holder").scrollTo(0,0)
         let lyric_list = document.getElementById("lyric-holder").children
@@ -134,6 +153,16 @@ function animate(){
             image.draw()
         })
     }
+
+    if (isPlaying) {
+        const elapsedSinceSync = (Date.now() - syncTimestamp) / 1000.0;
+        const currentEstimatedTime = syncedTime + elapsedSinceSync;
+        const finalTime = Math.min(currentEstimatedTime, songTotalTime);
+
+        displayLyricOneAtATime(finalTime);
+        updateTimestamp(finalTime, songTotalTime);
+    }
+
     requestAnimationFrame(animate)
 }
 animate()

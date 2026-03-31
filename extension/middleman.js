@@ -75,12 +75,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case "WEBAPP_REQUEST_PLAY_PAUSE":
             requestPausePlay();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "WEBAPP_REQUEST_PREVIOUS":
             requestPrevious();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "WEBAPP_REQUEST_NEXT":
             requestNext();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "WEBAPP_REQUEST_SCAN_TO":
             requestScanTo(message.payload);
@@ -311,7 +314,9 @@ function parseYTMData(data){
         "song_artist":data.artist,
         "song_album":data.album,
         "total_time":data.total,
-        "elapsed_time":data.elapsed - incomingSecondOffset,
+        "currentTime": data.currentTime,
+        "syncTimestamp": data.syncTimestamp,
+        "isPlaying": data.playPauseState === 'Pause',
         "song_identifier":incoming_id,
         "pause_state":data.playPauseState,
         "lyrics_bank":lyrics,

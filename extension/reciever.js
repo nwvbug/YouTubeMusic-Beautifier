@@ -49,8 +49,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 function onUpdate(data){
-    console.log("ONUpdate")
-    updateTimestamp(data.elapsed_time, data.total_time)
+    console.log("ONUpdate");
+    updateSyncState(data); // New call to update the sync state in displayer.js
+
     const isNewSong = current_song != data.song_identifier;
 
     if (isNewSong){
@@ -89,8 +90,6 @@ function onUpdate(data){
             displayedOffset = data["offset-for-display"]
             document.getElementById("offset").innerText = displayedOffset
         }
-    } else {
-        displayLyricOneAtATime(data.elapsed_time)
     }
 
     console.log("Lyrics Freshness: "+data.lyric_freshness)
@@ -146,6 +145,6 @@ function refreshAndDisplayLyrics(data){
   //     console.log("SCROLLING TO LYRICS 2")
   //     document.getElementById("0").scrollIntoView(scrollIntoViewOptions={"block":"center", "behavior":"smooth"})
   // }, 250)
-  displayLyricOneAtATime(data.elapsed_time)
+  // The animate loop in displayer.js will handle the lyric display.
   last_lyrics_refresh = data.song_identifier
 }
