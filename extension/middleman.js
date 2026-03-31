@@ -144,12 +144,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case "REMOTE_REQUEST_PLAY_PAUSE":
             requestPausePlay();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "REMOTE_REQUEST_NEXT":
             requestNext();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "REMOTE_REQUEST_PREVIOUS":
             requestPrevious();
+            chrome.tabs.sendMessage(ytmTabId, { type: 'YTM_SPEED_UP_POLLING' });
             break;
         case "REMOTE_OFFSCREEN_READY":
             sendToOffscreen({ type: "OFFSCREEN_START_SHARING", payload: { remote: allow_remote_control }});
