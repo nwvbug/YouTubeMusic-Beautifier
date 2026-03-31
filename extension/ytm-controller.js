@@ -245,7 +245,7 @@ queueObserver.observe(queue_element, {
 
 console.log("[YouTube Music] Started YTMusic Fullscreen Background Process!");
 
-setInterval(collectCurrentSongData, 5000);
+setInterval(collectCurrentSongData, 3000);
 
 
 
@@ -823,40 +823,52 @@ window.addEventListener('focus', () => {
 
 let messageDispatched = false
 
-
-
-setInterval(() => {
-
-  if (!messageDispatched){
-
-    try {
-
-      let traditionalLyricHolder = document.querySelector("#contents > ytmusic-description-shelf-renderer > span")
-
-      let disclaimer = document.createElement("div")
-
-      disclaimer.innerText = "To use the YouTube Music Beautifier and view synced lyrics, launch the extension from your Extensions menu (puzzle piece icon)."
-
-      disclaimer.style.fontSize = "15px"
-
-      disclaimer.style.marginTop = "10px"
-
-      disclaimer.style.opacity = "0.7"
-
-      disclaimer.style.textAlign = "center"
-
-      disclaimer.style.padding = "0 10px"
-
-      traditionalLyricHolder.appendChild(disclaimer)
-
-      messageDispatched = true
-
-    } catch {
-
-
-
+function addLaunchWebAppButton() {
+    if (document.getElementById('launch-beautifier-webapp')) {
+        return; // Button already exists
     }
 
-  }
+    const rightControls = document.querySelector('.right-controls-buttons');
+    if (rightControls) {
+        const webAppButton = document.createElement('yt-icon-button');
+        webAppButton.id = 'launch-beautifier-webapp';
+        webAppButton.className = 'style-scope ytmusic-player-bar';
+        webAppButton.title = 'Launch YouTube Music Beautifier';
 
+        const img = document.createElement('img');
+        img.src = chrome.runtime.getURL('assets/nobackground.png');
+        img.style.width = '24px';
+        img.style.height = '24px';
+        img.style.opacity = '0.5';
+        img.style.boxSizing = 'border-box';
+        img.style.borderRadius = '50%';
+
+        webAppButton.appendChild(img);
+
+        webAppButton.addEventListener('click', () => {
+            chrome.runtime.sendMessage({ type: 'OPEN_WEBAPP' });
+        });
+
+        rightControls.appendChild(webAppButton);
+    }
+}
+
+setInterval(() => {
+  addLaunchWebAppButton();
+  if (!messageDispatched){
+    try {
+      let traditionalLyricHolder = document.querySelector("ytmusic-description-shelf-renderer .non-expandable.description")
+      let disclaimer = document.createElement("div")
+      disclaimer.innerText = "To use the YouTube Music Beautifier and view synced lyrics, launch the extension from your Extensions menu (puzzle piece icon)."
+      disclaimer.style.fontSize = "15px"
+      disclaimer.style.marginBottom = "10px"
+      disclaimer.style.opacity = "0.7"
+      disclaimer.style.textAlign = "center"
+      disclaimer.style.padding = "0 10px"
+      traditionalLyricHolder.prepend(disclaimer)
+      messageDispatched = true
+    } catch {
+
+    }
+  }
 }, 1000)

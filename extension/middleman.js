@@ -107,6 +107,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case "WEBAPP_SWAP_REMOTE_CONTROL":
             allow_remote_control = message.payload.allow_remote_control;
             break;
+        case "OPEN_WEBAPP":
+            chrome.tabs.create({ url: "webapp.html" });
+            break;
 
         // Offscreen (Socket) Messages
         case "REMOTE_ROOM_CREATED":

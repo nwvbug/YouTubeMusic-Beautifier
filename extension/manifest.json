@@ -29,6 +29,12 @@
         "16": "assets/16x16.png",
         "48": "assets/48x48.png",
         "128": "assets/128x128.png"
-    }
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [ "assets/nobackground.png" ],
+            "matches": [ "https://music.youtube.com/*" ]
+        }
+    ]
       
 }
