@@ -1,6 +1,8 @@
 let live = false
 let client_count = 0
 let code;
+let root_url = "http://ytmbeta.nwvbug.com"
+//let root_url = "http://ytm.nwvbug.com"
 var qrcode = new QRCode("qrcode")
 
 document.getElementById("remote-control-check").onclick = swapRC;
@@ -14,7 +16,7 @@ function swapRC(){
 function generateQrCode(roomcode){
     code = roomcode
     qrcode.clear()
-    qrcode.makeCode("http://ytm.nwvbug.com/live?code="+roomcode)
+    qrcode.makeCode(root_url+"/live?code="+roomcode)
     document.getElementById("qrcode").style.display = ""
     document.getElementById("codetext").innerText = "Room Code: "+roomcode
     document.getElementById("codetext").style.fontSize = 18

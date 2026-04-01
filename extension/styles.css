@@ -181,7 +181,7 @@ h2{
 
     .image-holder{
         width: 25vw;
-        height: 25vw;
+        /* height: 25vw; */
     }
     .image-holder img{
         width:100%;
@@ -331,7 +331,7 @@ h2{
 
     .image-holder{
         width: 30vh;
-        height: 30vh;
+        /* height: 30vh; */
     }
     .image-holder img{
         width:100%;
@@ -474,7 +474,7 @@ h2{
 
     .image-holder{
         width: 55vh;
-        height: 55vh;
+        /* height: 55vh; */
     }
     .image-holder img{
         width:100%;

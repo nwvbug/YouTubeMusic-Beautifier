@@ -26,7 +26,8 @@ playSilentAudio();
 
 
 //const WS_URL = "http://127.0.0.1:7071"
-const WS_URL = "https://ws.nwvbug.com"
+//const WS_URL = "https://ws.nwvbug.com"
+const WS_URL = "https://wsbeta.nwvbug.com"
 var last_packet;
 var client_count = 0;
 var allow_remote = null
@@ -77,7 +78,10 @@ socket.on("room-created", function(data){
     live = true;
 })
     
-
+socket.on("heartbeat", function(data){
+    console.log("heartbeat from client for rtt")
+    socket.emit("heartbeat_ack", {"current_time":data["current_time"]})
+})
 
 socket.on("update", function(data){
     console.log("own update heard")
