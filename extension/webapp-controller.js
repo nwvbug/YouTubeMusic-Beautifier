@@ -11,7 +11,8 @@ document.getElementById("clock").onclick=showTimeAdjustment
 var currentlyShowingTopBar = true;
 var topBarTimeout;
 
-var userPrefersLyricsVisible = true;
+var userPrefersLyricsVisible = localStorage.getItem('lyricsVisible') !== 'false';
+var isTransitioning = false;
 var currentMainImage = "i1"
 var currentPrevImage = "i0"
 var currentNextImage = "i2"
@@ -74,7 +75,10 @@ function skip(){
     hideBackground()
     document.getElementById("lyric-holder").scrollTo(0, 0)
     document.getElementById("lyric-holder").innerHtml = ""
-    hideLyricsView()
+    if (userPrefersLyricsVisible) {
+        hideLyricsView()
+        isTransitioning = true
+    }
     // lyrics = []
     // if (currentMainImage == "i2"){
     //     currentMainImage = "i0"
@@ -117,12 +121,13 @@ function acknowledge(){
 acknowledge();
 
 function toggleLyrics(){
-    if (userPrefersLyricsVisible){
-        hideLyricsView()
-    } else {
-        showLyricsView()
-    }
     userPrefersLyricsVisible = !userPrefersLyricsVisible
+    localStorage.setItem('lyricsVisible', userPrefersLyricsVisible)
+    if (userPrefersLyricsVisible){
+        showLyricsView()
+    } else {
+        hideLyricsView()
+    }
 }
 
 function subtractOffset(){
@@ -371,5 +376,7 @@ function hideTimeAdjustment(){
     document.getElementById("clock").onclick=showTimeAdjustment
 }
 
-
+if (!userPrefersLyricsVisible) {
+    hideLyricsView()
+}
 

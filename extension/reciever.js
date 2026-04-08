@@ -63,7 +63,8 @@ function onUpdate(data){
         hideBackground()
         setTimeout(() => {
            showBackground()
-          if (userPrefersLyricsVisible && data.lyrics_freshness){
+           isTransitioning = false
+          if (userPrefersLyricsVisible && data.lyric_freshness){
             showLyricsView()
             if (data.song_identifier != last_lyrics_refresh || data.lyrics_code != lyrics_code){
                 refreshAndDisplayLyrics(data)
@@ -101,7 +102,7 @@ function onUpdate(data){
           hideLyricOption()
         }
     } else {
-        if(userPrefersLyricsVisible) {
+        if(userPrefersLyricsVisible && !isTransitioning) {
             showLyricsView();
         }
         if (!isNewSong){

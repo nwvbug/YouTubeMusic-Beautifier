@@ -22,7 +22,6 @@ function updateSyncState(payload) {
 
 function initializeLyrics(){
     console.log("INIT LYRICS")
-    document.getElementById("lyric-holder").style.maxWidth = ""
     document.getElementById("lyric-holder").innerHTML = ""
     
     let totalhtml = ""
