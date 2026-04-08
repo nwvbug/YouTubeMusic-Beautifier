@@ -15,7 +15,7 @@ function updateSyncState(payload) {
 
     // Perform an initial update, so the UI doesn't wait for the next animation frame, especially if paused.
     if (!isPlaying) {
-        displayLyricOneAtATime(syncedTime);
+        displayLyricOneAtATime(syncedTime - incomingSecondOffset);
         updateTimestamp(syncedTime, songTotalTime);
     }
 }
@@ -158,7 +158,7 @@ function animate(){
         const currentEstimatedTime = syncedTime + elapsedSinceSync;
         const finalTime = Math.min(currentEstimatedTime, songTotalTime);
 
-        displayLyricOneAtATime(finalTime);
+        displayLyricOneAtATime(finalTime - incomingSecondOffset);
         updateTimestamp(finalTime, songTotalTime);
     }
 
