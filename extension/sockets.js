@@ -26,8 +26,8 @@ playSilentAudio();
 
 
 //const WS_URL = "http://127.0.0.1:7071"
-//const WS_URL = "https://ws.nwvbug.com"
-const WS_URL = "https://wsbeta.nwvbug.com"
+const WS_URL = "https://ws.nwvbug.com"
+//const WS_URL = "https://wsbeta.nwvbug.com"
 var last_packet;
 var client_count = 0;
 var allow_remote = null

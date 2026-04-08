@@ -1,8 +1,8 @@
 let live = false
 let client_count = 0
 let code;
-let root_url = "http://ytmbeta.nwvbug.com"
-//let root_url = "http://ytm.nwvbug.com"
+//let root_url = "http://ytmbeta.nwvbug.com"
+let root_url = "http://ytm.nwvbug.com"
 var qrcode = new QRCode("qrcode")
 
 document.getElementById("remote-control-check").onclick = swapRC;
