@@ -24,8 +24,8 @@ When in YouTube Music, activate the extension by going to the top right of your 
 - Fullscreen Icon: Enter or Exit Fullscreen
 - Settings Icon: Open the Settings menu
 
-## Possible features for v1.2.0 (Next Version)
-- Word-level lyric sync, not just line level
+## Features Coming Soon (Next Version)
+- Word-level lyric sync, not just line level (this already works in testing, just need to make sure its stable!)
 - System to start PC playback from phone (more of a Remote Control Dashboard as opposed to a viewer with controls)
 - Auto Offset Detection for Live (Detect the ping time and implement an offset so that all devices are *exactly* in sync, down to a few ms)
 
