@@ -12,7 +12,6 @@ var currentlyShowingTopBar = true;
 var topBarTimeout;
 
 var userPrefersLyricsVisible = localStorage.getItem('lyricsVisible') !== 'false';
-var isTransitioning = false;
 var currentMainImage = "i1"
 var currentPrevImage = "i0"
 var currentNextImage = "i2"
@@ -51,9 +50,9 @@ function reloadLyrics(){
     if (!rerolled){
         chrome.runtime.sendMessage({type:"WEBAPP_REQUEST_REROLL_LYRICS"})
         rerolled = true;
+        loadLyricOption()
+        showLyricsLoading()
     }
-    loadLyricOption()
-
 }
 
 function pausePlay(){
@@ -62,8 +61,11 @@ function pausePlay(){
     // setTimeout(() => {
     //     album_img.style.boxShadow = "none"
     // }, (200));
+    if (isPlaying) {
+        isPlaying = false;
+    }
     chrome.runtime.sendMessage({type:"WEBAPP_REQUEST_PLAY_PAUSE"})
-    
+
 }
 
 function previous(){
@@ -74,11 +76,10 @@ function previous(){
 function skip(){
     hideBackground()
     document.getElementById("lyric-holder").scrollTo(0, 0)
-    document.getElementById("lyric-holder").innerHtml = ""
-    if (userPrefersLyricsVisible) {
-        hideLyricsView()
-        isTransitioning = true
-    }
+    // A new song is coming: grey out the lyric buttons and show the
+    // loading indicator in the pane until the search resolves.
+    loadLyricOption()
+    showLyricsLoading()
     // lyrics = []
     // if (currentMainImage == "i2"){
     //     currentMainImage = "i0"
@@ -142,43 +143,32 @@ function addOffset(){
     chrome.runtime.sendMessage({type:"WEBAPP_OFFSET_UP"})
 }   
 
+function setMicEnabled(enabled){
+    document.getElementById("mic").style.opacity = enabled ? "1" : "0.15"
+    document.getElementById("mic").style.pointerEvents = enabled ? "all" : "none"
+}
+
+function setReloadEnabled(enabled){
+    document.getElementById("reloadlyrics").style.opacity = enabled ? "1" : "0.15"
+    document.getElementById("reloadlyrics").style.pointerEvents = enabled ? "all" : "none"
+}
+
+// No lyrics found: nothing to show, but re-searching is allowed (once)
 function hideLyricOption(){
-    document.getElementById("miccontainer").style.display = ""
-    document.getElementById("mic").style.pointerEvents = "none"
-    document.getElementById("mic").style.animation = ""
-    document.getElementById("mic").style.opacity = "0.15"
-
-    document.getElementById("overallmiccontainer").style.display = "none"
-
-    document.getElementById("reloadlyricscontainer").style.display = ""
-    if (rerolled){
-        document.getElementById("reloadlyrics").style.opacity = "0.15"
-        document.getElementById("reloadlyrics").style.pointerEvents = "none"
-    }
-
+    setMicEnabled(false)
+    setReloadEnabled(!rerolled)
 }
 
+// Lyrics found: both buttons usable (re-search only once per song)
 function showLyricOption(){
-    document.getElementById("miccontainer").style.display = ""
-    document.getElementById("overallmiccontainer").style.display = "none"
-    document.getElementById("reloadlyricscontainer").style.display = ""
-    document.getElementById("mic").style.opacity = "1"
-    document.getElementById("mic").style.pointerEvents = "all"
-    if (rerolled){
-        document.getElementById("reloadlyrics").style.opacity = "0.15"
-        document.getElementById("reloadlyrics").style.pointerEvents = "none"
-    }
-
+    setMicEnabled(true)
+    setReloadEnabled(!rerolled)
 }
 
+// Search in flight: both buttons stay visible but greyed out
 function loadLyricOption(){
-    document.getElementById("overallmiccontainer").style.display = ""
-    document.getElementById("miccontainer").style.display = "none"
-    document.getElementById("reloadlyricscontainer").style.display = "none"
-    document.getElementById("reloadlyrics").style.opacity = "1"
-    document.getElementById("reloadlyrics").style.pointerEvents = "all"
-    document.getElementById("mic").style.opacity = "1"
-    document.getElementById("mic").style.pointerEvents = "all"
+    setMicEnabled(false)
+    setReloadEnabled(false)
 }
 
 function showSettings(){
@@ -276,6 +266,59 @@ function toggleOptimization(){
 }
 
 document.getElementById("settings-animation").onclick = toggleAnimation
+
+var preferWordLevelLyrics = true;
+let wordLevelSetting = window.localStorage.getItem("wordLevelLyrics");
+if (wordLevelSetting == null || wordLevelSetting == undefined || wordLevelSetting == "true") {
+    document.getElementById("settings-word-level").checked = true;
+    preferWordLevelLyrics = true;
+    document.getElementById("highlight-style").style.opacity = "1";
+    document.getElementById("highlight-style").style.pointerEvents = "all";
+} else {
+    document.getElementById("settings-word-level").checked = false;
+    preferWordLevelLyrics = false;
+    document.getElementById("highlight-style").style.opacity = "0.5";
+    document.getElementById("highlight-style").style.pointerEvents = "none";
+}
+
+document.getElementById("settings-word-level").onclick = toggleWordLevel;
+function toggleWordLevel(){
+    if (document.getElementById("settings-word-level").checked){
+        preferWordLevelLyrics = true;
+        window.localStorage.setItem("wordLevelLyrics", "true");
+        document.getElementById("highlight-style").style.opacity = "1";
+        document.getElementById("highlight-style").style.pointerEvents = "all";
+    } else {
+        preferWordLevelLyrics = false;
+        window.localStorage.setItem("wordLevelLyrics", "false");
+        document.getElementById("highlight-style").style.opacity = "0.5";
+        document.getElementById("highlight-style").style.pointerEvents = "none";
+    }
+    if (typeof initializeLyrics === "function") {
+        initializeLyrics();
+    }
+}
+
+var useGradientHighlight = true;
+let highlightSetting = window.localStorage.getItem("gradientHighlight");
+if (highlightSetting == null || highlightSetting == undefined || highlightSetting == "true") {
+    document.getElementById("settings-highlight").checked = true;
+    useGradientHighlight = true;
+} else {
+    document.getElementById("settings-highlight").checked = false;
+    useGradientHighlight = false;
+}
+
+document.getElementById("settings-highlight").onclick = toggleHighlight;
+function toggleHighlight(){
+    if (document.getElementById("settings-highlight").checked){
+        useGradientHighlight = true;
+        window.localStorage.setItem("gradientHighlight", "true");
+    } else {
+        useGradientHighlight = false;
+        window.localStorage.setItem("gradientHighlight", "false");
+    }
+}
 
 document.getElementById("main-body").style.backgroundColor = "rgba(0, 0, 0, "+background_blur+")"
 document.getElementById("background-tint").value = background_blur

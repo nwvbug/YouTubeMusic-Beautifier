@@ -48,8 +48,11 @@
             
             <div class="lyrics-panel" id="lyrics-flex">
                 <div class="lyrics-holder" id="lyric-holder">
-                    
-    
+
+
+                </div>
+                <div class="lyrics-loading" id="lyrics-loader" style="display:none;">
+                    <img src="assets/nobackground.png" class="loader-image">
                 </div>
             </div>
 
@@ -89,10 +92,6 @@
             <span class="tooltip-text">Adjust Lyric Offset</span>
         </div>
         
-        <div class="tooltip-container" id="overallmiccontainer">
-            <img src="assets/mic.svg" class="overallmic" id="overallmic">
-            <span class="tooltip-text">Searching for lyrics...</span>
-        </div>
         <div class="tooltip-container" id="miccontainer">
             <img src="assets/show lyrics.png" class="mic" id="mic">
             <span class="tooltip-text">Show / Hide Lyrics</span>
@@ -226,6 +225,30 @@
                     </div>
                     <label class="switch">
                         <input type="checkbox" id="settings-optimization">
+                        <span class="slider round"></span>
+                      </label>
+                </div>
+                <div class="source-entry" id="word-level-style">
+                    <div class="source-name">
+                        <div>
+                            <p style="font-size:18px; margin-bottom:0;">Word-Level Lyrics</p>  
+                            <p style="margin-top:0">Highlight lyrics word-by-word if available.</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="settings-word-level" checked>
+                        <span class="slider round"></span>
+                      </label>
+                </div>
+                <div class="source-entry" id="highlight-style">
+                    <div class="source-name">
+                        <div>
+                            <p style="font-size:18px; margin-bottom:0;">Gradient Highlight</p>  
+                            <p style="margin-top:0">Use a sliding gradient to highlight words.</p>
+                        </div>
+                    </div>
+                    <label class="switch">
+                        <input type="checkbox" id="settings-highlight" checked>
                         <span class="slider round"></span>
                       </label>
                 </div>

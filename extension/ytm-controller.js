@@ -59,9 +59,19 @@ function getNowPlaying() {
   );
   var large_image = null
   try{
-    large_image = document.querySelector("#thumbnail").children[0].src
+    // Scope to the player: unscoped "#thumbnail" can match a browse-page item.
+    // yt-img-shadow holds a 1x1 transparent data: GIF until lazy-loading finishes.
+    const playerThumb = document.querySelector("ytmusic-player #thumbnail img")
+      || document.querySelector("#thumbnail").children[0];
+    if (playerThumb && playerThumb.src && !playerThumb.src.startsWith("data:")) {
+      large_image = playerThumb.src;
+    }
   } catch{
     console.log("Image not grabbable")
+  }
+  if (!large_image && thumbnail && !thumbnail.startsWith("data:")) {
+    // Fall back to the player-bar thumbnail at album-art resolution
+    large_image = thumbnail.replace(/=w\d+-h\d+/, "=w544-h544");
   }
   
   let url;

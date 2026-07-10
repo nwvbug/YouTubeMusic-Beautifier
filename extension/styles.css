@@ -255,6 +255,18 @@ h2{
         transition:0.25s;
     }
 
+    .lyric-word {
+        display: inline;
+        transition: font-weight 0.1s;
+    }
+
+    .lyric-word.active {
+        background-image: linear-gradient(to right, white var(--progress, 100%), rgba(255,255,255,0.3) var(--progress, 100%));
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
 
     .image-holder img:hover{
         transform: scale(1.01);
@@ -397,12 +409,17 @@ h2{
         width:40%;
     }
     .lyrics-holder div{
-        cursor: pointer; 
-        font-size: 32px; 
-        width: 80%; 
-        opacity: 0.4; 
+        cursor: pointer;
+        font-size: 32px;
+        width: 80%;
+        opacity: 0.4;
         font-weight: 500;
         transition:0.25s;
+    }
+
+    .lyric-word{
+        display: inline;
+        transition: font-weight 0.1s;
     }
 }
 
@@ -577,14 +594,13 @@ h2{
     }
 
     .lyrics-holder div{
-        cursor: pointer; 
-        font-size: 32px; 
-        width: 80%; 
-        opacity: 0.4; 
+        cursor: pointer;
+        font-size: 32px;
+        width: 80%;
+        opacity: 0.4;
         font-weight: 500;
         transition:0.25s;
     }
-
 
     .portrait-progress-bar{
         display:none;
@@ -610,12 +626,17 @@ h2{
 
 
 
-.overallmic{
-    aspect-ratio: 1;
-    width:25px;
-    transition: 0.25s;
-    cursor: pointer;
-    animation: 1.5s ease-in-out loadingMic infinite
+.lyrics-loading{
+    width:100%;
+    height:100vh;
+    display:flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.lyrics-loading .loader-image{
+    width:10vh;
+    margin-bottom:0;
 }
 
 .mic{
@@ -702,17 +723,6 @@ h2{
     font-weight:800;
 }
 
-@keyframes loadingMic {
-    0% {
-        opacity:0.25;
-    }
-    50% {
-        opacity:0.75;
-    }
-    100%{
-        opacity:0.25;
-    }
-}
 .settings-holder{
     width:100vw;
     height:100vh;

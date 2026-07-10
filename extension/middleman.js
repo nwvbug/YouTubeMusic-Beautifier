@@ -7,8 +7,10 @@ var incomingSecondOffset = 0
 var lyrics= []
 var lyrics_code;
 var times = []
+var words = []
 var lyrics_fresh = false
 var searched_for_lyrics = false
+var lyrics_searching = false
 var current_song_identifier = ""
 
 var allow_remote_control = true
@@ -24,15 +26,17 @@ var current_song_year = undefined
 var sendNewUpdate = true
 var currentPauseState;
 
-//lyrics fresh and searched for lyrics explanation:
+//lyrics state explanation:
 //lyrics fresh = do lyrics match current song
-//searched for lyrics = did we try to find lyrics 
+//searched for lyrics = did we kick off a search for the current song
+//lyrics searching = is a search currently in flight (webapp shows loading state)
 // lyrics fresh = true: show yes lyrics option
-// lyrics not fresh, not searched: show searching option
-// lyrics not fresh, searched: show no lyrics option
+// lyrics searching: show loading option
+// lyrics not fresh, searched, not searching: show no lyrics option
 
 //const REST_URL = "http://127.0.0.1:7071" //Change if you have self-hosted lyrics server
 const REST_URL = "https://ytm.nwvbug.com"
+//const REST_URL = "http://0.0.0.0:8080"
 //const REST_URL = "https://ytmbeta.nwvbug.com"
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -189,6 +193,8 @@ function disableSharing(){
 
 function getSongLyrics(title, artist, album, year, reroll=false){
   searched_for_lyrics = true;
+  lyrics_searching = true;
+  const search_identifier = current_song_identifier;
   resetOffset()
   let url_addon = ""
   if (!reroll){
@@ -198,10 +204,14 @@ function getSongLyrics(title, artist, album, year, reroll=false){
   }
   url_addon = url_addon.replaceAll("/", "-")
   url_addon = url_addon.replaceAll("%", "%25")
-  fetch(REST_URL+"/request-lyrics/"+url_addon).then(response => response.text()) // Change server in config.js
+  fetch(REST_URL+"/v2/request-lyrics/"+url_addon).then(response => response.text()) // Change server in config.js
   .then(result => {
       // Handle the received text data
-      console.log(result); 
+      console.log(result);
+      if (search_identifier != current_song_identifier){
+        console.log("Song changed while searching, discarding stale lyrics result")
+        return;
+      }
       if (result == "no_lyrics_found" || result.includes("<title>500 Internal Server Error</title>")){
         console.log("no lyrics")
         lyric_source = "none"
@@ -212,7 +222,9 @@ function getSongLyrics(title, artist, album, year, reroll=false){
         result = JSON.parse(result)
         let data = result["lrc"]
         console.log(data)
-        if (result["source"] == "unofficial"){
+        if (result["source"] == "unofficial_enhanced"){
+          parseEnhancedLyrics(data)
+        } else if (result["source"] == "unofficial"){
           parseUnofficialLyrics(data)
         } else if (result["source"] == "ytm"){
           parseYTMLyrics(data)
@@ -221,11 +233,29 @@ function getSongLyrics(title, artist, album, year, reroll=false){
             lyrics_fresh = false
         }
       }
-      
+      lyrics_searching = false;
+      sendLyricsResult(search_identifier)
   })
   .catch(error => {
       console.error('Error:', error);
+      if (search_identifier != current_song_identifier) return;
+      lyrics_fresh = false;
+      lyrics_searching = false;
+      sendLyricsResult(search_identifier)
   });
+}
+
+// Push the search outcome to the webapp immediately, rather than waiting
+// for the next YTM data poll to carry it inside a STATE_UPDATE.
+function sendLyricsResult(song_identifier){
+    sendToWebapp("LYRICS_RESULT", {
+        "found": lyrics_fresh,
+        "song_identifier": song_identifier,
+        "lyrics_code": lyrics_code,
+        "lyrics_bank": lyrics,
+        "times_bank": times,
+        "words_bank": words
+    })
 }
 
 
@@ -234,21 +264,35 @@ var allTextLines = " ";
 
 var line = " ";
 
+function parseEnhancedLyrics(data){
+    lyric_source = "unofficial_enhanced"
+    lyrics = []
+    times = []
+    words = []
+    for (let i = 0; i < data.length; i++){
+        lyrics[i] = data[i].text
+        times[i] = data[i].time
+        words[i] = data[i].words.length > 0 ? data[i].words : null
+    }
+}
+
 function parseUnofficialLyrics(data){
     lyric_source = "unofficial"
+    words = []
     processData(data)
-   
+
 }
 
 function parseYTMLyrics(data){
     lyric_source = "ytm"
     lyrics = []
     times = []
+    words = []
     for (let i = 0; i<data.length; i++){
         lyrics[i] = data[i].text
-        times[i] = Math.floor(data[i].time)
+        times[i] = data[i].time
     }
-    
+
 }
 
 // parsing the Lyrics 
@@ -263,7 +307,7 @@ function next(){
     for (let i=0;i<allTextLines.length;i++){
         if (allTextLines[i].search(/^(\[)(\d*)(:)(.*)(\])(.*)/i)>=0 ){// any line without the prescribed format wont enter this loop 
             line = allTextLines[i].match(/^(\[)(\d*)(:)(.*)(\])(.*)/i);
-            let time = (parseInt(line[2])*60)+ parseInt(line[4]); // will give seconds 
+            let time = (parseInt(line[2])*60)+ parseFloat(line[4]); // will give seconds
             let lyric = line[6] ;//will give lyrics 
 
             if (lyric === " " || lyric === '' || lyric.substring(1,3) === "作曲" || lyric.substring(1,3) === "作词"){
@@ -304,6 +348,7 @@ function parseYTMData(data){
         current_song_identifier = incoming_id;
         lyrics_fresh = false; // Reset freshness for new song
         searched_for_lyrics = false;
+        lyrics_searching = false; // any in-flight search is now stale
     }
 
     // We should fetch if it's a new song, OR if we haven't searched for the current one yet.
@@ -325,10 +370,12 @@ function parseYTMData(data){
         "lyrics_bank":lyrics,
         "lyrics_code":lyrics_code,
         "times_bank":times,
+        "words_bank":words,
         "album_art":data.large_image,
         "lyric_freshness":lyrics_fresh,
         "allow_remote_control":allow_remote_control,
         "searched_for_lyrics":searched_for_lyrics,
+        "lyrics_searching":lyrics_searching,
         "live":live,
         "room_code":current_room_code,
         "offset-for-display":incomingSecondOffset
